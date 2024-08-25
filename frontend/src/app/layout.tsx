@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { RecoilRoot } from "recoil";
-import RecoilContextProvider from "../../store/RecoilContextProvider";
+import RecoilContextProvider from "../store/RecoilContextProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
