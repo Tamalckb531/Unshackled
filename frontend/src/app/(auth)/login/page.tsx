@@ -7,6 +7,7 @@ import FormField from "@/components/FormField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/store/atom";
+import Swal from "sweetalert2";
 
 const page = () => {
   const {
@@ -37,9 +38,23 @@ const page = () => {
 
       setUser(data.user);
 
+      Swal.fire({
+        position: "bottom-end",
+        icon: "success",
+        title: "You are logged in",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
       router.push("/dashboard");
     } catch (error: any) {
-      alert("Login failed! Please try again.");
+      Swal.fire({
+        position: "bottom-end",
+        icon: "error",
+        title: "Something went wrong. Please try again",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 

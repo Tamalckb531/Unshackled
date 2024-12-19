@@ -3,6 +3,7 @@ import cors from 'cors';
 import express, { Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import authRoute from './routes/auth.route'
+import userRoute from './routes/user.route'
 
 dotenv.config();
 
@@ -15,7 +16,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 //? routes
-app.use('/api/auth', authRoute)
+app.use('/api/auth', authRoute);
+app.use('/api/user', userRoute);
 
 // test
 app.get('/test', (req: Request, res: Response) => {
@@ -31,7 +33,7 @@ app.listen(port, () => {
 });
 
 //? Global catch -> run at the last and catch all the thrown res
-app.use((err:any, req:Request, res:Response, next:NextFunction) => {
+app.use((err:any, req:Request, res:Response) => {
   const statuscode = err.statuscode || 500;
   const message = err.message || "Internal server error";
 

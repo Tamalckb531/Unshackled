@@ -1,9 +1,62 @@
 "use client";
-import React from "react";
+import React, { use, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { userState } from "@/store/atom";
+import Swal from "sweetalert2";
 
 const Header = () => {
+  const [showDropdown, setShowDropDown] = useState<boolean>(false);
+  const user = useRecoilState(userState)[0];
+  const resetUser = useResetRecoilState(userState);
   const router = useRouter();
+
+  const singOutFunc = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/user/signout", {
+        method: "POST",
+      });
+
+      if (!res.ok) {
+        throw new Error("Sign out is not working. Please try again");
+      }
+
+      resetUser();
+
+      Swal.fire({
+        position: "bottom-end",
+        icon: "success",
+        title: "You are signed out",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error: any) {
+      Swal.fire({
+        position: "bottom-end",
+        icon: "error",
+        title: error.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
+  const handleSignOut = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Sign out!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        singOutFunc();
+      }
+    });
+  };
+
   return (
     <header className="px-4 lg:px-6 h-14 flex items-center">
       <h1
@@ -15,7 +68,7 @@ const Header = () => {
         </span>
         <div className="ml-auto flex items-center gap-4"></div>
       </h1>
-      <nav className="ml-auto flex gap-4 sm:gap-6">
+      <nav className="ml-auto mr-3 flex gap-4 sm:gap-6">
         <button
           className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
           aria-label="Toggle theme"
@@ -35,16 +88,64 @@ const Header = () => {
             <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
           </svg>
         </button>
-        <div
+        {/* <div
           className="w-fit whitespace-nowrap rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 px-2 py-1 text-xs font-medium flex items-center gap-1"
           data-v0-t="badge"
-        >
-          <img
-            className="w-10 h-10 rounded-full"
-            src="https://randomuser.me/api/portraits/women/26.jpg"
-            alt="Rounded avatar"
-          ></img>
-        </div>
+        > */}
+        {user ? (
+          <div>
+            <img
+              className="w-10 h-10 rounded-full cursor-pointer"
+              src="https://randomuser.me/api/portraits/women/26.jpg"
+              alt="Rounded avatar"
+              onClick={() => {
+                setShowDropDown(!showDropdown);
+              }}
+            ></img>
+            {showDropdown ? (
+              <div className="z-1 fixed top-14 right-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                <div className="mt-4 mb-3 ml-4 text-sm text-gray-900 dark:text-white">
+                  <div className=" mb-1">
+                    {user.firstName} {user.lastName}
+                  </div>
+                  <div className="font-medium truncate">{user.email}</div>
+                </div>
+                <ul
+                  className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="avatarButton"
+                >
+                  <li>
+                    <a
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                      onClick={() => router.push("/dashboard")}
+                    >
+                      Dashboard
+                    </a>
+                  </li>
+                </ul>
+                <div className="py-1">
+                  <a
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    onClick={handleSignOut}
+                  >
+                    Sign out
+                  </a>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <button
+            onClick={() => {
+              router.push("/login");
+            }}
+          >
+            {" "}
+            Sign in
+          </button>
+        )}
+
+        {/* </div> */}
       </nav>
     </header>
   );
