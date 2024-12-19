@@ -42,6 +42,7 @@ const page = () => {
       alert("Signup failed! Please try again.");
     }
   };
+
   return (
     <div className="grid md:grid-cols-2 h-screen w-full bg-[#F0F7FF] text-black">
       {/* Right side: form */}
@@ -107,10 +108,7 @@ const page = () => {
                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Password
                 </label>
-                <a
-                  href="#"
-                  className="text-sm font-medium underline underline-offset-4 hover:text-primary"
-                >
+                <a className="text-sm font-medium underline underline-offset-4 hover:text-primary">
                   Forgot password?
                 </a>
               </div>
@@ -124,13 +122,19 @@ const page = () => {
             </div>
             {/* Button */}
             <div className="space-y-2">
-              <button className="bg-[#EFC3E8] w-full p-2 rounded-xl">
+              <button
+                className="bg-[#EFC3E8] w-full p-2 rounded-xl"
+                type="submit"
+              >
                 Sign-Up
               </button>
             </div>
             {/* login with google */}
             <div className="space-y-2">
-              <button className="border-4 border-[#EFC3E8] w-full p-2 rounded-xl hover:bg-[#EFC3E8]">
+              <button
+                className="border-4 border-[#EFC3E8] w-full p-2 rounded-xl hover:bg-[#EFC3E8]"
+                type="button"
+              >
                 Login With Google
               </button>
             </div>

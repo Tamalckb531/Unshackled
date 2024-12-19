@@ -7,18 +7,10 @@ const Footer = () => {
         © 2024 Unshackled. All rights reserved.
       </p>
       <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-        <a
-          className="text-xs hover:underline underline-offset-4 text-primary-foreground"
-          href="#"
-          rel="ugc"
-        >
+        <a className="text-xs hover:underline underline-offset-4 text-primary-foreground">
           Terms of Service
         </a>
-        <a
-          className="text-xs hover:underline underline-offset-4 text-primary-foreground"
-          href="#"
-          rel="ugc"
-        >
+        <a className="text-xs hover:underline underline-offset-4 text-primary-foreground">
           Privacy
         </a>
       </nav>

@@ -41,7 +41,7 @@ const Header = () => {
         >
           <img
             className="w-10 h-10 rounded-full"
-            src="https://randomuser.me/api/portraits/women/80.jpg"
+            src="https://randomuser.me/api/portraits/women/26.jpg"
             alt="Rounded avatar"
           ></img>
         </div>

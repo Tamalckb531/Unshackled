@@ -117,7 +117,7 @@ const page = () => {
             <div className="space-y-2">
               <button
                 className="border-4 border-[#EFC3E8] w-full p-2 rounded-xl hover:bg-[#EFC3E8]"
-                type="submit"
+                type="button"
               >
                 Login With Google
               </button>
