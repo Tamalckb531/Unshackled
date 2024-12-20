@@ -4,7 +4,7 @@ import { recoilPersist } from 'recoil-persist'
 
 const { persistAtom } = recoilPersist({
   key: 'userState', 
-  storage: localStorage,
+  storage: typeof window !== "undefined" ? localStorage: undefined,
 })
 
 export const userState = atom({

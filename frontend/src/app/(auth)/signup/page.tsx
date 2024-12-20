@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/store/atom";
 import Swal from "sweetalert2";
+import OAuth from "@/components/OAuth";
 
 const page = () => {
   const {
@@ -146,12 +147,7 @@ const page = () => {
             </div>
             {/* login with google */}
             <div className="space-y-2">
-              <button
-                className="border-4 border-[#EFC3E8] w-full p-2 rounded-xl hover:bg-[#EFC3E8]"
-                type="button"
-              >
-                Login With Google
-              </button>
+              <OAuth />
             </div>
             {/* Already have an account  */}
             <div className=" text-center">

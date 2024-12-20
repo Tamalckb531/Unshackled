@@ -1,7 +1,7 @@
 import { User} from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
 import { SignUpBodyTypes, SignUpSchema, LoginBodyTypes, LoginSchema } from "@tamaldip/common";
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken';
 
@@ -65,42 +65,81 @@ export const signUpProcess = async (req: Request, res: Response) => {
     }
     }
 
-    export const loginProcess = async(req: Request, res: Response) => {
-        const { email, password }: LoginBodyTypes = req.body;
+export const loginProcess = async(req: Request, res: Response) => {
+    const { email, password }: LoginBodyTypes = req.body;
+    
+    try {
+
+        //? Validation via zod
+        LoginSchema.parse({ email, password });
+
+        //? Getting the user via email
+        const validUser: User | null = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        if (!validUser) {
+            return res.status(404).json({
+                msg: "Email not registered"
+            })
+        }
+
+        //? Password validation with bcryptJs
+        const validPassword: boolean = bcryptjs.compareSync(password, validUser.password);
+
+        if (!validPassword) {
+            return res.status(404).json({
+                msg: "Invalid Password"
+            })
+        }
+
+        //? Token Generation with JWT and sending as cookie
+
+        const token:string = jwt.sign(
+            { id: validUser.id },
+            secretKey
+        )
+
+        const { password: pass, ...userWithoutPass } = validUser;
+
         
-        try {
-    
-            //? Validation via zod
-            LoginSchema.parse({ email, password });
-    
-            //? Getting the user via email
-            const validUser: User | null = await prisma.user.findUnique({
-                where: { email }
+        res.status(200).cookie('access_token', token, {
+            httpOnly: true,
+        }).json({
+            msg: "Log-in Successful",
+            user: userWithoutPass
+        });
+    } catch (error: any) {
+        
+        if (error) {
+            return res.status(400).json({
+                msg: "Invalid input data",
+                errors: error.errors
             });
-    
-            if (!validUser) {
-                return res.status(404).json({
-                    msg: "Email not registered"
-                })
-            }
-    
-            //? Password validation with bcryptJs
-            const validPassword: boolean = bcryptjs.compareSync(password, validUser.password);
-    
-            if (!validPassword) {
-                return res.status(404).json({
-                    msg: "Invalid Password"
-                })
-            }
-    
-            //? Token Generation with JWT and sending as cookie
-    
+        }
+        res.status(500).json({msg: error.message})
+    }
+}
+
+export const google = async (req: Request, res: Response, next: NextFunction) => {
+    //? Take the firstName, lastName and email
+    type GoogleAuthBodyType = Omit<SignUpBodyTypes, 'password'>;
+    const { firstName, lastName, email }: GoogleAuthBodyType = req.body;
+
+    try {
+        //? Find the user: 
+        const User: User | null = await prisma.user.findUnique({
+            where: { email }
+        });
+        
+        if (User) { //? On User existence do things: 
+
             const token:string = jwt.sign(
-                { id: validUser.id },
+                { id: User.id },
                 secretKey
             )
     
-            const { password: pass, ...userWithoutPass } = validUser;
+            const { password: pass, ...userWithoutPass } = User;
     
             
             res.status(200).cookie('access_token', token, {
@@ -109,14 +148,45 @@ export const signUpProcess = async (req: Request, res: Response) => {
                 msg: "Log-in Successful",
                 user: userWithoutPass
             });
-        } catch (error: any) {
+        } else { //? On User not exist do things:
             
-            if (error) {
-                return res.status(400).json({
-                    msg: "Invalid input data",
-                    errors: error.errors
-                });
+            const generatedPassword:string =
+                Math.random().toString(36).slice(-8) +
+                Math.random().toString(36).slice(-8);
+            
+            //? user creation
+            const hashedPassword: string = bcryptjs.hashSync(generatedPassword, 10);
+
+            const newUser: User = await prisma.user.create({
+                data: {
+                    firstName,
+                    lastName,
+                    email,
+                    password:hashedPassword
+                }
+            })
+
+            //? Token generation with JWT adn sending as cookie
+
+            if (!secretKey) {
+                throw new Error("JWT_SECRET_KEY is not defined in the environment variables");
             }
-            res.status(500).json({msg: error.message})
-        }
-    }
+
+            const token: string = jwt.sign({
+                id: newUser.id
+            }, secretKey)
+
+            const { password: pass, ...userWithoutPass } = newUser;
+
+            res.status(200).cookie('access_token', token, {
+                httpOnly: true,
+            }).json({
+                msg: "Sign-up Successful",
+                user: userWithoutPass
+            });
+            }
+    } catch (error: any) {
+        next(error);
+    };
+
+}
