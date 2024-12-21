@@ -13,11 +13,82 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Prisma schema for Unshackled
+
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
-  firstName String
-  lastName  String
-  email     String   @unique
-  password  String
+  id                String    @id @default(uuid()) @db.Uuid
+  firstName         String
+  lastName          String
+  email             String    @unique
+  password          String
+  userName          String?   @unique @default(cuid())
+  bio               String?
+  photoURL          String?
+  location          String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  isProfileComplete Boolean   @default(false)
+  followerCount     Int       @default(0)
+  followeeCount     Int       @default(0)
+  newsCount         Int       @default(0)
+
+  //? Relations
+  newsPosted     News[]
+  bookmarkedNews News[]    @relation("UserBookmarkedNews")
+  upvotedNews    News[]    @relation("UserUpvotedNews")
+  followers      Follow[]  @relation("UserFollowers")
+  followees      Follow[]  @relation("UserFollowees")
+  comments       Comment[]
+
+  analytics Json?
+}
+
+model News {
+  id            String   @id @default(cuid()) // Unique identifier
+  title         String
+  content       String
+  posterImage   String?
+  flare         String
+  postingTime   DateTime @default(now())
+  upvotes       Int      @default(0)
+  downvotes     Int      @default(0)
+  bookmarkCount Int      @default(0)
+
+  //? Relations
+  comments     Comment[]
+  author       User      @relation(fields: [authorId], references: [id])
+  authorId     String    @db.Uuid
+  bookmarkedBy User[]    @relation("UserBookmarkedNews")
+  upvotedBy    User[]    @relation("UserUpvotedNews")
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  upvotes    Int      @default(0)
+  downvotes  Int      @default(0)
+  timePosted DateTime @default(now())
+
+  //? Relations
+  news     News   @relation(fields: [newsId], references: [id])
+  newsId   String
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String @db.Uuid
+
+  //? Nested replies
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId String?
+  replies  Comment[] @relation("CommentReplies")
+}
+
+model Follow {
+  id         String @id @default(cuid())
+  followerId String @db.Uuid
+  followeeId String @db.Uuid
+
+  //? Relations
+  follower User @relation("UserFollowees", fields: [followerId], references: [id])
+  followee User @relation("UserFollowers", fields: [followeeId], references: [id])
+
   createdAt DateTime @default(now())
 }
