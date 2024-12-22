@@ -44,15 +44,16 @@ model User {
 }
 
 model News {
-  id            String   @id @default(cuid()) // Unique identifier
-  title         String
-  content       String
-  posterImage   String?
-  flare         String
-  postingTime   DateTime @default(now())
-  upvotes       Int      @default(0)
-  downvotes     Int      @default(0)
-  bookmarkCount Int      @default(0)
+  id                  String   @id @default(cuid()) // Unique identifier
+  title               String
+  content             String
+  posterImage         String?
+  flare               String
+  is_Author_Anonymous Boolean  @default(false)
+  postingTime         DateTime @default(now())
+  upvotes             Int      @default(0)
+  downvotes           Int      @default(0)
+  bookmarkCount       Int      @default(0)
 
   //? Relations
   comments     Comment[]
