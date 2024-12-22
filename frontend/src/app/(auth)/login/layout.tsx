@@ -10,6 +10,6 @@ export default function BlogLayout({
 }) {
   const router = useRouter();
   const user = useRecoilValue(userState);
-  if (user) router.push("/dashboard");
+  if (user) router.push("/newsfeed");
   return <>{children}</>;
 }
