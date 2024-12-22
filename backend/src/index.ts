@@ -4,6 +4,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import authRoute from './routes/auth.route'
 import userRoute from './routes/user.route'
+import newsRoute from './routes/news.route'
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(cookieParser());
 //? routes
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
+app.use('/api/news', newsRoute);
 
 // test
 app.get('/test', (req: Request, res: Response) => {
