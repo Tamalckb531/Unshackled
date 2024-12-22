@@ -7,11 +7,15 @@
     "build": "tsc",
     "dev": "nodemon --exec ts-node src/index.ts"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@faker-js/faker": "^9.3.0",
     "@prisma/client": "^5.18.0",
     "@tamaldip/common": "^1.0.1",
     "@types/bcryptjs": "^2.4.6",
