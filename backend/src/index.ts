@@ -35,7 +35,7 @@ app.listen(port, () => {
 });
 
 //? Global catch -> run at the last and catch all the thrown res
-app.use((err:any, req:Request, res:Response) => {
+app.use((err:any, req:Request, res:Response, next: NextFunction) => {
   const statuscode = err.statuscode || 500;
   const message = err.message || "Internal server error";
 
