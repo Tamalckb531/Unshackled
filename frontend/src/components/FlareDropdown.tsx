@@ -1,9 +1,34 @@
 "use client";
-import React, { useState } from "react";
+import { log } from "console";
+import React, { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-const FlareDropdown = () => {
+type childProps = {
+  changeFlare: (newFlare: string) => void;
+};
+
+const FlareDropdown = ({ changeFlare }: childProps) => {
   const [toggle, setToggle] = useState<boolean>(false);
+
+  const [flares, setFlares] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchFlare = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/news/posts/flares"
+        );
+        const data = await response.json();
+        setFlares(data.flares);
+      } catch (error: any) {
+        console.log(error);
+      }
+    };
+    if (toggle) {
+      fetchFlare();
+    }
+  }, [toggle]);
+
   return (
     <div>
       <button
@@ -19,10 +44,15 @@ const FlareDropdown = () => {
       {toggle && (
         <div className="z-10 w-full bg-slate-50 divide-y divide-gray-100 rounded-lg shadow">
           <ul className="py-2 text-lg text-gray-700 cursor-pointer ">
-            <li className="block px-4 py-2 ">Sports</li>
-            <li className="block px-4 py-2 ">Crime</li>
-            <li className="block px-4 py-2 ">Business</li>
-            <li className="block px-4 py-2 ">Social</li>
+            {flares.map((flare) => (
+              <li
+                key={flare}
+                className="block px-4 py-2"
+                onClick={() => changeFlare(flare)}
+              >
+                {flare}
+              </li>
+            ))}
           </ul>
         </div>
       )}

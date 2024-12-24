@@ -81,3 +81,21 @@ export const getNews = async (req: Request, res: Response, next: NextFunction)=>
         next(error);
     }
 } 
+
+export const getFlare = async (req: Request, res: Response, next: NextFunction) => { 
+    try {
+        const flares = await prisma.news.findMany({
+            select: {
+                flare: true,
+            },
+            distinct: ['flare']
+        });
+
+        const flareList = flares.map(f => f.flare);
+
+        res.status(200).json({ flares: flareList });
+
+    } catch (error: any) {
+        next(error);   
+    }
+}
