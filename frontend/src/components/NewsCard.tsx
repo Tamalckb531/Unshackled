@@ -1,4 +1,6 @@
 import timeAgo from "@/helper/timeAgo";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { CiBookmark } from "react-icons/ci";
@@ -30,6 +32,8 @@ interface NewsData {
 }
 
 const NewsCard = ({ data }: { data: NewsData }) => {
+  const router = useRouter();
+
   return (
     <div className="flex w-full h-[270px] items-center rounded-lg hover:bg-gray-100 ">
       <img
@@ -43,7 +47,13 @@ const NewsCard = ({ data }: { data: NewsData }) => {
         </h1>
         <h2 className=" text-xs text-gray-400">
           Written by{" "}
-          <span className=" italic text-sky-700">{data.author.firstName}</span>{" "}
+          <span
+            className={`italic ${
+              data.is_Author_Anonymous ? "text-red-700" : "text-sky-700"
+            } `}
+          >
+            {data.is_Author_Anonymous ? "Anonymous" : data.author.firstName}
+          </span>{" "}
           on <span className=" italic text-sky-700">{data.flare}</span>{" "}
           <span className=" italic ml-5">{timeAgo(data.postingTime)}</span>
         </h2>
@@ -51,7 +61,12 @@ const NewsCard = ({ data }: { data: NewsData }) => {
           {data.content.slice(0, 250)}
           ...........
         </p>
-        <p className=" mb-3 text-sm text-blue-700 underline cursor-pointer">
+        <p
+          className=" mb-3 text-sm text-blue-700 underline cursor-pointer"
+          onClick={() => {
+            router.push(`/newsfeed/${data.id}`);
+          }}
+        >
           read more
         </p>
         <div className="flex justify-around gap-16">
