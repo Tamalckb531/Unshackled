@@ -36,6 +36,7 @@ model User {
   newsPosted     News[]
   bookmarkedNews News[]    @relation("UserBookmarkedNews")
   upvotedNews    News[]    @relation("UserUpvotedNews")
+  downvotedNews  News[]    @relation("UserDownvotedNews")
   followers      Follow[]  @relation("UserFollowers")
   followees      Follow[]  @relation("UserFollowees")
   comments       Comment[]
@@ -61,6 +62,7 @@ model News {
   authorId     String    @db.Uuid
   bookmarkedBy User[]    @relation("UserBookmarkedNews")
   upvotedBy    User[]    @relation("UserUpvotedNews")
+  downvotedBy  User[]    @relation("UserDownvotedNews")
 }
 
 model Comment {

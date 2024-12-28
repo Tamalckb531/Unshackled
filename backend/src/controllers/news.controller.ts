@@ -221,3 +221,59 @@ export const upvoteNews = async (req: Request, res: Response, next: NextFunction
     }
 }
 
+export const downvoteNews = async (req: Request, res: Response, next: NextFunction) => {
+    const { newsId } = req.params;
+    const userId = req.user?.id;
+    try {
+        const news = await  prisma.news.findUnique({
+            where: { id: newsId }
+        });
+
+        if (!news) return res.status(404).json({ msg: "News not found" });
+
+        const alreadyDownVoted = prisma.news.findUnique({
+            where: { id: newsId },
+            select: {
+                downvotedBy: {
+                    where: { id: userId }
+                }
+            }
+        });
+
+        if (alreadyDownVoted && alreadyDownVoted.downvotedBy.length > 0) {
+            await prisma.news.update({
+                where: { id: newsId },
+                data: {
+                    downvotes: {
+                        decrement: 1,
+                    },
+                    downvotedBy: {
+                        disconnect: {
+                            id: userId,
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({ msg: "Downvote removed successfully" });
+        } else {
+            await prisma.news.update({
+                where: { id: newsId },
+                data: {
+                    downvotes: {
+                        increment: 1,
+                    },
+                    downvotedBy: {
+                        connect: {
+                            id: userId,
+                        }
+                    },
+                }
+            });
+
+            return res.status(200).json({ msg: "News downvoted successfully" });
+        }
+    } catch (error: any) {
+        next(error);
+    }
+}
