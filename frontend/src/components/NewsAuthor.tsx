@@ -34,7 +34,7 @@ const NewsAuthor = ({
         <div className="w-[14vw] border border-slate-500 p-5 rounded-2xl">
           <h1 className="text-lg font-bold text-center mb-5">Author </h1>
           {is_Author_Anonymous ? (
-            "Sorry! As you policy for journalist safety, we can't show any details of an anonymous author"
+            "Sorry! As our policy for journalist safety, we can't show any details of an anonymous author"
           ) : (
             <div>
               <div className=" flex flex-col items-center justify-center my-4 gap-1">

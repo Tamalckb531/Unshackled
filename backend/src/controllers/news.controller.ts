@@ -161,3 +161,63 @@ export const getFlare = async (req: Request, res: Response, next: NextFunction) 
         next(error);   
     }
 }
+
+export const upvoteNews = async (req: Request, res: Response, next: NextFunction) => { 
+    const { newsId } = req.params;
+    const userId = req.user?.id;
+    try {
+        const news = await prisma.news.findUnique({
+            where: { id: newsId },
+        });
+
+        if (!news) return res.status(404).json({ msg: "News not found" });
+
+        //? already Upvote 
+        const alreadyUpvoted = await prisma.news.findUnique({
+            where: { id: newsId },
+            select: {
+                upvotedBy: {
+                    where: { id: userId },
+                }
+            }
+        });
+
+        if (alreadyUpvoted && alreadyUpvoted.upvotedBy.length > 0) {
+            await prisma.news.update({
+                where: { id: newsId },
+                data: {
+                    upvotes: {
+                        decrement: 1
+                    },
+                    upvotedBy: {
+                        disconnect: {
+                            id: userId,
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({ msg: "Upvote removed successfully" });
+        } else {
+            await prisma.news.update({
+                where: { id: newsId },
+                data: {
+                    upvotes: {
+                        increment: 1,
+                    },
+                    upvotedBy: {
+                        connect: {
+                            id: userId,
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({ msg: "News upvoted successfully" });
+        }
+
+    } catch (error: any) {
+        next(error);   
+    }
+}
+

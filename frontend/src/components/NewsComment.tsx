@@ -7,7 +7,7 @@ const NewsComment = () => {
       {/* comments writing area  */}
       <div>
         <label className="block mb-5 text-lg font-medium text-gray-900 ">
-          <span className=" underline text-xl mr-2 italic">Comments</span> (25)
+          <span className=" underline text-xl mr-2 italic">Comments</span> 25
         </label>
         <textarea
           rows={4}
