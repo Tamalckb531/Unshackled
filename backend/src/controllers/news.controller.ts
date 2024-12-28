@@ -82,6 +82,68 @@ export const getNews = async (req: Request, res: Response, next: NextFunction)=>
     }
 } 
 
+export const getNewsById = async (req: Request, res: Response, next: NextFunction)=>{
+    const { newsId } = req.params;
+    try {
+        const news = await prisma.news.findUnique({
+            where: { id: newsId },
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        userName: true,
+                        bio: true,
+                        email: true,
+                        photoURL: true,
+                    }
+                },
+                comments: {
+                    select: {
+                        id: true,
+                        content: true,
+                        upvotes: true,
+                        downvotes: true,
+                        timePosted: true,
+                        author: {
+                            select: {
+                                firstName: true,
+                                lastName: true,
+                                userName: true,
+                                photoURL: true,
+                            }
+                        },
+                        replies: {
+                            select: {
+                                id: true,
+                                content: true,
+                                upvotes: true,
+                                downvotes: true,
+                                timePosted: true,
+                                author: {
+                                    select: {
+                                        firstName: true,
+                                        lastName: true,
+                                        userName: true,
+                                        photoURL: true,
+                                    }
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!news) return res.status(404).json({ msg: "News not exist" });
+
+        res.status(200).json(news);
+    } catch (error: any) {
+        next(error);
+    }
+} 
+
 export const getFlare = async (req: Request, res: Response, next: NextFunction) => { 
     try {
         const flares = await prisma.news.findMany({

@@ -1,20 +1,121 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import NewsHeading from "./NewsHeading";
 import NewsContent from "./NewsContent";
 import NewsActionBar from "./NewsActionBar";
 import NewsAuthor from "./NewsAuthor";
 import NewsComment from "./NewsComment";
+import { useParams } from "next/navigation";
+
+interface NewsData {
+  id: string;
+  title: string;
+  content: string;
+  posterImage?: string;
+  flare: string;
+  is_Author_Anonymous: boolean;
+  postingTime: string;
+  upvotes: number;
+  downvotes: number;
+  bookmarkCount: number;
+
+  author: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    bio: string;
+    email: string;
+    photoURL?: string;
+  };
+
+  comments: {
+    id: string;
+    content: string;
+    upvotes: number;
+    downvotes: number;
+    timePosted: string;
+    author: {
+      firstName: string;
+      lastName: string;
+      userName: string;
+      photoURL?: string;
+    };
+    replies: {
+      id: string;
+      content: string;
+      upvotes: number;
+      downvotes: number;
+      timePosted: string;
+      author: {
+        firstName: string;
+        lastName: string;
+        userName: string;
+        photoURL?: string;
+      };
+    }[];
+  }[];
+}
 
 const SpecificNews = () => {
+  const { slug } = useParams();
+  const [data, setData] = useState<NewsData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  if (!slug) return <p>Loading....</p>;
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/news/posts/${slug}`);
+        if (!res.ok) throw new Error("Failed to fetch news");
+
+        const data = await res.json();
+        setData(data);
+      } catch (error: any) {
+        console.error("Error fetching news: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) fetchNews();
+  }, [slug]);
+
+  if (loading) return <p>Loading.....</p>;
+  if (!data) return <p>News don't exist!</p>;
+
+  console.log(data);
+
   return (
     <div className=" bg-slate-200 text-black p-16">
-      <NewsHeading />
+      <NewsHeading
+        posterImage={data.posterImage || ""}
+        title={data.title || ""}
+        authorName={data.author.firstName || ""}
+        flare={data.flare || ""}
+        is_Author_Anonymous={data.is_Author_Anonymous || false}
+        postingTime={data.postingTime || ""}
+      />
       <div className=" w-[85vw] flex gap-10 justify-between ml-6">
         <div className=" flex flex-col gap-5">
-          <NewsContent />
-          <NewsActionBar />
+          <NewsContent content={data.content || ""} />
+          <NewsActionBar
+            upvotes={data.upvotes}
+            downvotes={data.downvotes}
+            bookmarkCount={data.bookmarkCount}
+          />
         </div>
-        <NewsAuthor />
+        <NewsAuthor
+          id={data.author.id}
+          firstName={data.author.firstName}
+          lastName={data.author.lastName}
+          userName={data.author.userName}
+          photoUrl={data.author.photoURL || ""}
+          bio={data.author.bio}
+          email={data.author.email}
+          is_Author_Anonymous={data.is_Author_Anonymous}
+        />
       </div>
       <NewsComment />
     </div>
