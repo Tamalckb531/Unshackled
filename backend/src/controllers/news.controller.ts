@@ -277,3 +277,61 @@ export const downvoteNews = async (req: Request, res: Response, next: NextFuncti
         next(error);
     }
 }
+
+export const bookmarkedNews = async (req: Request, res: Response, next: NextFunction) => {
+    const { newsId } = req.params;
+    const userId = req.user?.id;
+
+    try {
+        const news = await prisma.news.findUnique({
+            where: { id: newsId }
+        });
+
+        if (!news) return res.status(404).json({ msg: "News not found" });
+
+        const alreadyBookmarked = prisma.news.findUnique({
+            where: { id: newsId },
+            select: {
+                bookmarkedBy: {
+                    where: { id: userId }
+                }
+            }
+        });
+
+        if (alreadyBookmarked && alreadyBookmarked.bookmarkedBy.length > 0) {
+            await prisma.news.update({
+                where: { id: newsId },
+                data: {
+                    bookmarkCount: {
+                        decrement: 1,
+                    },
+                    bookmarkedBy: {
+                        disconnect: {
+                            id: userId,
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({ msg: "Bookmark removed successfully" });
+        } else {
+            await prisma.news.update({
+                where: { id: newsId },
+                data: {
+                    bookmarkCount: {
+                        increment: 1,
+                    },
+                    bookmarkedBy: {
+                        connect: {
+                            id: userId,
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({ msg: "News bookmarked successfully" });
+        }
+    } catch (error: any) {
+        next(error);
+    }
+}
