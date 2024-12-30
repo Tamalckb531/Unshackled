@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import authRoute from './routes/auth.route'
 import userRoute from './routes/user.route'
 import newsRoute from './routes/news.route'
+import verifyToken from './utils/verifyToken';
 
 dotenv.config();
 
@@ -12,9 +13,27 @@ const app = express();
 const port = 3000;
 
 // Middleware to parse JSON
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:3001',  
+  credentials: true  // Allow cookies to be sent
+}));
 app.use(express.json());
 app.use(cookieParser());
+
+//? global middleware 
+// console.log("This is running");
+
+// app.use((req, res, next) => {
+//   if (req.cookies['access_token']) {
+//       console.log(req.user);
+//       verifyToken(req, res, next);  // Validate if token exists
+//   } else {
+//     req.user = undefined;  // Clear if no token
+//     console.log(req.user);
+//     next();
+//   }
+// });
+
 
 //? routes
 app.use('/api/auth', authRoute);

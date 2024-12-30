@@ -6,6 +6,8 @@ import NewsActionBar from "./NewsActionBar";
 import NewsAuthor from "./NewsAuthor";
 import NewsComment from "./NewsComment";
 import { useParams } from "next/navigation";
+import { userState } from "@/store/atom";
+import { useRecoilState } from "recoil";
 
 interface NewsData {
   id: string;
@@ -55,23 +57,42 @@ interface NewsData {
       };
     }[];
   }[];
+
+  // New fields to track user interactions
+  upvotedBy: { id: string }[];
+  downvotedBy: { id: string }[];
+  bookmarkedBy: { id: string }[];
 }
 
 const SpecificNews = () => {
   const { slug } = useParams();
   const [data, setData] = useState<NewsData | null>(null);
+  const [isUserUpvoted, setIsUserUpvoted] = useState<boolean>(false);
+  const [isUserDownvoted, setIsUserDownvoted] = useState<boolean>(false);
+  const [isUserBookmarked, setIsUserBookmarked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const user = useRecoilState(userState)[0];
 
   if (!slug) return <p>Loading....</p>;
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/news/posts/${slug}`);
+        const res = await fetch(
+          `http://localhost:3000/api/news/posts/${slug}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
         if (!res.ok) throw new Error("Failed to fetch news");
 
         const data = await res.json();
         setData(data);
+        setIsUserUpvoted(data.upvotedBy.length > 0);
+        setIsUserDownvoted(data.downvotedBy.length > 0);
+        setIsUserBookmarked(data.bookmarkedBy.length > 0);
       } catch (error: any) {
         console.error("Error fetching news: ", error);
       } finally {
@@ -80,12 +101,10 @@ const SpecificNews = () => {
     };
 
     if (slug) fetchNews();
-  }, [slug]);
+  }, [slug, user]);
 
   if (loading) return <p>Loading.....</p>;
   if (!data) return <p>News don't exist!</p>;
-
-  console.log(data);
 
   return (
     <div className=" bg-slate-200 text-black p-16">
@@ -101,9 +120,13 @@ const SpecificNews = () => {
         <div className=" flex flex-col gap-5">
           <NewsContent content={data.content || ""} />
           <NewsActionBar
+            newsId={data.id}
             upvotes={data.upvotes}
             downvotes={data.downvotes}
             bookmarkCount={data.bookmarkCount}
+            isUserUpvoted={isUserUpvoted}
+            isUserDownvoted={isUserDownvoted}
+            isUserBookmarked={isUserBookmarked}
           />
         </div>
         <NewsAuthor

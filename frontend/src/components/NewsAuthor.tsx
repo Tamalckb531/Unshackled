@@ -57,7 +57,7 @@ const NewsAuthor = ({
         </div>
       }
 
-      {id === user.id && (
+      {id === user?.id && (
         <div className=" flex flex-col gap-2 mt-20 ml-7 text-lg cursor-pointer">
           <h1 className="text-lg font-bold mb-6">Action </h1>
           <p className=" flex items-center gap-2 text-emerald-700">

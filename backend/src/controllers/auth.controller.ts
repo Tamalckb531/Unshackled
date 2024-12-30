@@ -50,6 +50,9 @@ export const signUpProcess = async (req: Request, res: Response) => {
 
         res.status(200).cookie('access_token', token, {
             httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/' //? Ensure cookie is valid for all routes
         }).json({
             msg: "Sign-up Successful",
             user: userWithoutPass
@@ -105,10 +108,15 @@ export const loginProcess = async(req: Request, res: Response) => {
         
         res.status(200).cookie('access_token', token, {
             httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/'
         }).json({
             msg: "Log-in Successful",
             user: userWithoutPass
         });
+
+        
     } catch (error: any) {
         
         if (error) {
@@ -140,10 +148,12 @@ export const google = async (req: Request, res: Response, next: NextFunction) =>
             )
     
             const { password: pass, ...userWithoutPass } = User;
-    
             
             res.status(200).cookie('access_token', token, {
                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path:'/'
             }).json({
                 msg: "Log-in Successful",
                 user: userWithoutPass
@@ -180,6 +190,9 @@ export const google = async (req: Request, res: Response, next: NextFunction) =>
 
             res.status(200).cookie('access_token', token, {
                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path:'/'
             }).json({
                 msg: "Sign-up Successful",
                 user: userWithoutPass

@@ -2,7 +2,6 @@ import { News} from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express';
 
-
 const prisma = new PrismaClient();
 
 export const getNews = async (req: Request, res: Response, next: NextFunction)=>{
@@ -84,7 +83,9 @@ export const getNews = async (req: Request, res: Response, next: NextFunction)=>
 
 export const getNewsById = async (req: Request, res: Response, next: NextFunction)=>{
     const { newsId } = req.params;
-    try {
+    const userId = req.user?.id ;
+    try {        
+
         const news = await prisma.news.findUnique({
             where: { id: newsId },
             include: {
@@ -132,9 +133,23 @@ export const getNewsById = async (req: Request, res: Response, next: NextFunctio
                             }
                         }
                     }
-                }
+                },
+                ...(userId && {
+                    upvotedBy: {
+                        where: { id: userId },
+                        select: { id: true }
+                    },
+                    downvotedBy: {
+                        where: { id: userId },
+                        select: { id: true }
+                    },
+                    bookmarkedBy: {
+                        where: { id: userId },
+                        select: { id: true }
+                    }
+                })
             }
-        });
+        });   
 
         if (!news) return res.status(404).json({ msg: "News not exist" });
 
@@ -231,7 +246,7 @@ export const downvoteNews = async (req: Request, res: Response, next: NextFuncti
 
         if (!news) return res.status(404).json({ msg: "News not found" });
 
-        const alreadyDownVoted = prisma.news.findUnique({
+        const alreadyDownVoted = await prisma.news.findUnique({
             where: { id: newsId },
             select: {
                 downvotedBy: {
@@ -289,7 +304,7 @@ export const bookmarkedNews = async (req: Request, res: Response, next: NextFunc
 
         if (!news) return res.status(404).json({ msg: "News not found" });
 
-        const alreadyBookmarked = prisma.news.findUnique({
+        const alreadyBookmarked = await prisma.news.findUnique({
             where: { id: newsId },
             select: {
                 bookmarkedBy: {

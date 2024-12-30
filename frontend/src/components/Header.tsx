@@ -15,6 +15,7 @@ const Header = () => {
     try {
       const res = await fetch("http://localhost:3000/api/user/signout", {
         method: "POST",
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -30,6 +31,8 @@ const Header = () => {
         showConfirmButton: false,
         timer: 1500,
       });
+
+      router.push("/");
     } catch (error: any) {
       Swal.fire({
         position: "bottom-end",

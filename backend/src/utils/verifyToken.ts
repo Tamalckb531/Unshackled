@@ -15,6 +15,9 @@ declare global {
 
 
 const verifyToken = (req:Request, res:Response, next:NextFunction) => {
+    // console.log(req.cookies);
+    // console.log(req.headers.cookies);
+    
     const token = req.cookies.access_token; 
     if (!token) {
         return next(errorHandler(401, "Unauthorized"));

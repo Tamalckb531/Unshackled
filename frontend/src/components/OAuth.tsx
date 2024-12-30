@@ -35,6 +35,7 @@ const OAuth = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
+        credentials: "include",
       });
 
       if (!res.ok) {
