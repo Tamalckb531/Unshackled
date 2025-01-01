@@ -11,9 +11,15 @@ export const SignUpSchema = BaseAuthSchema.extend({
     lastName: z.string().min(3).max(10),
 });
 
+export const CommentSchema = z.object({
+    content: z.string().trim().min(2).max(1000),
+    parentId: z.string().cuid().optional(),
+});
+
 
 export const LoginSchema = BaseAuthSchema;
 
 //? Type
 export type SignUpBodyTypes = z.infer<typeof SignUpSchema>
 export type LoginBodyTypes = Pick<SignUpBodyTypes, 'email' | 'password'>;
+export type CommentBodyTypes = z.infer<typeof CommentSchema>;

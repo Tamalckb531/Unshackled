@@ -1,6 +1,8 @@
-import { News} from "@prisma/client";
+import { Comment, News} from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
+import { CommentBodyTypes, CommentSchema } from "@tamaldip/common";
 import { NextFunction, Request, Response } from 'express';
+import { z } from "zod";
 
 const prisma = new PrismaClient();
 
@@ -347,6 +349,55 @@ export const bookmarkedNews = async (req: Request, res: Response, next: NextFunc
             return res.status(200).json({ msg: "News bookmarked successfully" });
         }
     } catch (error: any) {
+        next(error);
+    }
+}
+
+export const postComment = async (req: Request, res: Response, next: NextFunction) => {
+    const { newsId } = req.params;
+    const userId = req.user?.id || "";
+    const { content, parentId }: CommentBodyTypes = req.body;
+    
+    try {
+        CommentSchema.parse({ content, parentId });
+        let newComment: Comment;
+        if (parentId) {
+            const parentComment = await prisma.comment.findUnique({
+                where: { id: parentId }
+            });
+            
+            if (!parentComment) {
+                return res.status(404).json({ msg: "Parent comment not found" });
+            }
+
+            newComment = await prisma.comment.create({
+                data: {
+                    content,
+                    newsId,
+                    authorId: userId,
+                    parentId:parentComment?.id
+                }
+            });
+        } else {
+            newComment = await prisma.comment.create({
+                data: {
+                    content,
+                    newsId,
+                    authorId: userId,
+                }
+            });
+
+        }
+        res.status(200).json({
+            msg: "Comment successful",
+            comment: newComment,
+        });
+    } catch (error: any) {
+
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ msg: "Invalid input data", error: error.errors });
+        }
+
         next(error);
     }
 }

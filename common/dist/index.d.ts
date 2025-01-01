@@ -16,6 +16,16 @@ export declare const SignUpSchema: z.ZodObject<z.objectUtil.extendShape<{
     firstName: string;
     lastName: string;
 }>;
+export declare const CommentSchema: z.ZodObject<{
+    content: z.ZodString;
+    parentId: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    content: string;
+    parentId?: string | undefined;
+}, {
+    content: string;
+    parentId?: string | undefined;
+}>;
 export declare const LoginSchema: z.ZodObject<{
     email: z.ZodString;
     password: z.ZodString;
@@ -28,3 +38,4 @@ export declare const LoginSchema: z.ZodObject<{
 }>;
 export type SignUpBodyTypes = z.infer<typeof SignUpSchema>;
 export type LoginBodyTypes = Pick<SignUpBodyTypes, 'email' | 'password'>;
+export type CommentBodyTypes = z.infer<typeof CommentSchema>;
