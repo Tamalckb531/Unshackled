@@ -15,7 +15,6 @@ const NotePicker = () => {
       id: uuid4(),
       content: content,
     };
-    console.log(data);
   };
   return (
     <form

@@ -1,25 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import CommentCard from "./CommentCard";
+import { NewsData } from "@tamaldip/common";
+import CommentEditor from "./CommentEditor";
 
-const NewsComment = () => {
+type NewsWithComments = Pick<NewsData, "id" | "comments">;
+
+//? this is array of comment -> needs to store all the comment to fetch
+type AllCommentsProps = NewsData["comments"];
+
+//? This is just a single comment -> needs to get the new comment from editor
+type SingleComment = AllCommentsProps[number];
+
+const NewsComment = ({ id, comments }: NewsWithComments) => {
+  const [allComment, setAllComment] = useState<AllCommentsProps>(comments);
+
+  const handleAllCommentState = (newComment: SingleComment) => {
+    setAllComment((prev) => [newComment, ...prev]);
+  };
+
   return (
     <div className=" ml-5 mt-16 w-[60vw]">
       {/* comments writing area  */}
-      <div>
-        <label className="block mb-5 text-lg font-medium text-gray-900 ">
-          <span className=" underline text-xl mr-2 italic">Comments</span> 25
-        </label>
-        <textarea
-          rows={4}
-          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 "
-          placeholder="Write your thoughts here..."
-        ></textarea>
-        <button className=" bg-blue-600 rounded-lg mt-2 p-2 text-lg text-white">
-          Send
-        </button>
-      </div>
+      <label className="block mb-5 text-lg font-medium text-gray-900 ">
+        <span className=" underline text-xl mr-2 italic">Comments</span>{" "}
+        {allComment.length}
+      </label>
+      <CommentEditor newsId={id} onCommentAdd={handleAllCommentState} />
       {/* comments fetching area  */}
-      <CommentCard />
+      <div>
+        {allComment.length > 0 ? (
+          allComment.map((comment) => (
+            <CommentCard key={comment.id} id={comment.id} comment={comment} />
+          ))
+        ) : (
+          <p className="text-gray-500 mt-4">
+            No comments yet. Be the first to comment!
+          </p>
+        )}
+      </div>
     </div>
   );
 };

@@ -26,7 +26,6 @@ const NewsAuthor = ({
   is_Author_Anonymous,
 }: Author) => {
   const user = useRecoilState(userState)[0];
-  console.log(user);
 
   return (
     <div className=" mt-2">

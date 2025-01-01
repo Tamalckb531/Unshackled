@@ -19,7 +19,64 @@ export const CommentSchema = z.object({
 
 export const LoginSchema = BaseAuthSchema;
 
-//? Type
+//? Types from zod
 export type SignUpBodyTypes = z.infer<typeof SignUpSchema>
 export type LoginBodyTypes = Pick<SignUpBodyTypes, 'email' | 'password'>;
 export type CommentBodyTypes = z.infer<typeof CommentSchema>;
+
+
+//? Interfaces
+export interface NewsData {
+    id: string;
+    title: string;
+    content: string;
+    posterImage?: string;
+    flare: string;
+    is_Author_Anonymous: boolean;
+    postingTime: string;
+    upvotes: number;
+    downvotes: number;
+    bookmarkCount: number;
+  
+    author: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      userName: string;
+      bio: string;
+      email: string;
+      photoURL?: string;
+    };
+  
+    comments: {
+      id: string;
+      content: string;
+      upvotes: number;
+      downvotes: number;
+      timePosted: string;
+      author: {
+        firstName: string;
+        lastName: string;
+        userName: string;
+        photoURL?: string;
+      };
+      replies: {
+        id: string;
+        content: string;
+        upvotes: number;
+        downvotes: number;
+        timePosted: string;
+        author: {
+          firstName: string;
+          lastName: string;
+          userName: string;
+          photoURL?: string;
+        };
+      }[];
+    }[];
+  
+    // New fields to track user interactions
+    upvotedBy: { id: string }[];
+    downvotedBy: { id: string }[];
+    bookmarkedBy: { id: string }[];
+}

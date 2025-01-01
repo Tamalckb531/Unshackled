@@ -360,7 +360,11 @@ export const postComment = async (req: Request, res: Response, next: NextFunctio
     
     try {
         CommentSchema.parse({ content, parentId });
-        let newComment: Comment;
+        const commentData: any = {
+            content,
+            newsId,
+            authorId: userId
+        };
         if (parentId) {
             const parentComment = await prisma.comment.findUnique({
                 where: { id: parentId }
@@ -370,27 +374,46 @@ export const postComment = async (req: Request, res: Response, next: NextFunctio
                 return res.status(404).json({ msg: "Parent comment not found" });
             }
 
-            newComment = await prisma.comment.create({
-                data: {
-                    content,
-                    newsId,
-                    authorId: userId,
-                    parentId:parentComment?.id
-                }
-            });
-        } else {
-            newComment = await prisma.comment.create({
-                data: {
-                    content,
-                    newsId,
-                    authorId: userId,
-                }
-            });
-
+            commentData.parentId = parentComment.id;
         }
+        const newComment = await prisma.comment.create({
+            data: commentData,
+        });
+
+        const newCommentWithDetails = await prisma.comment.findUnique({
+            where: { id: newComment.id },
+            include: {
+                author: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        userName: true,
+                        photoURL: true,
+                    },
+                },
+                replies: {
+                    select: {
+                        id: true,
+                        content: true,
+                        upvotes: true,
+                        downvotes: true,
+                        timePosted: true,
+                        author: {
+                            select: {
+                                firstName: true,
+                                lastName: true,
+                                userName: true,
+                                photoURL: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
         res.status(200).json({
             msg: "Comment successful",
-            comment: newComment,
+            comment: newCommentWithDetails,
         });
     } catch (error: any) {
 

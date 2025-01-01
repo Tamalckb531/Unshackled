@@ -8,61 +8,7 @@ import NewsComment from "./NewsComment";
 import { useParams } from "next/navigation";
 import { userState } from "@/store/atom";
 import { useRecoilState } from "recoil";
-
-interface NewsData {
-  id: string;
-  title: string;
-  content: string;
-  posterImage?: string;
-  flare: string;
-  is_Author_Anonymous: boolean;
-  postingTime: string;
-  upvotes: number;
-  downvotes: number;
-  bookmarkCount: number;
-
-  author: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    userName: string;
-    bio: string;
-    email: string;
-    photoURL?: string;
-  };
-
-  comments: {
-    id: string;
-    content: string;
-    upvotes: number;
-    downvotes: number;
-    timePosted: string;
-    author: {
-      firstName: string;
-      lastName: string;
-      userName: string;
-      photoURL?: string;
-    };
-    replies: {
-      id: string;
-      content: string;
-      upvotes: number;
-      downvotes: number;
-      timePosted: string;
-      author: {
-        firstName: string;
-        lastName: string;
-        userName: string;
-        photoURL?: string;
-      };
-    }[];
-  }[];
-
-  // New fields to track user interactions
-  upvotedBy: { id: string }[];
-  downvotedBy: { id: string }[];
-  bookmarkedBy: { id: string }[];
-}
+import { NewsData } from "@tamaldip/common";
 
 const SpecificNews = () => {
   const { slug } = useParams();
@@ -140,7 +86,7 @@ const SpecificNews = () => {
           is_Author_Anonymous={data.is_Author_Anonymous}
         />
       </div>
-      <NewsComment />
+      <NewsComment id={data.id} comments={data.comments} />
     </div>
   );
 };

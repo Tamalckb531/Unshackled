@@ -14,6 +14,9 @@ type FormFieldProps<T extends FieldValues> = {
   register: UseFormRegister<T>;
   error: FieldError | undefined;
   valueAsNumber?: boolean;
+  as?: "input" | "textarea";
+  rows?: number;
+  className?: string;
 };
 
 const FormField = <T extends FieldValues>({
@@ -23,18 +26,35 @@ const FormField = <T extends FieldValues>({
   register,
   error,
   valueAsNumber,
-}: FormFieldProps<T>) => (
-  <>
-    <input
-      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-      type={type}
-      placeholder={placeholder}
-      {...register(name, { valueAsNumber })}
-    />
-    {error && (
-      <span className="error-message text-red-400">{error.message}</span>
-    )}
-  </>
-);
+  as = "input",
+  rows,
+  className = "",
+}: FormFieldProps<T>) => {
+  const Component = as === "textarea" ? "textarea" : "input";
 
+  return (
+    <>
+      {as === "textarea" ? (
+        <textarea
+          rows={rows}
+          className={className}
+          placeholder={placeholder}
+          {...register(name)}
+        />
+      ) : (
+        <input
+          type={type}
+          className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
+          placeholder={placeholder}
+          {...register(name, { valueAsNumber })}
+        />
+      )}
+      {error && (
+        <span className="block error-message text-red-400">
+          {error.message}
+        </span>
+      )}
+    </>
+  );
+};
 export default FormField;
