@@ -154,3 +154,97 @@ export const upvoteComment = async (req: Request, res: Response, next: NextFunct
         next(error);
     }
 }
+
+export const downvoteComment = async (req: Request, res: Response, next: NextFunction) => {
+    const { commentId } = req.params;
+    const userId = req.user?.id;
+
+    try {
+        const comment = await prisma.comment.findUnique({
+            where: { id: commentId }
+        });
+
+        if (!comment) return res.status(404).json({
+            msg: "comment not found!"
+        });
+
+        //? already downvoted
+        const alreadyDownVoted = await prisma.comment.findUnique({
+            where: { id: commentId },
+            select: {
+                downvotedBy: {
+                    where: { id: userId }
+                }
+            }
+        });
+
+        if (alreadyDownVoted && alreadyDownVoted.downvotedBy.length > 0) {
+            await prisma.comment.update({
+                where: { id: commentId },
+                data: {
+                    downvotes: {
+                        decrement: 1
+                    },
+                    downvotedBy: {
+                        disconnect: {
+                            id: userId
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({
+                msg: "Downvote is removed successfully"
+            });
+        } else {
+            await prisma.comment.update({
+                where: { id: commentId },
+                data: {
+                    downvotes: {
+                        increment: 1,
+                    },
+                    downvotedBy: {
+                        connect: {
+                            id: userId
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({
+                msg: "Comment downvoted successfully"
+            });
+        }
+    } catch (error: any) {
+        next(error)
+    }
+}
+
+export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
+    const { commentId } = req.params;
+    const userId = req.user?.id;
+
+    try {
+        const comment = await prisma.comment.findUnique({
+            where: { id: commentId }
+        });
+
+        if (!comment) return res.status(404).json({
+            msg: "comment not found!"
+        });
+
+        if (userId !== comment.authorId) return res.status(400).json({
+            msg: "Only author can delete a comment"
+        });
+
+        await prisma.comment.delete({
+            where: { id: commentId }
+        });
+
+        return res.status(200).json({
+            msg:"Comment deleted successfully"
+        })
+    } catch (error: any) {
+        next(error);
+    }
+}
