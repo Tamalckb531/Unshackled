@@ -27,7 +27,7 @@ const CommentCard = ({ newsId, comment, onCommentAdd }: CommentCardProps) => {
   }
 
   return (
-    <div className="my-5 bg-white py-2 px-4 rounded-lg">
+    <div className="my-5 w-full bg-white py-2 px-4 rounded-lg">
       <div className=" flex items-center gap-5 my-5">
         <img
           className="w-8 h-8 rounded-full"
