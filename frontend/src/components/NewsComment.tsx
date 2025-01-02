@@ -30,10 +30,13 @@ const NewsComment = ({ id, comments }: NewsWithComments) => {
       <div>
         {allComment.length > 0 ? (
           allComment.map((comment) => {
-            console.log(comment);
-
             if (!comment.parent) {
-              return renderCommentCard({ comment, id, handleAllCommentState });
+              return renderCommentCard({
+                comment,
+                id,
+                handleAllCommentState,
+                allComment,
+              });
             }
           })
         ) : (
@@ -52,19 +55,40 @@ type CommentCardProps = {
   id: string;
   comment: SingleComment;
   handleAllCommentState: (comment: SingleComment) => void;
+  allComment: AllCommentsProps;
 };
 
 const renderCommentCard = ({
   comment,
   id,
   handleAllCommentState,
+  allComment,
 }: CommentCardProps) => {
+  let ReplySection = null;
+
+  if (comment.replies && comment.replies.length > 0) {
+    ReplySection = comment.replies.map((rep) => {
+      const replyComment: SingleComment =
+        allComment.find((cmt) => cmt.id === rep.id) || ({} as SingleComment);
+
+      return renderCommentCard({
+        comment: replyComment,
+        id,
+        handleAllCommentState,
+        allComment,
+      });
+    });
+  }
+
   return (
-    <CommentCard
-      key={comment.id}
-      newsId={id}
-      comment={comment}
-      onCommentAdd={handleAllCommentState}
-    />
+    <div key={comment.id}>
+      <CommentCard
+        key={comment.id}
+        newsId={id}
+        comment={comment}
+        onCommentAdd={handleAllCommentState}
+      />
+      <div className=" pl-8"> {ReplySection}</div>
+    </div>
   );
 };
