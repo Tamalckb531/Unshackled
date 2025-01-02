@@ -30,7 +30,7 @@ const CommentEditor = ({ newsId, parentId, onCommentAdd }: editorId) => {
     try {
       if (parentId) values.parentId = parentId;
       const res = await fetch(
-        `http://localhost:3000/api/news//posts/comments/${newsId}`,
+        `http://localhost:3000/api/comments/post/${newsId}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
