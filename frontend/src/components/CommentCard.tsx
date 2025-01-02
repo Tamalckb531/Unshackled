@@ -19,13 +19,12 @@ const CommentCard = ({ newsId, comment, onCommentAdd }: CommentCardProps) => {
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const user = useRecoilState(userState)[0];
 
-  console.log("user id : ", user.id);
-
   if (!comment) {
     return <div>Loading...</div>;
   }
-
-  console.log("author id : ", comment.author.id);
+  if (!comment.author) {
+    return <div>Author data is missing</div>;
+  }
 
   return (
     <div className="my-5 bg-white py-2 px-4 rounded-lg">
@@ -36,7 +35,7 @@ const CommentCard = ({ newsId, comment, onCommentAdd }: CommentCardProps) => {
           alt={comment.author.userName}
         />
         <h1 className="font-bold tracking-wider cursor-pointer">
-          {comment.author.userName}
+          {comment.author?.userName}
         </h1>
         <p className=" font-thin text-sm">{timeAgo(comment.timePosted)}</p>
         {user.id === comment.author.id && (

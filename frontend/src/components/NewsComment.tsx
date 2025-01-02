@@ -14,8 +14,32 @@ type SingleComment = AllCommentsProps[number];
 const NewsComment = ({ id, comments }: NewsWithComments) => {
   const [allComment, setAllComment] = useState<AllCommentsProps>(comments);
 
+  //? Steps -> check if newComment a reply -> add this into it's parent reply section with other replies -> get all other comment from prev -> all together create a updatedComments -> add the updatedComments  with newComment inside the state -> just add the prev with newComment if newComment a top order comment
+
   const handleAllCommentState = (newComment: SingleComment) => {
-    setAllComment((prev) => [newComment, ...prev]);
+    setAllComment((prev) => {
+      //? handle reply
+      if (newComment.parent) {
+        //? store updated state where newsComment insider replies
+        const updatedComments = prev.map((comment) => {
+          if (comment.id === newComment.parent!.id) {
+            return {
+              ...comment,
+              replies: comment.replies
+                ? [...comment.replies, newComment]
+                : [newComment], //? storing replies in parent with other replies
+            };
+          }
+          return comment; //? return other comments
+        });
+
+        //? adding newComment in top order
+        return [...updatedComments, newComment];
+      }
+
+      //? handle top order
+      return [newComment, ...prev];
+    });
   };
 
   return (
