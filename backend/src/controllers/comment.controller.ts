@@ -91,3 +91,66 @@ export const postComment = async (req: Request, res: Response, next: NextFunctio
         next(error);
     }
 }
+
+export const upvoteComment = async (req: Request, res: Response, next: NextFunction) => {
+    const { commentId } = req.params;
+    const userId = req.user?.id;
+
+    try{
+        const comment = await prisma.comment.findUnique({
+            where: { id: commentId },
+        });
+
+        if (!comment) return res.status(404).json({ msg: "Comment not found" });
+
+        //? already upvoted 
+        const alreadyUpvoted = await prisma.comment.findUnique({
+            where: { id: commentId },
+            select: {
+                upvotedBy: {
+                    where: { id: userId },
+                }
+            }
+        });
+
+        if (alreadyUpvoted && alreadyUpvoted.upvotedBy.length > 0) {
+            await prisma.comment.update({
+                where: { id: commentId },
+                data: {
+                    upvotes: {
+                        decrement: 1
+                    },
+                    upvotedBy: {
+                        disconnect: {
+                            id: userId,
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({
+                msg: "Upvote removed successfully"
+            });
+        } else {
+            await prisma.comment.update({
+                where: { id: commentId },
+                data: {
+                    upvotes: {
+                        increment: 1
+                    },
+                    upvotedBy: {
+                        connect: {
+                            id: userId
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).json({
+                msg: "Comment upvoted successfully"
+            });
+        }
+    } catch (error: any) {
+        next(error);
+    }
+}

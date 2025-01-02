@@ -33,13 +33,15 @@ model User {
   newsCount         Int       @default(0)
 
   //? Relations
-  newsPosted     News[]
-  bookmarkedNews News[]    @relation("UserBookmarkedNews")
-  upvotedNews    News[]    @relation("UserUpvotedNews")
-  downvotedNews  News[]    @relation("UserDownvotedNews")
-  followers      Follow[]  @relation("UserFollowers")
-  followees      Follow[]  @relation("UserFollowees")
-  comments       Comment[]
+  newsPosted        News[]
+  bookmarkedNews    News[]    @relation("UserBookmarkedNews")
+  upvotedNews       News[]    @relation("UserUpvotedNews")
+  downvotedNews     News[]    @relation("UserDownvotedNews")
+  upvotedComments   Comment[] @relation("UserUpvotedComments")
+  downvotedComments Comment[] @relation("UserDownvotedComments")
+  followers         Follow[]  @relation("UserFollowers")
+  followees         Follow[]  @relation("UserFollowees")
+  comments          Comment[]
 
   analytics Json?
 }
@@ -79,9 +81,11 @@ model Comment {
   authorId String @db.Uuid
 
   //? Nested replies
-  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  parentId String?
-  replies  Comment[] @relation("CommentReplies")
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId    String?
+  replies     Comment[] @relation("CommentReplies")
+  upvotedBy   User[]    @relation("UserUpvotedComments")
+  downvotedBy User[]    @relation("UserDownvotedComments")
 }
 
 model Follow {
