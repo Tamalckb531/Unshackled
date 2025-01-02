@@ -54,7 +54,11 @@ export interface NewsData {
       upvotes: number;
       downvotes: number;
       timePosted: string;
+      parent?: {
+        id: string;
+      };
       author: {
+        id: string;
         firstName: string;
         lastName: string;
         userName: string;
@@ -66,6 +70,9 @@ export interface NewsData {
         upvotes: number;
         downvotes: number;
         timePosted: string;
+        parent?: {
+          id: string;
+        };
         author: {
           firstName: string;
           lastName: string;
@@ -78,5 +85,4 @@ export interface NewsData {
     // New fields to track user interactions
     upvotedBy: { id: string }[];
     downvotedBy: { id: string }[];
-    bookmarkedBy: { id: string }[];
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CommentCard from "./CommentCard";
-import { NewsData } from "@tamaldip/common";
+import { CommentBodyTypes, NewsData } from "@tamaldip/common";
 import CommentEditor from "./CommentEditor";
 
 type NewsWithComments = Pick<NewsData, "id" | "comments">;
@@ -29,9 +29,13 @@ const NewsComment = ({ id, comments }: NewsWithComments) => {
       {/* comments fetching area  */}
       <div>
         {allComment.length > 0 ? (
-          allComment.map((comment) => (
-            <CommentCard key={comment.id} id={comment.id} comment={comment} />
-          ))
+          allComment.map((comment) => {
+            console.log(comment);
+
+            if (!comment.parent) {
+              return renderCommentCard({ comment, id, handleAllCommentState });
+            }
+          })
         ) : (
           <p className="text-gray-500 mt-4">
             No comments yet. Be the first to comment!
@@ -43,3 +47,24 @@ const NewsComment = ({ id, comments }: NewsWithComments) => {
 };
 
 export default NewsComment;
+
+type CommentCardProps = {
+  id: string;
+  comment: SingleComment;
+  handleAllCommentState: (comment: SingleComment) => void;
+};
+
+const renderCommentCard = ({
+  comment,
+  id,
+  handleAllCommentState,
+}: CommentCardProps) => {
+  return (
+    <CommentCard
+      key={comment.id}
+      newsId={id}
+      comment={comment}
+      onCommentAdd={handleAllCommentState}
+    />
+  );
+};

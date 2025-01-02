@@ -111,6 +111,7 @@ export const getNewsById = async (req: Request, res: Response, next: NextFunctio
                         timePosted: true,
                         author: {
                             select: {
+                                id:true,
                                 firstName: true,
                                 lastName: true,
                                 userName: true,
@@ -126,12 +127,23 @@ export const getNewsById = async (req: Request, res: Response, next: NextFunctio
                                 timePosted: true,
                                 author: {
                                     select: {
+                                        id:true,
                                         firstName: true,
                                         lastName: true,
                                         userName: true,
                                         photoURL: true,
                                     }
                                 },
+                                parent: {
+                                    select: {
+                                        id:true
+                                    }
+                                }
+                            }
+                        },
+                        parent: {
+                            select: {
+                                id: true,
                             }
                         }
                     }
@@ -363,7 +375,8 @@ export const postComment = async (req: Request, res: Response, next: NextFunctio
         const commentData: any = {
             content,
             newsId,
-            authorId: userId
+            authorId: userId,
+            parentId: null
         };
         if (parentId) {
             const parentComment = await prisma.comment.findUnique({
@@ -385,6 +398,7 @@ export const postComment = async (req: Request, res: Response, next: NextFunctio
             include: {
                 author: {
                     select: {
+                        id:true,
                         firstName: true,
                         lastName: true,
                         userName: true,
@@ -398,16 +412,28 @@ export const postComment = async (req: Request, res: Response, next: NextFunctio
                         upvotes: true,
                         downvotes: true,
                         timePosted: true,
+                        parentId: true,
                         author: {
                             select: {
+                                id:true,
                                 firstName: true,
                                 lastName: true,
                                 userName: true,
                                 photoURL: true,
                             },
                         },
+                        parent: {
+                            select: {
+                                id:true,
+                            }
+                        }
                     },
                 },
+                parent: {
+                    select: {
+                        id:true,
+                    }
+                }
             },
         });
 

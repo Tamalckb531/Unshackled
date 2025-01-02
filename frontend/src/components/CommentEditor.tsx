@@ -3,6 +3,8 @@ import { CommentBodyTypes, CommentSchema, NewsData } from "@tamaldip/common";
 import React from "react";
 import { useForm } from "react-hook-form";
 import FormField from "./FormField";
+import { useRecoilState } from "recoil";
+import { userState } from "@/store/atom";
 
 type SingleComment = NewsData["comments"][number];
 
@@ -18,12 +20,15 @@ const CommentEditor = ({ newsId, parentId, onCommentAdd }: editorId) => {
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
   } = useForm<CommentBodyTypes>({
     resolver: zodResolver(CommentSchema),
   });
+  const user = useRecoilState(userState)[0];
 
   const onSubmit = async (values: CommentBodyTypes) => {
     try {
+      if (parentId) values.parentId = parentId;
       const res = await fetch(
         `http://localhost:3000/api/news//posts/comments/${newsId}`,
         {
@@ -39,13 +44,15 @@ const CommentEditor = ({ newsId, parentId, onCommentAdd }: editorId) => {
       }
 
       const data = await res.json();
-      console.log(data.comment);
 
       onCommentAdd(data.comment);
+
+      reset();
     } catch (error: any) {
       console.log("Issue occurred with the comment");
     }
   };
+
   return (
     <>
       <form className=" mt-4" onSubmit={handleSubmit(onSubmit)}>
@@ -60,12 +67,14 @@ const CommentEditor = ({ newsId, parentId, onCommentAdd }: editorId) => {
             register={register}
             error={errors.content}
           />
-          <button
-            className="bg-blue-600 rounded-lg mt-2 py-2 px-5 text-lg text-white"
-            type="submit"
-          >
-            Send
-          </button>
+          {user && (
+            <button
+              className="bg-blue-600 rounded-lg mt-2 py-2 px-5 text-lg text-white"
+              type="submit"
+            >
+              Send
+            </button>
+          )}
         </div>
       </form>
     </>
