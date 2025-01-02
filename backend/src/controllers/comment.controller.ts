@@ -248,3 +248,85 @@ export const deleteComment = async (req: Request, res: Response, next: NextFunct
         next(error);
     }
 }
+
+export const editComment = async (req: Request, res: Response, next: NextFunction)=>{
+    const { commentId } = req.params;
+    const userId = req.user?.id;
+    const { content }: { content: string } = req.body;
+
+    try {
+        CommentSchema.parse({ content });
+
+        const existingComment = await prisma.comment.findUnique({
+            where: { id: commentId },
+            include: {
+                author: true,
+            }
+        });
+
+        if (!existingComment) return res.status(404).json({ msg: "Comment not found" });
+        
+        if(existingComment.authorId !== userId) return res.status(400).json({
+            msg: "Only author can edit a comment"
+        });
+
+        const updatedComment = await prisma.comment.update({
+            where: { id: commentId },
+            data: {
+                content,
+                timePosted: new Date(),
+            },
+            include: {
+                author: {
+                    select: {
+                        id:true,
+                        firstName: true,
+                        lastName: true,
+                        userName: true,
+                        photoURL: true,
+                    },
+                },
+                replies: {
+                    select: {
+                        id: true,
+                        content: true,
+                        upvotes: true,
+                        downvotes: true,
+                        timePosted: true,
+                        parentId: true,
+                        author: {
+                            select: {
+                                id:true,
+                                firstName: true,
+                                lastName: true,
+                                userName: true,
+                                photoURL: true,
+                            },
+                        },
+                        parent: {
+                            select: {
+                                id:true,
+                            }
+                        }
+                    },
+                },
+                parent: {
+                    select: {
+                        id:true,
+                    }
+                }
+            },
+        });
+
+        res.status(200).json({
+            msg: "Comment updated successfully",
+            comment: updatedComment,
+        })
+
+    } catch (error: any) {
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ msg: "Invalid input data", error: error.errors });
+        }
+        next(error);
+    }
+}
