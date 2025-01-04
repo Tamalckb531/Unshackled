@@ -49,7 +49,6 @@ const NewsActionBar = ({
       showCancelButton: true,
       confirmButtonText: "Log-in",
     }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         router.push("/login");
       }
@@ -89,7 +88,12 @@ const NewsActionBar = ({
       setUpvotesState((prev) => (isUpvoted ? prev - 1 : prev + 1));
       setIsUpvote((prev) => !prev);
     } catch (error: any) {
-      console.error("Error in upvoting: ", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+        footer: `<p>${error.message}</p>`,
+      });
     }
   };
 
@@ -126,7 +130,12 @@ const NewsActionBar = ({
       setDownvotesState((prev) => (isDownvoted ? prev - 1 : prev + 1));
       setIsDownvoted((prev) => !prev);
     } catch (error: any) {
-      console.error("Error in Downvoting : ", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+        footer: `<p>${error.message}</p>`,
+      });
     }
   };
 
@@ -148,7 +157,12 @@ const NewsActionBar = ({
       setBookmarkCountState((prev) => (isBookmarked ? prev - 1 : prev + 1));
       setIsBookmarked((prev) => !prev);
     } catch (error: any) {
-      console.error("Error in bookmarking: ", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+        footer: `<p>${error.message}</p>`,
+      });
     }
   };
 

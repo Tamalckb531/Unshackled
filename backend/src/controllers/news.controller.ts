@@ -144,7 +144,17 @@ export const getNewsById = async (req: Request, res: Response, next: NextFunctio
                             select: {
                                 id: true,
                             }
-                        }
+                        },
+                        ...(userId && {
+                            upvotedBy: {
+                                where: { id: userId },
+                                select: { id: true }
+                            },
+                            downvotedBy: {
+                                where: { id: userId },
+                                select: { id: true }
+                            },
+                        })
                     }
                 },
                 ...(userId && {

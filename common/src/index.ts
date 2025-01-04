@@ -80,9 +80,12 @@ export interface NewsData {
           photoURL?: string;
         };
       }[];
+      upvotedBy: { id: string }[];
+      downvotedBy: { id: string }[];
     }[];
   
     // New fields to track user interactions
     upvotedBy: { id: string }[];
     downvotedBy: { id: string }[];
+    bookmarkedBy: { id: string }[];
 }

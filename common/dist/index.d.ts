@@ -91,11 +91,20 @@ export interface NewsData {
                 photoURL?: string;
             };
         }[];
+        upvotedBy: {
+            id: string;
+        }[];
+        downvotedBy: {
+            id: string;
+        }[];
     }[];
     upvotedBy: {
         id: string;
     }[];
     downvotedBy: {
+        id: string;
+    }[];
+    bookmarkedBy: {
         id: string;
     }[];
 }
