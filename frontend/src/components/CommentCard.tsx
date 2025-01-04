@@ -21,14 +21,20 @@ type CommentCardProps = {
   newsId: string;
   comment: SingleComment;
   onCommentAdd: (comment: SingleComment) => void;
+  handleDelete: (commentId: string) => void;
 };
-const CommentCard = ({ newsId, comment, onCommentAdd }: CommentCardProps) => {
+const CommentCard = ({
+  newsId,
+  comment,
+  onCommentAdd,
+  handleDelete,
+}: CommentCardProps) => {
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const [isUpvoted, setIsUpvoted] = useState<boolean>(
-    comment.upvotedBy.length > 0
+    comment.upvotedBy?.length > 0
   );
   const [isDownvoted, setIsDownvoted] = useState<boolean>(
-    comment.downvotedBy.length > 0
+    comment.downvotedBy?.length > 0
   );
   const [upvoteState, setUpvotesState] = useState<number>(comment.upvotes);
   const [downvoteState, setDownvoteState] = useState<number>(comment.downvotes);
@@ -135,7 +141,10 @@ const CommentCard = ({ newsId, comment, onCommentAdd }: CommentCardProps) => {
         </h1>
         <p className=" font-thin text-sm">{timeAgo(comment.timePosted)}</p>
         {user.id === comment.author.id && (
-          <p className=" font-thin text-xs text-red-700 cursor-pointer">
+          <p
+            className=" font-thin text-xs text-red-700 cursor-pointer"
+            onClick={() => handleDelete(comment.id)}
+          >
             delete
           </p>
         )}

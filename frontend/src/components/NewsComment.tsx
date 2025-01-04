@@ -3,6 +3,7 @@ import CommentCard from "./CommentCard";
 import { CommentBodyTypes, NewsData } from "@tamaldip/common";
 import CommentEditor from "./CommentEditor";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
+import Swal from "sweetalert2";
 
 type NewsWithComments = Pick<NewsData, "id" | "comments">;
 
@@ -53,6 +54,61 @@ const NewsComment = ({ id, comments }: NewsWithComments) => {
     }));
   };
 
+  const deleteProcess = async (commentId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/comments/delete/${commentId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok)
+        throw new Error("Comment Deletion un-successful. Try again.");
+
+      setAllComment((prev) => {
+        const updatedComments = prev
+          .filter((cmt) => cmt.id !== commentId) // Remove the comment itself
+          .map((cmt) => ({
+            ...cmt,
+            replies: cmt.replies
+              ? cmt.replies.filter((rep) => rep.id !== commentId) // Remove reply references
+              : [],
+          }));
+        return [...updatedComments];
+      });
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+        footer: `<p>${error.message}</p>`,
+      });
+    }
+  };
+
+  const handleDeleteState = (commentId: string) => {
+    Swal.fire({
+      title: "Are you sure to delete that ?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteProcess(commentId);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your comment has been deleted.",
+          icon: "success",
+        });
+      }
+    });
+  };
+
   return (
     <div className=" ml-5 mt-16 w-[60vw]">
       {/* comments writing area  */}
@@ -73,6 +129,7 @@ const NewsComment = ({ id, comments }: NewsWithComments) => {
                 allComment,
                 collapsedComments,
                 toggleCollapse,
+                handleDeleteState,
               });
             }
           })
@@ -92,6 +149,7 @@ type CommentCardProps = {
   id: string;
   comment: SingleComment;
   handleAllCommentState: (comment: SingleComment) => void;
+  handleDeleteState: (commentId: string) => void;
   allComment: AllCommentsProps;
   collapsedComments: Record<string, boolean>;
   toggleCollapse: (commentId: string) => void;
@@ -101,6 +159,7 @@ const renderCommentCard = ({
   comment,
   id,
   handleAllCommentState,
+  handleDeleteState,
   allComment,
   collapsedComments,
   toggleCollapse,
@@ -120,6 +179,7 @@ const renderCommentCard = ({
         allComment,
         collapsedComments,
         toggleCollapse,
+        handleDeleteState,
       });
     });
   }
@@ -127,7 +187,7 @@ const renderCommentCard = ({
   return (
     <div key={comment.id} className="pl-6 ">
       <div className="flex items-center space-x-1 -mb-6">
-        {comment.replies.length > 0 && (
+        {comment.replies?.length > 0 && (
           <button
             onClick={() => toggleCollapse(comment.id)}
             className=" text-gray-500 hover:text-black items-center"
@@ -144,6 +204,7 @@ const renderCommentCard = ({
           newsId={id}
           comment={comment}
           onCommentAdd={handleAllCommentState}
+          handleDelete={handleDeleteState}
         />
       </div>
 

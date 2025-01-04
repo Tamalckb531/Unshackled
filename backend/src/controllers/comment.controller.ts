@@ -74,6 +74,16 @@ export const postComment = async (req: Request, res: Response, next: NextFunctio
                     select: {
                         id:true,
                     }
+                },
+                upvotedBy: {
+                    select: {
+                        id:true
+                    }
+                },
+                downvotedBy: {
+                    select: {
+                        id:true
+                    }
                 }
             },
         });
