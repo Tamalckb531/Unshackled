@@ -36,9 +36,9 @@ const SpecificNews = () => {
 
         const data = await res.json();
         setData(data);
-        setIsUserUpvoted(data.upvotedBy.length > 0);
-        setIsUserDownvoted(data.downvotedBy.length > 0);
-        setIsUserBookmarked(data.bookmarkedBy.length > 0);
+        setIsUserUpvoted(data.upvotedBy?.length > 0);
+        setIsUserDownvoted(data.downvotedBy?.length > 0);
+        setIsUserBookmarked(data.bookmarkedBy?.length > 0);
       } catch (error: any) {
         console.error("Error fetching news: ", error);
       } finally {

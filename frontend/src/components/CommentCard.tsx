@@ -43,8 +43,19 @@ const CommentCard = ({
   const [content, setContent] = useState<string>(comment.content);
 
   const user = useRecoilState(userState)[0];
+  const router = useRouter();
 
-  // console.log(comment);
+  const goToSignIn = (param: string) => {
+    Swal.fire({
+      title: `You have to log in for ${param}`,
+      showCancelButton: true,
+      confirmButtonText: "Log-in",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push("/login");
+      }
+    });
+  };
 
   const contentHandler = (cnt: string) => {
     setContent(cnt);
@@ -55,6 +66,10 @@ const CommentCard = ({
   };
 
   const handleUpvote = async () => {
+    if (!user) {
+      goToSignIn("upvote");
+      return;
+    }
     try {
       if (isDownvoted) {
         const downvoteResponse = await fetch(
@@ -95,6 +110,10 @@ const CommentCard = ({
   };
 
   const handleDownvote = async () => {
+    if (!user) {
+      goToSignIn("downvote");
+      return;
+    }
     try {
       if (isUpvoted) {
         const upvotedResponse = await fetch(
@@ -162,7 +181,7 @@ const CommentCard = ({
           {comment.author?.userName}
         </h1>
         <p className=" font-thin text-sm">{timeAgo(comment.timePosted)}</p>
-        {user.id === comment.author.id && (
+        {user && user?.id === comment.author.id && (
           <p
             className=" font-thin text-xs text-red-700 cursor-pointer"
             onClick={() => handleDelete(comment.id)}
@@ -172,30 +191,30 @@ const CommentCard = ({
         )}
       </div>
       <div className=" mb-2">{content}</div>
-      {user && (
-        <div className="flex ml-[-16px] gap-5">
-          <button
-            className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
-            onClick={handleUpvote}
-          >
-            {isUpvoted ? (
-              <BiSolidUpvote size={20} color="green" />
-            ) : (
-              <BiUpvote size={20} color="green" />
-            )}{" "}
-            {upvoteState}
-          </button>
-          <button
-            className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
-            onClick={handleDownvote}
-          >
-            {isDownvoted ? (
-              <BiSolidDownvote size={20} color="red" />
-            ) : (
-              <BiDownvote size={20} color="red" />
-            )}{" "}
-            {downvoteState}
-          </button>
+      <div className="flex ml-[-16px] gap-5">
+        <button
+          className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
+          onClick={handleUpvote}
+        >
+          {isUpvoted ? (
+            <BiSolidUpvote size={20} color="green" />
+          ) : (
+            <BiUpvote size={20} color="green" />
+          )}{" "}
+          {upvoteState}
+        </button>
+        <button
+          className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
+          onClick={handleDownvote}
+        >
+          {isDownvoted ? (
+            <BiSolidDownvote size={20} color="red" />
+          ) : (
+            <BiDownvote size={20} color="red" />
+          )}{" "}
+          {downvoteState}
+        </button>
+        {user && (
           <button
             className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
             onClick={handleReply}
@@ -205,19 +224,19 @@ const CommentCard = ({
               {showEditor && !isContent ? "close" : "Reply"}
             </span>
           </button>
-          {user.id === comment.author.id && (
-            <button
-              className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
-              onClick={handleEdit}
-            >
-              <CiEdit size={20} color="blue" />{" "}
-              <span className=" font-bold">
-                {showEditor && isContent ? "close" : "Edit"}
-              </span>
-            </button>
-          )}
-        </div>
-      )}
+        )}
+        {user && user.id === comment.author.id && (
+          <button
+            className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
+            onClick={handleEdit}
+          >
+            <CiEdit size={20} color="blue" />{" "}
+            <span className=" font-bold">
+              {showEditor && isContent ? "close" : "Edit"}
+            </span>
+          </button>
+        )}
+      </div>
       {showEditor && (
         <CommentEditor
           newsId={newsId}

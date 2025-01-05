@@ -40,12 +40,13 @@ const NewsActionBar = ({
   const [downvotesState, setDownvotesState] = useState<number>(downvotes);
 
   const user = useRecoilState(userState)[0];
+  console.log(user);
 
   const router = useRouter();
 
   const goToSignIn = (param: string) => {
     Swal.fire({
-      title: `You have logged in for ${param}`,
+      title: `You have to log in for ${param}`,
       showCancelButton: true,
       confirmButtonText: "Log-in",
     }).then((result) => {
@@ -58,6 +59,7 @@ const NewsActionBar = ({
   const handleUpvote = async () => {
     if (!user) {
       goToSignIn("upvote");
+      return;
     }
     try {
       if (isDownvoted) {
@@ -100,6 +102,7 @@ const NewsActionBar = ({
   const handleDownvote = async () => {
     if (!user) {
       goToSignIn("downvote");
+      return;
     }
     try {
       if (isUpvoted) {
@@ -142,6 +145,7 @@ const NewsActionBar = ({
   const handleBookmarked = async () => {
     if (!user) {
       goToSignIn("bookmark");
+      return;
     }
     try {
       const res = await fetch(
