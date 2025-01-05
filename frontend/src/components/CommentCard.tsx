@@ -38,9 +38,21 @@ const CommentCard = ({
   );
   const [upvoteState, setUpvotesState] = useState<number>(comment.upvotes);
   const [downvoteState, setDownvoteState] = useState<number>(comment.downvotes);
+
+  const [isContent, setIsContent] = useState<boolean>(false);
+  const [content, setContent] = useState<string>(comment.content);
+
   const user = useRecoilState(userState)[0];
 
   // console.log(comment);
+
+  const contentHandler = (cnt: string) => {
+    setContent(cnt);
+  };
+
+  const editorHandler = () => {
+    setShowEditor(false);
+  };
 
   const handleUpvote = async () => {
     try {
@@ -121,6 +133,16 @@ const CommentCard = ({
     }
   };
 
+  const handleReply = () => {
+    setIsContent(false);
+    setShowEditor(!showEditor);
+  };
+
+  const handleEdit = () => {
+    setIsContent(true);
+    setShowEditor(!showEditor);
+  };
+
   if (!comment) {
     return <div>Loading...</div>;
   }
@@ -149,7 +171,7 @@ const CommentCard = ({
           </p>
         )}
       </div>
-      <div className=" mb-2">{comment.content}</div>
+      <div className=" mb-2">{content}</div>
       {user && (
         <div className="flex ml-[-16px] gap-5">
           <button
@@ -176,19 +198,22 @@ const CommentCard = ({
           </button>
           <button
             className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
-            onClick={() => {
-              setShowEditor(!showEditor);
-            }}
+            onClick={handleReply}
           >
             <MdOutlineModeComment size={20} color="blue" />{" "}
             <span className=" underline font-bold">
-              {showEditor ? "close" : "reply"}
+              {showEditor && !isContent ? "close" : "Reply"}
             </span>
           </button>
           {user.id === comment.author.id && (
-            <button className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3">
+            <button
+              className=" flex gap-2 text-sm items-center justify-center text-black  rounded-xl p-3"
+              onClick={handleEdit}
+            >
               <CiEdit size={20} color="blue" />{" "}
-              <span className=" font-bold">Edit</span>
+              <span className=" font-bold">
+                {showEditor && isContent ? "close" : "Edit"}
+              </span>
             </button>
           )}
         </div>
@@ -198,6 +223,10 @@ const CommentCard = ({
           newsId={newsId}
           parentId={comment.id}
           onCommentAdd={onCommentAdd}
+          isContent={isContent}
+          content={content}
+          contentHandler={contentHandler}
+          editorHandler={editorHandler}
         />
       )}
     </div>

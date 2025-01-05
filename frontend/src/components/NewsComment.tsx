@@ -114,9 +114,14 @@ const NewsComment = ({ id, comments }: NewsWithComments) => {
       {/* comments writing area  */}
       <label className="block mb-5 text-lg font-medium text-gray-900 ">
         <span className=" underline text-xl mr-2 italic">Comments</span>{" "}
+        {/*//! have a bug here, need to handle this with separate state */}
         {allComment.length}
       </label>
-      <CommentEditor newsId={id} onCommentAdd={handleAllCommentState} />
+      <CommentEditor
+        newsId={id}
+        onCommentAdd={handleAllCommentState}
+        isContent={false}
+      />
       {/* comments fetching area  */}
       <div>
         {allComment.length > 0 ? (
