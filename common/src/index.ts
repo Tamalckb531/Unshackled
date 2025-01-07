@@ -16,6 +16,13 @@ export const CommentSchema = z.object({
     parentId: z.string().cuid().optional(),
 });
 
+export const NewsSchema = z.object({
+  title: z.string().trim().min(15).max(150),
+  content: z.string().trim().min(300),
+  posterImage: z.string().optional(),
+  flare: z.string(),
+  is_Author_Anonymous: z.boolean().optional(),
+});
 
 export const LoginSchema = BaseAuthSchema;
 
@@ -23,6 +30,7 @@ export const LoginSchema = BaseAuthSchema;
 export type SignUpBodyTypes = z.infer<typeof SignUpSchema>
 export type LoginBodyTypes = Pick<SignUpBodyTypes, 'email' | 'password'>;
 export type CommentBodyTypes = z.infer<typeof CommentSchema>;
+export type CreateNewsTypes = z.infer<typeof NewsSchema>; 
 
 
 //? Interfaces

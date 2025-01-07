@@ -1,5 +1,6 @@
 import {  News} from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
+import { CreateNewsTypes, NewsSchema } from "@tamaldip/common";
 import { NextFunction, Request, Response } from 'express';
 import { z } from "zod";
 
@@ -181,6 +182,43 @@ export const getNewsById = async (req: Request, res: Response, next: NextFunctio
         next(error);
     }
 } 
+
+export const createNews = async (req: Request, res: Response, next: NextFunction) => {
+    const { title, content, flare, posterImage, is_Author_Anonymous }: CreateNewsTypes = req.body;
+    const userId = req.user?.id;
+
+    try {
+        NewsSchema.parse({ title, content, posterImage, flare, is_Author_Anonymous });
+
+        const data:any = {
+            title,
+            content,
+            flare,
+            posterImage,
+            is_Author_Anonymous,
+            authorId: userId
+        };
+        
+        const newNews:News = await prisma.news.create({
+            data,
+        });
+
+        res.status(201).json({
+            msg: "News created successfully",
+            newsId: newNews.id
+        });
+        
+    } catch (error: any) {
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ error: error.errors });
+        }
+
+        if (error.code === 'P2002') {
+            return res.status(409).json({ error: "Duplicate entry" });
+        }
+        next(error);
+    }
+}
 
 export const getFlare = async (req: Request, res: Response, next: NextFunction) => { 
     try {
@@ -373,3 +411,4 @@ export const bookmarkedNews = async (req: Request, res: Response, next: NextFunc
         next(error);
     }
 }
+
