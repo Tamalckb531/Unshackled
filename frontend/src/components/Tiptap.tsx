@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   useEditor,
   EditorContent,
@@ -8,23 +8,37 @@ import {
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Toolbar } from "./Toolbar";
+import Placeholder from "@tiptap/extension-placeholder";
 const Tiptap = ({ content, onChange }: any) => {
   const handleChange = (newContent: string) => {
     onChange(newContent);
   };
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: ({ editor }) => {
+          return editor.isEmpty ? "Start writing your news here......." : "";
+        },
+      }),
+    ],
     editorProps: {
       attributes: {
         class:
-          "flex flex-col px-4 py-3 justify-start border-b border-r border-l border-gray-700 text-black items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-bl-md rounded-br-md outline-none",
+          "flex flex-col px-4 py-3 justify-start text-black items-start w-full gap-3 font-medium text-[24px] pt-4 outline-none",
       },
     },
     onUpdate: ({ editor }) => {
       handleChange(editor.getHTML());
     },
   });
+
+  useEffect(() => {
+    if (editor && editor.getHTML() !== content) {
+      editor.commands.setContent(content || ""); // Reset to empty content if undefined
+    }
+  }, [content, editor]);
 
   return (
     <div className=" w-full px-4">

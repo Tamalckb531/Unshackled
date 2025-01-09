@@ -17,9 +17,9 @@ const EditorComponent = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className=" max-w-3xl w-full grid place-items-center mx-auto pt-10 mb-10"
+      className="w-full grid place-items-center mx-auto p-10 mb-10"
     >
-      <div className=" text-5xl text-center mb-10">Write Your News</div>
+      <p className=" text-5xl text-center mb-10">Write Your News</p>
 
       <Tiptap
         content={content}
