@@ -18,15 +18,13 @@ const Tiptap = ({ content, onChange }: any) => {
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: ({ editor }) => {
-          return editor.isEmpty ? "Start writing your news here......." : "";
-        },
+        placeholder: "Write something …",
       }),
     ],
     editorProps: {
       attributes: {
         class:
-          "flex flex-col px-4 py-3 justify-start text-black items-start w-full gap-3 font-medium text-[24px] pt-4 outline-none",
+          "flex flex-col px-4 py-3 justify-start text-black items-start w-full gap-3 font-medium text-[24px] pt-4 outline-none text-start",
       },
     },
     onUpdate: ({ editor }) => {
