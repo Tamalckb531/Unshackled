@@ -18,7 +18,7 @@ const Tiptap = ({ content, onChange }: any) => {
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: "Write something …",
+        placeholder: "Write Your news here.......",
       }),
     ],
     editorProps: {

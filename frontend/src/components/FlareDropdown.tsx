@@ -1,5 +1,4 @@
 "use client";
-import { log } from "console";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
@@ -29,9 +28,15 @@ const FlareDropdown = ({ changeFlare }: childProps) => {
     }
   }, [toggle]);
 
+  const handleFlareClick = (flare: string) => {
+    setToggle(!toggle);
+    changeFlare(flare);
+  };
+
   return (
     <div>
       <button
+        type="button"
         className="w-full text-white bg-gray-400 font-medium rounded-lg text-xl px-5 py-2.5 text-center inline-flex items-center justify-center gap-3 "
         onClick={() => {
           setToggle(!toggle);
@@ -48,7 +53,7 @@ const FlareDropdown = ({ changeFlare }: childProps) => {
               <li
                 key={flare}
                 className="block px-4 py-2"
-                onClick={() => changeFlare(flare)}
+                onClick={() => handleFlareClick(flare)}
               >
                 {flare}
               </li>
