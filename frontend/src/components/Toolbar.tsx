@@ -11,7 +11,7 @@ interface editorProps {
 export const Toolbar = ({ editor, content }: editorProps) => {
   if (!editor) return null;
   return (
-    <div className=" px-4 py-4 border-b border-black rounded flex justify-between items-start gap-5 w-full flex-wrap">
+    <div className=" px-4 py-4 rounded flex justify-between items-start gap-5 w-full flex-wrap">
       <div className=" flex justify-start items-center gap-5 w-full lg:w-10/12 flex-wrap">
         {/* bold button  */}
         <button
@@ -22,7 +22,7 @@ export const Toolbar = ({ editor, content }: editorProps) => {
           className={
             editor.isActive("bold")
               ? " bg-sky-700 text-white p-2 rounded-lg"
-              : " text-black"
+              : " text-black bg-slate-200 p-2 rounded-lg"
           }
         >
           <Bold className=" w-5 h-5" />
@@ -46,7 +46,7 @@ export const Toolbar = ({ editor, content }: editorProps) => {
       {content && (
         <button
           type="submit"
-          className="p-2 text-2xl bg-sky-700 text-white rounded-md"
+          className="py-1 px-2 text-lg bg-sky-700 text-white rounded-lg"
         >
           Add
         </button>

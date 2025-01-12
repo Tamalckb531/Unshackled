@@ -32,12 +32,6 @@ const Tiptap = ({ content, onChange }: any) => {
     },
   });
 
-  useEffect(() => {
-    if (editor && editor.getHTML() !== content) {
-      editor.commands.setContent(content || ""); // Reset to empty content if undefined
-    }
-  }, [content, editor]);
-
   return (
     <div className=" w-full px-4">
       <Toolbar editor={editor} content={content} />
