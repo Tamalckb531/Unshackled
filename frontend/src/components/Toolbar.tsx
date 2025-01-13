@@ -11,6 +11,7 @@ interface editorProps {
 export const Toolbar = ({ editor, content }: editorProps) => {
   if (!editor) return null;
   return (
+    // we chill
     <div className=" px-4 py-4 rounded flex justify-between items-start gap-5 w-full flex-wrap">
       <div className=" flex justify-start items-center gap-5 w-full lg:w-10/12 flex-wrap">
         {/* bold button  */}
