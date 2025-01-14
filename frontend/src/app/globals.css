@@ -92,6 +92,13 @@ body {
   .editor-styles a:hover {
     @apply text-purple-700;
   }
+
+  .editor-styles img {
+    @apply block h-auto my-6 max-w-full;
+  }
+  .editor-styles img.ProseMirror-selectednode {
+    @apply outline-[3px] outline-[var(--purple)];
+  }
 }
 
 .editor-styles p {
