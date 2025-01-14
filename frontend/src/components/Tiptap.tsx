@@ -1,11 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
-import {
-  useEditor,
-  EditorContent,
-  FloatingMenu,
-  BubbleMenu,
-} from "@tiptap/react";
+import React from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Toolbar } from "./Toolbar";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -24,7 +19,7 @@ const Tiptap = ({ content, onChange }: any) => {
     editorProps: {
       attributes: {
         class:
-          "flex flex-col px-4 py-3 justify-start text-black items-start w-full gap-3 font-medium text-[24px] pt-4 outline-none text-start",
+          "flex flex-col flex-grow px-4 py-3 justify-start text-black items-start h-full w-full gap-3 text-[18px] pt-4 outline-none text-start leading-6",
       },
     },
     onUpdate: ({ editor }) => {
@@ -33,9 +28,16 @@ const Tiptap = ({ content, onChange }: any) => {
   });
 
   return (
-    <div className=" w-full px-4">
-      <Toolbar editor={editor} content={content} />
-      <EditorContent style={{ whiteSpace: "pre-line" }} editor={editor} />
+    <div className="w-full h-full flex flex-col">
+      {/* Toolbar at the top */}
+      <div className="flex-none">
+        <Toolbar editor={editor} content={content} />
+      </div>
+
+      {/* Scrollable EditorContent */}
+      <div className="overflow-y-auto h-[45vh] px-4 editor-styles">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 };

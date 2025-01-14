@@ -32,6 +32,21 @@ body {
   }
 }
 
+@layer base {
+  .editor-styles ul {
+    @apply list-disc pl-6;
+  }
+  .editor-styles ol {
+    @apply list-decimal pl-6;
+  }
+  .editor-styles li {
+    @apply list-item;
+  }
+  .editor-styles blockquote {
+    @apply border-l-4 border-gray-300 my-6 pl-4;
+  }
+}
+
 .tiptap p.is-editor-empty:first-child::before {
   color: #adb5bd;
   content: attr(data-placeholder);
@@ -39,10 +54,3 @@ body {
   height: 0;
   pointer-events: none;
 }
-/* .tiptap p.is-empty::before {
-  color: #adb5bd;
-  content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  pointer-events: none;
-} */

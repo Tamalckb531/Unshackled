@@ -29,9 +29,9 @@ const EditorComponent = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full flex flex-col gap-5 items-center mx-auto p-10 mb-10"
+      className="w-full h-full flex flex-col gap-3 items-center mx-auto p-10 mb-10"
     >
-      <p className=" text-5xl text-center mb-10">Write Your News</p>
+      <p className=" text-3xl text-center mb-10">Write Your News</p>
 
       <div className=" w-full flex items-start justify-around mt-5">
         <div className="upload_file -mt-8">
@@ -64,7 +64,7 @@ const EditorComponent = () => {
       </div>
 
       <input
-        className=" w-full p-4 mt-16 mb-5 outline-none text-5xl"
+        className=" w-full p-4 mt-8 outline-none text-3xl"
         placeholder="Write your title here....."
         value={title}
         onChange={(e) => setTitle(e.target.value)}
