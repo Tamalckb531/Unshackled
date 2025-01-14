@@ -76,6 +76,18 @@ body {
   .editor-styles hr.ProseMirror-selectednode {
     @apply border-t border-purple-500; /* Styling for selected node */
   }
+
+  .editor-styles mark {
+    @apply bg-[#ffa8a8] rounded-md break-words px-1 py-0.5;
+  }
+
+  .editor-styles a {
+    @apply text-purple-500 cursor-pointer transition-colors;
+  }
+
+  .editor-styles a:hover {
+    @apply text-purple-700;
+  }
 }
 
 .tiptap p.is-editor-empty:first-child::before {

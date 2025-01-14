@@ -9,6 +9,11 @@ import CodeBlocksBtn from "./editorButtons/CodeBlocksBtn";
 import HeadingBtn from "./editorButtons/HeadingBtn";
 import HorizontalRuleBtn from "./editorButtons/HorizontalRuleBtn";
 import StrikeBtn from "./editorButtons/StrikeBtn";
+import UnderlineBtn from "./editorButtons/UnderlineBtn";
+import HighlightBtn from "./editorButtons/HighlightBtn";
+import SubscriptBtn from "./editorButtons/SubscriptBtn";
+import SuperscriptBtn from "./editorButtons/SuperscriptBtn";
+import LinkBtn from "./editorButtons/LinkBtn";
 
 interface editorProps {
   editor: Editor | null;
@@ -29,6 +34,11 @@ export const Toolbar = ({ editor, content }: editorProps) => {
         <HeadingBtn editor={editor} />
         <HorizontalRuleBtn editor={editor} />
         <StrikeBtn editor={editor} />
+        <UnderlineBtn editor={editor} />
+        <HighlightBtn editor={editor} />
+        <SubscriptBtn editor={editor} />
+        <SuperscriptBtn editor={editor} />
+        <LinkBtn editor={editor} />
       </div>
 
       {content && (

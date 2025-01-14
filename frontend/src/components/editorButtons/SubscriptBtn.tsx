@@ -1,28 +1,28 @@
 import React from "react";
-import { Strikethrough } from "lucide-react";
+import { SquareChevronDown } from "lucide-react";
 import { type Editor } from "@tiptap/react";
 
 interface editorProps {
   editor: Editor | null;
 }
 
-const StrikeBtn = ({ editor }: editorProps) => {
+const SubscriptBtn = ({ editor }: editorProps) => {
   if (!editor) return null;
   return (
     <button
       onClick={(e) => {
         e.preventDefault();
-        editor.chain().focus().toggleStrike().run();
+        editor.chain().focus().toggleSubscript().run();
       }}
       className={
-        editor.isActive("strike")
+        editor.isActive("subscript")
           ? "is-active bg-sky-700 text-white p-2 rounded-lg"
           : " text-black bg-slate-200 p-2 rounded-lg"
       }
     >
-      <Strikethrough className=" w-4 h-4" />
+      <SquareChevronDown className=" w-4 h-4" />
     </button>
   );
 };
 
-export default StrikeBtn;
+export default SubscriptBtn;
