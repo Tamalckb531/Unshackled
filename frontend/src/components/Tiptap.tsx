@@ -9,6 +9,7 @@ import Highlight from "@tiptap/extension-highlight";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import Link from "@tiptap/extension-link";
+import TextAlign from "@tiptap/extension-text-align";
 const Tiptap = ({ content, onChange }: any) => {
   const handleChange = (newContent: string) => {
     onChange(newContent);
@@ -22,6 +23,10 @@ const Tiptap = ({ content, onChange }: any) => {
       Highlight,
       Subscript,
       Superscript,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+        alignments: ["left", "center", "right", "justify"],
+      }),
       Placeholder.configure({
         placeholder: "Write Your news here.......",
       }),
@@ -49,7 +54,7 @@ const Tiptap = ({ content, onChange }: any) => {
     editorProps: {
       attributes: {
         class:
-          "flex flex-col flex-grow px-4 py-3 justify-start text-black items-start h-full w-full gap-3 text-[18px] pt-4 outline-none text-start leading-6",
+          "flex flex-col flex-grow px-4 py-3 justify-start text-black  h-full w-full gap-3 text-[18px] pt-4 outline-none leading-6",
       },
     },
     onUpdate: ({ editor }) => {
@@ -65,7 +70,7 @@ const Tiptap = ({ content, onChange }: any) => {
       </div>
 
       {/* Scrollable EditorContent */}
-      <div className="overflow-y-auto h-[45vh] px-4 editor-styles">
+      <div className="overflow-y-auto h-[40vh] px-4 editor-styles">
         <EditorContent editor={editor} />
       </div>
     </div>

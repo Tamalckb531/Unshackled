@@ -31,9 +31,11 @@ const EditorComponent = () => {
       onSubmit={handleSubmit}
       className="w-full h-full flex flex-col gap-3 items-center mx-auto p-10 mb-10"
     >
-      <p className=" text-3xl text-center mb-10">Write Your News</p>
+      <p className=" text-3xl text-center mb-14 font-bold">
+        Compose Your News With Our Advance Editor
+      </p>
 
-      <div className=" w-full flex items-start justify-around mt-5">
+      <div className=" w-full flex items-start justify-between mt-5 px-6">
         <div className="upload_file -mt-8">
           <label className="block mb-2 text-lg font-medium text-gray-900 ">
             Upload Poster Image

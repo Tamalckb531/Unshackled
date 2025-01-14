@@ -14,6 +14,7 @@ import HighlightBtn from "./editorButtons/HighlightBtn";
 import SubscriptBtn from "./editorButtons/SubscriptBtn";
 import SuperscriptBtn from "./editorButtons/SuperscriptBtn";
 import LinkBtn from "./editorButtons/LinkBtn";
+import TextAlignBtn from "./editorButtons/TextAlignBtn";
 
 interface editorProps {
   editor: Editor | null;
@@ -39,6 +40,7 @@ export const Toolbar = ({ editor, content }: editorProps) => {
         <SubscriptBtn editor={editor} />
         <SuperscriptBtn editor={editor} />
         <LinkBtn editor={editor} />
+        <TextAlignBtn editor={editor} />
       </div>
 
       {content && (

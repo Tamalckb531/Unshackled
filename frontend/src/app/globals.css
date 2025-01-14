@@ -33,6 +33,10 @@ body {
 }
 
 @layer base {
+  .editor-styles p {
+    @apply text-left;
+  }
+
   .editor-styles ul {
     @apply list-disc pl-6;
   }
@@ -54,7 +58,7 @@ body {
   .editor-styles h1,
   .editor-styles h2,
   .editor-styles h3 {
-    @apply m-2 font-bold; /* Larger top margin and bottom margin */
+    @apply m-2 font-bold text-pretty; /* Larger top margin and bottom margin */
   }
 
   .editor-styles h1 {
@@ -88,6 +92,10 @@ body {
   .editor-styles a:hover {
     @apply text-purple-700;
   }
+}
+
+.editor-styles p {
+  margin: 0;
 }
 
 .tiptap p.is-editor-empty:first-child::before {
