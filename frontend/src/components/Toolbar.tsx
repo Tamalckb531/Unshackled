@@ -7,6 +7,8 @@ import OrderedListBtn from "./editorButtons/OrderedListBtn";
 import BlockQuoteBtn from "./editorButtons/BlockQuoteBtn";
 import CodeBlocksBtn from "./editorButtons/CodeBlocksBtn";
 import HeadingBtn from "./editorButtons/HeadingBtn";
+import HorizontalRuleBtn from "./editorButtons/HorizontalRuleBtn";
+import StrikeBtn from "./editorButtons/StrikeBtn";
 
 interface editorProps {
   editor: Editor | null;
@@ -25,6 +27,8 @@ export const Toolbar = ({ editor, content }: editorProps) => {
         <BlockQuoteBtn editor={editor} />
         <CodeBlocksBtn editor={editor} />
         <HeadingBtn editor={editor} />
+        <HorizontalRuleBtn editor={editor} />
+        <StrikeBtn editor={editor} />
       </div>
 
       {content && (

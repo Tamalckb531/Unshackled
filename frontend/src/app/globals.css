@@ -68,6 +68,14 @@ body {
   .editor-styles h3 {
     @apply text-lg; /* Font size for h3 (1.1rem) */
   }
+
+  .editor-styles hr {
+    @apply w-full border-t border-gray-300 cursor-pointer my-4; /* Default styling */
+  }
+
+  .editor-styles hr.ProseMirror-selectednode {
+    @apply border-t border-purple-500; /* Styling for selected node */
+  }
 }
 
 .tiptap p.is-editor-empty:first-child::before {
