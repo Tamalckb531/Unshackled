@@ -45,6 +45,29 @@ body {
   .editor-styles blockquote {
     @apply border-l-4 border-gray-300 my-6 pl-4;
   }
+  .editor-styles pre {
+    @apply bg-[#212121] text-white rounded-lg font-mono my-6 p-4;
+  }
+  .editor-styles pre code {
+    @apply bg-transparent text-inherit text-sm p-0;
+  }
+  .editor-styles h1,
+  .editor-styles h2,
+  .editor-styles h3 {
+    @apply m-2 font-bold; /* Larger top margin and bottom margin */
+  }
+
+  .editor-styles h1 {
+    @apply text-2xl; /* Font size for h1 (1.4rem) */
+  }
+
+  .editor-styles h2 {
+    @apply text-xl; /* Font size for h2 (1.2rem) */
+  }
+
+  .editor-styles h3 {
+    @apply text-lg; /* Font size for h3 (1.1rem) */
+  }
 }
 
 .tiptap p.is-editor-empty:first-child::before {

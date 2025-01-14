@@ -5,6 +5,8 @@ import ItalicButton from "./editorButtons/ItalicButton";
 import BulletList from "./editorButtons/BulletList";
 import OrderedListBtn from "./editorButtons/OrderedListBtn";
 import BlockQuoteBtn from "./editorButtons/BlockQuoteBtn";
+import CodeBlocksBtn from "./editorButtons/CodeBlocksBtn";
+import HeadingBtn from "./editorButtons/HeadingBtn";
 
 interface editorProps {
   editor: Editor | null;
@@ -21,6 +23,8 @@ export const Toolbar = ({ editor, content }: editorProps) => {
         <BulletList editor={editor} />
         <OrderedListBtn editor={editor} />
         <BlockQuoteBtn editor={editor} />
+        <CodeBlocksBtn editor={editor} />
+        <HeadingBtn editor={editor} />
       </div>
 
       {content && (
