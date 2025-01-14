@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Tiptap from "./Tiptap";
 import FlareDropdown from "./FlareDropdown";
+import Swal from "sweetalert2";
 
 const EditorComponent = () => {
   const [title, setTitle] = useState<string>("");
@@ -9,9 +10,12 @@ const EditorComponent = () => {
   const [posterImage, setPosterImage] = useState<string>("");
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
+  const filePicker = useRef<HTMLInputElement | null>(null);
+
   const handleContentChange = (reason: any) => {
     setContent(reason);
   };
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const data = {
@@ -23,9 +27,52 @@ const EditorComponent = () => {
     };
     console.log(data);
   };
+
   const changeFlare = (newFlare: string) => {
     setFlare(newFlare);
   };
+
+  const handleFileUpload = async (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "Upload_Image");
+    data.append("cloud_name", "dbanpvlg0");
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to upload image. Please try again.");
+      }
+
+      const uploadImageURL = await res.json();
+
+      setPosterImage(uploadImageURL.url);
+
+      Swal.fire({
+        title: "Image Uploaded!",
+        icon: "success",
+        draggable: true,
+      });
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+        footer: error.message,
+      });
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -35,24 +82,27 @@ const EditorComponent = () => {
         Compose Your News With Our Advance Editor
       </p>
 
-      <div className=" w-full flex items-start justify-between mt-5 px-6">
-        <div className="upload_file -mt-8">
-          <label className="block mb-2 text-lg font-medium text-gray-900 ">
-            Upload Poster Image
-          </label>
+      <div className=" w-full flex items-start justify-between mt-5 px-6 ">
+        <div className="upload_file flex">
           <input
             type="file"
             accept="image/*"
-            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50  focus:outline-none outline-none"
+            className="hidden"
+            onChange={handleFileUpload}
+            ref={filePicker}
           />
-          <p className="mt-1 text-xs text-gray-500" id="file_input_help">
-            SVG, PNG, JPG or GIF (MAX. 800x400px).
-          </p>
+          <button
+            type="button"
+            className="text-sm p-2 mt-2 rounded bg-blue-500 text-white"
+            onClick={() => filePicker.current?.click()}
+          >
+            Upload Poster Image
+          </button>
         </div>
 
         <FlareDropdown changeFlare={changeFlare} />
 
-        <label className="inline-flex items-center mt-1 cursor-pointer">
+        <label className="inline-flex items-center mt-4 cursor-pointer">
           <input
             type="checkbox"
             className="sr-only peer"
@@ -64,6 +114,14 @@ const EditorComponent = () => {
           </span>
         </label>
       </div>
+
+      {posterImage && (
+        <img
+          src={posterImage}
+          alt=""
+          className="w-full mx-auto my-5 rounded-lg shadow-lg border border-gray-300 object-cover"
+        />
+      )}
 
       <input
         className=" w-full p-4 mt-8 outline-none text-3xl"

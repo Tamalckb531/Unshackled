@@ -70,7 +70,7 @@ const Tiptap = ({ content, onChange }: any) => {
       </div>
 
       {/* Scrollable EditorContent */}
-      <div className="overflow-y-auto h-[40vh] px-4 editor-styles">
+      <div className="overflow-y-auto px-4 editor-styles">
         <EditorContent editor={editor} />
       </div>
     </div>
