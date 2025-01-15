@@ -3,6 +3,8 @@ import React, { useRef, useState } from "react";
 import Tiptap from "./Tiptap";
 import FlareDropdown from "./FlareDropdown";
 import Swal from "sweetalert2";
+import { NewsSchema } from "@tamaldip/common";
+import { useRouter } from "next/navigation";
 
 const EditorComponent = () => {
   const [title, setTitle] = useState<string>("");
@@ -12,20 +14,79 @@ const EditorComponent = () => {
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
   const filePicker = useRef<HTMLInputElement | null>(null);
 
+  const router = useRouter();
+
   const handleContentChange = (reason: any) => {
     setContent(reason);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = {
-      title: title,
+
+    // Validate inputs using the Zod schema
+    const validationResult = NewsSchema.safeParse({
+      title: title.trim(),
       content: content,
-      posterImage: posterImage,
-      flare: flare,
-      isAuthorAnonymous: isAuthorAnonymous,
+      posterImage: posterImage || undefined,
+      flare: flare.trim(),
+      is_Author_Anonymous: isAuthorAnonymous,
+    });
+
+    if (!validationResult.success) {
+      // Display validation errors
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: validationResult.error.errors
+          .map((err) => `${err.path[0]}: ${err.message}`)
+          .join("\n"),
+      });
+      return;
+    }
+
+    // Prepare data for submission
+    const data = {
+      title: title.trim(),
+      content: content,
+      posterImage: posterImage || null,
+      flare: flare.trim(),
+      is_Author_Anonymous: isAuthorAnonymous,
     };
+
     console.log(data);
+
+    try {
+      const res = await fetch("http://localhost:3000/api/news/editor/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include", // Include cookies in the request
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to create news.");
+      }
+
+      const response = await res.json();
+
+      console.log(response);
+
+      Swal.fire({
+        icon: "success",
+        title: "News Created!",
+        text: `News ID: ${response.newsId}`,
+      });
+
+      // Go to news page
+      router.push(`/newsfeed/${response.newsId}`);
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: error.message,
+      });
+    }
   };
 
   const changeFlare = (newFlare: string) => {
@@ -100,7 +161,10 @@ const EditorComponent = () => {
           </button>
         </div>
 
-        <FlareDropdown changeFlare={changeFlare} />
+        <span className=" flex gap-2 justify-center items-center">
+          <FlareDropdown changeFlare={changeFlare} />{" "}
+          <p className=" text-lg ml-2">{flare}</p>
+        </span>
 
         <label className="inline-flex items-center mt-4 cursor-pointer">
           <input
@@ -127,6 +191,7 @@ const EditorComponent = () => {
         className=" w-full p-4 mt-8 outline-none text-3xl"
         placeholder="Write your title here....."
         value={title}
+        required
         onChange={(e) => setTitle(e.target.value)}
       />
 
