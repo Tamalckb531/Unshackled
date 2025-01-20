@@ -13,6 +13,12 @@ interface Author {
   bio: string;
   email: string;
   is_Author_Anonymous: boolean;
+  collaborators: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    photoURL?: string;
+  }[];
 }
 
 const NewsAuthor = ({
@@ -24,6 +30,7 @@ const NewsAuthor = ({
   bio,
   email,
   is_Author_Anonymous,
+  collaborators,
 }: Author) => {
   const user = useRecoilState(userState)[0];
 
@@ -65,26 +72,24 @@ const NewsAuthor = ({
               {firstName} {lastName}
             </h2>
           </div>
-          <div className=" flex items-center justify-around gap-3">
-            <img
-              className="w-10 h-10 rounded-full"
-              src={photoUrl}
-              alt={userName}
-            />
-            <h2 className=" text-nowrap text-xl">
-              {firstName} {lastName}
-            </h2>
-          </div>
-          <div className=" flex items-center justify-around gap-3">
-            <img
-              className="w-10 h-10 rounded-full"
-              src={photoUrl}
-              alt={userName}
-            />
-            <h2 className=" text-nowrap text-xl">
-              {firstName} {lastName}
-            </h2>
-          </div>
+          {collaborators &&
+            collaborators.map((clb) => {
+              return (
+                <div
+                  key={clb.id}
+                  className=" flex items-center justify-around gap-3"
+                >
+                  <img
+                    className="w-10 h-10 rounded-full"
+                    src={clb.photoURL}
+                    alt={clb.firstName}
+                  />
+                  <h2 className=" text-nowrap text-xl">
+                    {clb.firstName} {clb.lastName}
+                  </h2>
+                </div>
+              );
+            })}
         </div>
       </div>
 

@@ -1,15 +1,22 @@
 {
   "name": "@tamaldip/common",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "bump": "standard-version",
+    "publish": "npm run build && npm publish",
+    "update": "npm run bump && npm run publish && concurrently \"npm run update-frontend\" \"npm run update-backend\"",
+    "update-frontend": "cd ../frontend && npm install @tamaldip/common",
+    "update-backend": "cd ../backend && npm install @tamaldip/common"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "concurrently": "^9.1.2",
+    "standard-version": "^9.5.0",
     "zod": "^3.23.8"
   }
 }

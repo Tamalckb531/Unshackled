@@ -85,6 +85,7 @@ const SpecificNews = () => {
           bio={data.author.bio}
           email={data.author.email}
           is_Author_Anonymous={data.is_Author_Anonymous}
+          collaborators={data.collaborators}
         />
       </div>
     </div>

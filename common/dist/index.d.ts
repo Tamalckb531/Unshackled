@@ -83,8 +83,8 @@ export interface NewsData {
         id: string;
         firstName: string;
         lastName: string;
-        photoUrl?: string;
-    };
+        photoURL?: string;
+    }[];
     comments: {
         id: string;
         content: string;
