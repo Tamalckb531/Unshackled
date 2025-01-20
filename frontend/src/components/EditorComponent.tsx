@@ -6,12 +6,20 @@ import Swal from "sweetalert2";
 import { NewsSchema } from "@tamaldip/common";
 import { useRouter } from "next/navigation";
 
+interface collaboratorsType {
+  id: string;
+  firstName: string;
+  lastName: string;
+  photoURL?: string;
+}
+
 const EditorComponent = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [posterImage, setPosterImage] = useState<string>("");
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
+  const [collaborators, setCollaborators] = useState<collaboratorsType[]>([]);
   const filePicker = useRef<HTMLInputElement | null>(null);
 
   const router = useRouter();
@@ -23,14 +31,17 @@ const EditorComponent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate inputs using the Zod schema
-    const validationResult = NewsSchema.safeParse({
+    const data = {
       title: title.trim(),
-      content: content,
+      content,
       posterImage: posterImage || undefined,
       flare: flare.trim(),
       is_Author_Anonymous: isAuthorAnonymous,
-    });
+      collaborators,
+    };
+
+    // Validate inputs using the Zod schema
+    const validationResult = NewsSchema.safeParse(data);
 
     if (!validationResult.success) {
       // Display validation errors
@@ -43,17 +54,6 @@ const EditorComponent = () => {
       });
       return;
     }
-
-    // Prepare data for submission
-    const data = {
-      title: title.trim(),
-      content: content,
-      posterImage: posterImage || null,
-      flare: flare.trim(),
-      is_Author_Anonymous: isAuthorAnonymous,
-    };
-
-    console.log(data);
 
     try {
       const res = await fetch("http://localhost:3000/api/news/editor/create", {
