@@ -1,12 +1,12 @@
 {
   "name": "@tamaldip/common",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "bump": "standard-version",
     "publish": "npm run build && npm publish",
-    "update": "npm run bump && npm run publish && concurrently \"npm run update-frontend\" \"npm run update-backend\"",
+    "update": "npm run publish && concurrently \"npm run update-frontend\" \"npm run update-backend\"",
     "update-frontend": "cd ../frontend && npm install @tamaldip/common",
     "update-backend": "cd ../backend && npm install @tamaldip/common"
   },
