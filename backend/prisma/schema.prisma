@@ -41,6 +41,7 @@ model User {
   downvotedComments Comment[] @relation("UserDownvotedComments")
   followers         Follow[]  @relation("UserFollowers")
   followees         Follow[]  @relation("UserFollowees")
+  collaboratorNews  News[]    @relation("CollaboratorNews")
   comments          Comment[]
 
   analytics Json?
@@ -59,12 +60,13 @@ model News {
   bookmarkCount       Int      @default(0)
 
   //? Relations
-  comments     Comment[]
-  author       User      @relation(fields: [authorId], references: [id])
-  authorId     String    @db.Uuid
-  bookmarkedBy User[]    @relation("UserBookmarkedNews")
-  upvotedBy    User[]    @relation("UserUpvotedNews")
-  downvotedBy  User[]    @relation("UserDownvotedNews")
+  comments      Comment[]
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      String    @db.Uuid
+  collaborators User[]    @relation("CollaboratorNews")
+  bookmarkedBy  User[]    @relation("UserBookmarkedNews")
+  upvotedBy     User[]    @relation("UserUpvotedNews")
+  downvotedBy   User[]    @relation("UserDownvotedNews")
 }
 
 model Comment {
