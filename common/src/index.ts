@@ -56,6 +56,13 @@ export interface NewsData {
       photoURL?: string;
     };
   
+    collaborators: {
+      id: string,
+      firstName: string,
+      lastName: string,
+      photoUrl?: string
+    }
+  
     comments: {
       id: string;
       content: string;
