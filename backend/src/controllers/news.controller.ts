@@ -1,4 +1,4 @@
-import {  News} from "@prisma/client";
+import {  News, Prisma} from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
 import { CreateNewsTypes, NewsSchema } from "@tamaldip/common";
 import { NextFunction, Request, Response } from 'express';
@@ -192,11 +192,11 @@ export const getNewsById = async (req: Request, res: Response, next: NextFunctio
 } 
 
 export const createNews = async (req: Request, res: Response, next: NextFunction) => {
-    const { title, content, flare, posterImage, is_Author_Anonymous }: CreateNewsTypes = req.body;
+    const { title, content, flare, posterImage, is_Author_Anonymous,collaborators }: CreateNewsTypes = req.body;
     const userId = req.user?.id;
 
     try {
-        NewsSchema.parse({ title, content, posterImage, flare, is_Author_Anonymous });
+        NewsSchema.parse({ title, content, posterImage, flare, is_Author_Anonymous,collaborators });
 
         const data:any = {
             title,
@@ -204,7 +204,8 @@ export const createNews = async (req: Request, res: Response, next: NextFunction
             flare,
             posterImage,
             is_Author_Anonymous,
-            authorId: userId
+            authorId: userId,
+            collaborators
         };
         
         const newNews:News = await prisma.news.create({
