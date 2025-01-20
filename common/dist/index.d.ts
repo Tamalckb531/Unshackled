@@ -32,18 +32,46 @@ export declare const NewsSchema: z.ZodObject<{
     posterImage: z.ZodOptional<z.ZodString>;
     flare: z.ZodString;
     is_Author_Anonymous: z.ZodOptional<z.ZodBoolean>;
+    collaborators: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        firstName: z.ZodString;
+        lastName: z.ZodString;
+        photoURL: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        firstName: string;
+        lastName: string;
+        id: string;
+        photoURL?: string | undefined;
+    }, {
+        firstName: string;
+        lastName: string;
+        id: string;
+        photoURL?: string | undefined;
+    }>, "many">>;
 }, "strip", z.ZodTypeAny, {
     content: string;
     title: string;
     flare: string;
     posterImage?: string | undefined;
     is_Author_Anonymous?: boolean | undefined;
+    collaborators?: {
+        firstName: string;
+        lastName: string;
+        id: string;
+        photoURL?: string | undefined;
+    }[] | undefined;
 }, {
     content: string;
     title: string;
     flare: string;
     posterImage?: string | undefined;
     is_Author_Anonymous?: boolean | undefined;
+    collaborators?: {
+        firstName: string;
+        lastName: string;
+        id: string;
+        photoURL?: string | undefined;
+    }[] | undefined;
 }>;
 export declare const LoginSchema: z.ZodObject<{
     email: z.ZodString;

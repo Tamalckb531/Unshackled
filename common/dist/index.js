@@ -21,5 +21,11 @@ exports.NewsSchema = zod_1.z.object({
     posterImage: zod_1.z.string().optional(),
     flare: zod_1.z.string(),
     is_Author_Anonymous: zod_1.z.boolean().optional(),
+    collaborators: zod_1.z.array(zod_1.z.object({
+        id: zod_1.z.string().uuid(),
+        firstName: zod_1.z.string(),
+        lastName: zod_1.z.string(),
+        photoURL: zod_1.z.string().url().optional(),
+    })).optional(),
 });
 exports.LoginSchema = BaseAuthSchema;

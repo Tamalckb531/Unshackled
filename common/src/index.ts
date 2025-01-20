@@ -22,6 +22,14 @@ export const NewsSchema = z.object({
   posterImage: z.string().optional(),
   flare: z.string(),
   is_Author_Anonymous: z.boolean().optional(),
+  collaborators: z.array(
+    z.object({
+      id: z.string().uuid(),
+      firstName: z.string(),
+      lastName: z.string(),
+      photoURL: z.string().url().optional(),
+    })
+  ).optional(),
 });
 
 export const LoginSchema = BaseAuthSchema;
