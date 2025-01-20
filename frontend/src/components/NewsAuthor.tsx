@@ -36,7 +36,7 @@ const NewsAuthor = ({
 
   return (
     <div className=" mt-2">
-      <div className="w-[14vw] border border-slate-500 p-5 rounded-2xl">
+      <div className="min-w-[17vw] border border-slate-500 p-5 rounded-2xl">
         <h1 className="text-2xl font-bold text-center mb-5">Author </h1>
         {is_Author_Anonymous ? (
           "Sorry! As our policy for journalist safety, we can't show any details of an anonymous author"
@@ -59,25 +59,17 @@ const NewsAuthor = ({
         )}
       </div>
 
-      <div className="w-[14vw] border border-slate-500 px-3 py-5 rounded-2xl mt-5">
-        <h1 className="text-2xl font-bold text-center mb-5">Collaborators </h1>
-        <div className=" flex flex-col items-start justify-center gap-5 mx-3">
-          <div className=" flex items-center justify-around gap-3">
-            <img
-              className="w-10 h-10 rounded-full"
-              src={photoUrl}
-              alt={userName}
-            />
-            <h2 className=" text-nowrap text-xl">
-              {firstName} {lastName}
-            </h2>
-          </div>
-          {collaborators &&
-            collaborators.map((clb) => {
+      {!is_Author_Anonymous && collaborators.length > 0 && (
+        <div className="min-w-[17vw] border border-slate-500 px-3 py-5 rounded-2xl mt-5">
+          <h1 className="text-2xl font-bold text-center mb-5">
+            Collaborators{" "}
+          </h1>
+          <div className=" flex flex-col items-start justify-center gap-5 mx-3">
+            {collaborators.map((clb) => {
               return (
                 <div
                   key={clb.id}
-                  className=" flex items-center justify-around gap-3"
+                  className=" flex items-center justify-around gap-3 overflow-hidden"
                 >
                   <img
                     className="w-10 h-10 rounded-full"
@@ -90,8 +82,9 @@ const NewsAuthor = ({
                 </div>
               );
             })}
+          </div>
         </div>
-      </div>
+      )}
 
       {id !== user?.id && (
         <div className=" flex flex-col gap-2 mt-20 ml-7 text-lg cursor-pointer">

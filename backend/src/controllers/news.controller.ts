@@ -102,6 +102,14 @@ export const getNewsById = async (req: Request, res: Response, next: NextFunctio
                         photoURL: true,
                     }
                 },
+                collaborators: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        photoURL:true
+                  }  
+                },
                 comments: {
                     select: {
                         id: true,
