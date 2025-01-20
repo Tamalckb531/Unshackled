@@ -29,34 +29,66 @@ const NewsAuthor = ({
 
   return (
     <div className=" mt-2">
-      {
-        <div className="w-[14vw] border border-slate-500 p-5 rounded-2xl">
-          <h1 className="text-lg font-bold text-center mb-5">Author </h1>
-          {is_Author_Anonymous ? (
-            "Sorry! As our policy for journalist safety, we can't show any details of an anonymous author"
-          ) : (
-            <div>
-              <div className=" flex flex-col items-center justify-center my-4 gap-1">
-                <img
-                  className="w-10 h-10 rounded-full"
-                  src={photoUrl}
-                  alt={userName}
-                />
-                <h2 className=" text-nowrap text-lg">
-                  {firstName} {lastName}
-                </h2>
-                <h3 className=" text-sm font-thin cursor-pointer">
-                  @{userName}
-                </h3>
-                <h3 className=" text-sm mt-2">{email}</h3>
-              </div>
-              <p className=" font-light text-sm ">{bio}</p>
+      <div className="w-[14vw] border border-slate-500 p-5 rounded-2xl">
+        <h1 className="text-2xl font-bold text-center mb-5">Author </h1>
+        {is_Author_Anonymous ? (
+          "Sorry! As our policy for journalist safety, we can't show any details of an anonymous author"
+        ) : (
+          <div>
+            <div className=" flex flex-col items-center justify-center my-4 gap-1">
+              <img
+                className="w-10 h-10 rounded-full"
+                src={photoUrl}
+                alt={userName}
+              />
+              <h2 className=" text-nowrap text-xl">
+                {firstName} {lastName}
+              </h2>
+              <h3 className=" text-sm font-thin cursor-pointer">@{userName}</h3>
+              <h3 className=" text-sm mt-2">{email}</h3>
             </div>
-          )}
-        </div>
-      }
+            <p className=" font-light text-sm ">{bio}</p>
+          </div>
+        )}
+      </div>
 
-      {id === user?.id && (
+      <div className="w-[14vw] border border-slate-500 px-3 py-5 rounded-2xl mt-5">
+        <h1 className="text-2xl font-bold text-center mb-5">Collaborators </h1>
+        <div className=" flex flex-col items-start justify-center gap-5 mx-3">
+          <div className=" flex items-center justify-around gap-3">
+            <img
+              className="w-10 h-10 rounded-full"
+              src={photoUrl}
+              alt={userName}
+            />
+            <h2 className=" text-nowrap text-xl">
+              {firstName} {lastName}
+            </h2>
+          </div>
+          <div className=" flex items-center justify-around gap-3">
+            <img
+              className="w-10 h-10 rounded-full"
+              src={photoUrl}
+              alt={userName}
+            />
+            <h2 className=" text-nowrap text-xl">
+              {firstName} {lastName}
+            </h2>
+          </div>
+          <div className=" flex items-center justify-around gap-3">
+            <img
+              className="w-10 h-10 rounded-full"
+              src={photoUrl}
+              alt={userName}
+            />
+            <h2 className=" text-nowrap text-xl">
+              {firstName} {lastName}
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      {id !== user?.id && (
         <div className=" flex flex-col gap-2 mt-20 ml-7 text-lg cursor-pointer">
           <h1 className="text-lg font-bold mb-6">Action </h1>
           <p className=" flex items-center gap-2 text-emerald-700">

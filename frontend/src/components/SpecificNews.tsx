@@ -74,6 +74,7 @@ const SpecificNews = () => {
             isUserDownvoted={isUserDownvoted}
             isUserBookmarked={isUserBookmarked}
           />
+          <NewsComment id={data.id} comments={data.comments} />
         </div>
         <NewsAuthor
           id={data.author.id}
@@ -86,7 +87,6 @@ const SpecificNews = () => {
           is_Author_Anonymous={data.is_Author_Anonymous}
         />
       </div>
-      <NewsComment id={data.id} comments={data.comments} />
     </div>
   );
 };
