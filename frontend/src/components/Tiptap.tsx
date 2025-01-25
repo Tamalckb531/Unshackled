@@ -12,7 +12,7 @@ import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import Dropcursor from "@tiptap/extension-dropcursor";
 import Image from "@tiptap/extension-image";
-const Tiptap = ({ content, onChange }: any) => {
+const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
   const handleChange = (newContent: string) => {
     onChange(newContent);
   };

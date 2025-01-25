@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { NewsSchema } from "@tamaldip/common";
 import { useRouter } from "next/navigation";
 import { CircleX } from "lucide-react";
+import { TiptapCollabProvider } from "@hocuspocus/provider";
+import * as Y from "yjs";
 
 interface collaboratorsType {
   id: string;
@@ -13,6 +15,18 @@ interface collaboratorsType {
   lastName: string;
   photoURL?: string;
 }
+
+const appId = "7j9y6m10";
+const room = `room.${new Date().getFullYear().toString().slice(-2)}${
+  new Date().getMonth() + 1
+}${new Date().getDate()}-ok`;
+
+const ydoc = new Y.Doc();
+const provider = new TiptapCollabProvider({
+  appId,
+  name: room,
+  document: ydoc,
+});
 
 const EditorComponent = () => {
   const [title, setTitle] = useState<string>("");
@@ -215,6 +229,9 @@ const EditorComponent = () => {
       <Tiptap
         content={content}
         onChange={(newContent: string) => handleContentChange(newContent)}
+        provider={provider}
+        ydoc={ydoc}
+        room={room}
       />
     </form>
   );
