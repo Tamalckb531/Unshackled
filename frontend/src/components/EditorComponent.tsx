@@ -5,6 +5,7 @@ import FlareDropdown from "./FlareDropdown";
 import Swal from "sweetalert2";
 import { NewsSchema } from "@tamaldip/common";
 import { useRouter } from "next/navigation";
+import { CircleX } from "lucide-react";
 
 interface collaboratorsType {
   id: string;
@@ -139,6 +140,22 @@ const EditorComponent = () => {
       onSubmit={handleSubmit}
       className="w-full h-full flex flex-col gap-3 items-center mx-auto p-10 mb-10"
     >
+      {/*//? collaboration and cancel button  */}
+      <div className="flex w-full items-center justify-end gap-5">
+        <button
+          type="button"
+          className="text-sm p-3 mt-2 rounded bg-blue-500 text-white"
+        >
+          Collaboration
+        </button>
+        <button
+          type="button"
+          className="text-sm p-2 mt-2 rounded bg-red-500 text-white"
+        >
+          <CircleX size={30} />
+        </button>
+      </div>
+
       <p className=" text-3xl text-center mb-14 font-bold">
         Compose Your News With Our Advance Editor
       </p>
