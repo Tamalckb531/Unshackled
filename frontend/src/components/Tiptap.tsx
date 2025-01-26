@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Toolbar } from "./Toolbar";
+import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
@@ -12,12 +14,67 @@ import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import Dropcursor from "@tiptap/extension-dropcursor";
 import Image from "@tiptap/extension-image";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/store/atom";
+
 const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
+  const colors = [
+    "#958DF1",
+    "#F98181",
+    "#FBBC88",
+    "#FAF594",
+    "#70CFF8",
+    "#94FADB",
+    "#B9F18D",
+    "#C3E2C2",
+    "#EAECCC",
+    "#AFC8AD",
+    "#EEC759",
+    "#9BB8CD",
+    "#FF90BC",
+    "#FFC0D9",
+    "#DC8686",
+    "#7ED7C1",
+    "#F3EEEA",
+    "#89B9AD",
+    "#D0BFFF",
+    "#FFF8C9",
+    "#CBFFA9",
+    "#9BABB8",
+    "#E3F4F4",
+  ];
+
   const handleChange = (newContent: string) => {
     onChange(newContent);
   };
 
+  const user = useRecoilValue(userState);
+  const getRandomColor = () =>
+    colors[Math.floor(Math.random() * colors.length)];
+  const getUser = () => user.firstName;
+
+  const getInitialUser = () => {
+    return {
+      name: getUser(),
+      color: getRandomColor(),
+    };
+  };
+
+  const [status, setStatus] = useState("connecting");
+  const [currentUser, setCurrentUser] = useState(getInitialUser);
+
   const editor = useEditor({
+    enableContentCheck: true,
+    onContentError: ({ disableCollaboration }) => {
+      disableCollaboration();
+    },
+    onCreate: ({ editor: currentEditor }) => {
+      provider.on("synced", () => {
+        if (currentEditor.isEmpty) {
+          currentEditor.commands.setContent(content);
+        }
+      });
+    },
     editable: true,
     extensions: [
       StarterKit,
@@ -27,6 +84,12 @@ const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
       Superscript,
       Dropcursor,
       Image,
+      Collaboration.extend().configure({
+        document: ydoc,
+      }),
+      CollaborationCursor.extend().configure({
+        provider,
+      }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
         alignments: ["left", "center", "right", "justify"],
@@ -66,6 +129,28 @@ const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
     },
   });
 
+  useEffect(() => {
+    const statusHandler = (event: any) => {
+      setStatus(event.status);
+    };
+
+    provider.on("status", statusHandler);
+
+    return () => {
+      provider.off("status", statusHandler);
+    };
+  }, [provider]);
+
+  useEffect(() => {
+    if (editor && currentUser) {
+      editor.chain().focus().updateUser(currentUser).run();
+    }
+  }, [editor, currentUser]);
+
+  if (!editor) {
+    return null;
+  }
+
   return (
     <div className="w-full h-full flex flex-col">
       {/* Toolbar at the top */}
@@ -76,6 +161,22 @@ const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
       {/* Scrollable EditorContent */}
       <div className="overflow-y-auto px-4 editor-styles">
         <EditorContent editor={editor} />
+      </div>
+
+      <div
+        className="collab-status-group"
+        data-state={status === "connected" ? "online" : "offline"}
+      >
+        <label>
+          {status === "connected"
+            ? `${editor.storage.collaborationCursor.users.length} user${
+                editor.storage.collaborationCursor.users.length === 1 ? "" : "s"
+              } online in ${room}`
+            : "offline"}
+        </label>
+        <button style={{ "--color": currentUser.color } as React.CSSProperties}>
+          {currentUser.name}
+        </button>
       </div>
     </div>
   );

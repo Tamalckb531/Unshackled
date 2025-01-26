@@ -14,6 +14,7 @@
     "@tamaldip/common": "^1.0.16",
     "@tiptap/extension-bullet-list": "^2.11.2",
     "@tiptap/extension-collaboration": "^2.11.3",
+    "@tiptap/extension-collaboration-cursor": "^2.11.3",
     "@tiptap/extension-dropcursor": "^2.11.2",
     "@tiptap/extension-highlight": "^2.11.2",
     "@tiptap/extension-image": "^2.11.2",
