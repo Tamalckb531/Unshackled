@@ -35,7 +35,7 @@ const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
   const user = useRecoilValue(userState);
   const getRandomColor = () =>
     colors[Math.floor(Math.random() * colors.length)];
-  const getUser = () => user.firstName || "";
+  const getUser = () => user?.firstName || "Anonymous";
 
   const getInitialUser = () => {
     return {
@@ -167,8 +167,6 @@ const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
           </p>
         </div>
       </div>
-
-      <div className="editor-styles"></div>
     </div>
   );
 };

@@ -17,9 +17,17 @@ interface collaboratorsType {
 }
 
 const appId = "7j9y6m10";
-const room = `room.${new Date().getFullYear().toString().slice(-2)}${
-  new Date().getMonth() + 1
-}${new Date().getDate()}-ok`;
+const generateRoomId = () => {
+  const chars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*?";
+  let roomId = "";
+  for (let i = 0; i < 9; i++) {
+    roomId += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `room-${roomId}`;
+};
+
+const room = generateRoomId();
 
 const ydoc = new Y.Doc();
 const provider = new TiptapCollabProvider({

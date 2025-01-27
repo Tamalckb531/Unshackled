@@ -128,7 +128,7 @@ body {
 
   /* Collaboration status group styles */
   .editor-styles .collab-status-group {
-    @apply flex items-center justify-between bg-white text-black text-xl font-normal gap-4 px-4 py-1 z-50;
+    @apply flex items-center justify-between bg-white text-black text-xl font-normal gap-4 px-4 py-2 z-50 border-t mt-5;
 
     p {
       @apply relative overflow-hidden text-xl p-2 truncate bg-transparent rounded-lg;
