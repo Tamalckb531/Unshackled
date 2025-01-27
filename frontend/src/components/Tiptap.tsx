@@ -19,29 +19,13 @@ import { userState } from "@/store/atom";
 
 const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
   const colors = [
-    "#958DF1",
-    "#F98181",
     "#FBBC88",
-    "#FAF594",
-    "#70CFF8",
-    "#94FADB",
-    "#B9F18D",
-    "#C3E2C2",
-    "#EAECCC",
-    "#AFC8AD",
-    "#EEC759",
-    "#9BB8CD",
-    "#FF90BC",
-    "#FFC0D9",
-    "#DC8686",
-    "#7ED7C1",
-    "#F3EEEA",
-    "#89B9AD",
-    "#D0BFFF",
-    "#FFF8C9",
-    "#CBFFA9",
-    "#9BABB8",
-    "#E3F4F4",
+    "#FAF594", // Very light yellow
+    "#C3E2C2", // Soft green
+    "#EAECCC", // Pale yellow
+    "#FFF8C9", // Cream
+    "#CBFFA9", // Light greenish-yellow
+    "#E3F4F4", // Very light blue
   ];
 
   const handleChange = (newContent: string) => {
@@ -51,7 +35,7 @@ const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
   const user = useRecoilValue(userState);
   const getRandomColor = () =>
     colors[Math.floor(Math.random() * colors.length)];
-  const getUser = () => user.firstName;
+  const getUser = () => user.firstName || "";
 
   const getInitialUser = () => {
     return {
@@ -161,23 +145,30 @@ const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
       {/* Scrollable EditorContent */}
       <div className="overflow-y-auto px-4 editor-styles">
         <EditorContent editor={editor} />
+        <div
+          className="collab-status-group"
+          data-state={status === "connected" ? "online" : "offline"}
+        >
+          <label>
+            {status === "connected"
+              ? `${editor.storage.collaborationCursor.users.length} user${
+                  editor.storage.collaborationCursor.users.length === 1
+                    ? ""
+                    : "s"
+                } online in ${room}`
+              : "offline"}
+          </label>
+          <p
+            style={
+              { backgroundColor: currentUser.color } as React.CSSProperties
+            }
+          >
+            {currentUser.name}
+          </p>
+        </div>
       </div>
 
-      <div
-        className="collab-status-group"
-        data-state={status === "connected" ? "online" : "offline"}
-      >
-        <label>
-          {status === "connected"
-            ? `${editor.storage.collaborationCursor.users.length} user${
-                editor.storage.collaborationCursor.users.length === 1 ? "" : "s"
-              } online in ${room}`
-            : "offline"}
-        </label>
-        <button style={{ "--color": currentUser.color } as React.CSSProperties}>
-          {currentUser.name}
-        </button>
-      </div>
+      <div className="editor-styles"></div>
     </div>
   );
 };

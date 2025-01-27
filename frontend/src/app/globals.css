@@ -99,6 +99,58 @@ body {
   .editor-styles img.ProseMirror-selectednode {
     @apply outline-[3px] outline-[var(--purple)];
   }
+  /* Collaboration cursor styles */
+  .editor-styles .collaboration-cursor__caret {
+    @apply border-l border-r border-black mx-[-1px] pointer-events-none relative break-normal;
+  }
+
+  .editor-styles .collaboration-cursor__label {
+    @apply absolute -top-[1.2rem] left-[-1px] text-xs font-semibold px-2 py-0.5 rounded-t-md whitespace-nowrap text-black bg-white;
+  }
+
+  /* Adjust the col-group and column-half styles */
+  .editor-styles .col-group {
+    @apply flex flex-row h-screen;
+    @apply sm:flex-col;
+  }
+
+  .editor-styles .column-half {
+    @apply flex flex-col flex-1 overflow-auto;
+
+    &:last-child {
+      @apply border-l border-gray-300 sm:border-l-0 sm:border-t sm:border-gray-300;
+    }
+
+    & > .main-group {
+      @apply flex-grow;
+    }
+  }
+
+  /* Collaboration status group styles */
+  .editor-styles .collab-status-group {
+    @apply flex items-center justify-between bg-white text-black text-xl font-normal gap-4 px-4 py-1 z-50;
+
+    p {
+      @apply relative overflow-hidden text-xl p-2 truncate bg-transparent rounded-lg;
+    }
+
+    label {
+      @apply flex items-center gap-1;
+
+      &::before {
+        @apply rounded-full block w-1.5 h-1.5;
+        content: "";
+      }
+    }
+
+    &[data-state="online"] label::before {
+      @apply bg-green-500;
+    }
+
+    &[data-state="offline"] label::before {
+      @apply bg-red-500;
+    }
+  }
 }
 
 .editor-styles p {
