@@ -112,3 +112,10 @@ export interface NewsData {
     downvotedBy: { id: string }[];
     bookmarkedBy: { id: string }[];
 }
+
+export interface userForCollaboration{
+  id: string,
+  firstName: string,
+  lastName: string,
+  userName: string | null
+};

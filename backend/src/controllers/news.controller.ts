@@ -1,6 +1,6 @@
-import {  News, Prisma} from "@prisma/client";
+import {  News, Prisma, User} from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
-import { CreateNewsTypes, NewsSchema } from "@tamaldip/common";
+import { CreateNewsTypes, NewsSchema, userForCollaboration } from "@tamaldip/common";
 import { NextFunction, Request, Response } from 'express';
 import { z } from "zod";
 
@@ -421,3 +421,28 @@ export const bookmarkedNews = async (req: Request, res: Response, next: NextFunc
     }
 }
 
+export const getUserForCollaboration = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const searchTerm = req.query.searchTerm as string;
+
+        const users: userForCollaboration[] | null = await prisma.user.findMany({
+            where: {
+                OR: [
+                   {firstName:{contains:searchTerm, mode:'insensitive'}},
+                   {lastName:{contains:searchTerm, mode:'insensitive'}},
+                   {email:{contains:searchTerm, mode:'insensitive'}},
+                   {userName:{contains:searchTerm, mode:'insensitive'}},
+               ],
+           },
+            select: {
+                id:true,
+                firstName: true,
+                lastName: true,
+                userName:true
+            }
+        });
+        res.status(200).json({users})
+    } catch (err:any) {
+        next(err);
+    }
+}

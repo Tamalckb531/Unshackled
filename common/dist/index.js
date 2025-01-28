@@ -29,3 +29,4 @@ exports.NewsSchema = zod_1.z.object({
     })).optional(),
 });
 exports.LoginSchema = BaseAuthSchema;
+;
