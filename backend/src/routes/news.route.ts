@@ -12,6 +12,6 @@ router.put('/posts/upvote/:newsId', verifyToken, upvoteNews);
 router.put('/posts/downvote/:newsId', verifyToken, downvoteNews); 
 router.put('/posts/bookmark/:newsId', verifyToken, bookmarkedNews); 
 router.post('/editor/create', verifyToken, createNews);
-router.post('/editor/userSearch', verifyToken, getUserForCollaboration);
+router.get('/editor/userSearch', verifyToken, getUserForCollaboration);
 
 export default router;

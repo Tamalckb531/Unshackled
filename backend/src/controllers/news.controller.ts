@@ -442,7 +442,7 @@ export const getUserForCollaboration = async (req: Request, res: Response, next:
                 photoURL: true
             }
         });
-        res.status(200).json({users})
+        res.status(200).json(users)
     } catch (err:any) {
         next(err);
     }
