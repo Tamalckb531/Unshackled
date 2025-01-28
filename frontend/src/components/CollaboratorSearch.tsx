@@ -1,13 +1,19 @@
 import useCollaboratorSearch from "@/hooks/useCollaboratorSearch";
 import useDebounce from "@/hooks/useDebounce";
+import { userForCollaboration } from "@tamaldip/common";
 import React, { useEffect, useState } from "react";
+import SelectedCollaborators from "./SelectedCollaborators";
 
 interface collaborationSearchProps {
   setShowCollaborationSearch: (value: boolean) => void;
+  collaborators: userForCollaboration[];
+  setCollaborators: (value: any) => void;
 }
 
 const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   setShowCollaborationSearch,
+  collaborators,
+  setCollaborators,
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { users, changeSearchTerm } = useCollaboratorSearch(
@@ -22,6 +28,25 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleChecked = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    user: userForCollaboration
+  ) => {
+    if (e.target.checked) {
+      // Add the user to collaborators if checked
+      const exist = collaborators.some((obj) => obj.id === user.id);
+      if (exist) return;
+      setCollaborators((prev: userForCollaboration[]) => [...prev, user]);
+    } else {
+      // Remove the user from collaborators if unchecked
+      setCollaborators((prev: userForCollaboration[]) =>
+        prev.filter(
+          (collaborator: userForCollaboration) => collaborator.id !== user.id
+        )
+      );
+    }
   };
 
   return (
@@ -42,7 +67,7 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
         />
 
         {/* //? render users  */}
-        <div className="flex flex-col max-h-[55vh] overflow-y-auto justify-start gap-3 mt-5 pb-4 px-2 border-b scrollbar-none">
+        <div className="flex flex-col max-h-[50vh] overflow-y-auto justify-start gap-3 mt-5 pb-4 px-2 border-b scrollbar-none">
           {users.length > 0 ? (
             users.map((user) => {
               return (
@@ -72,6 +97,7 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
                     type="checkbox"
                     value=""
                     className="w-4 h-4 accent-orange-300 bg-gray-100 border-gray-300 rounded-sm "
+                    onChange={(e) => handleChecked(e, user)}
                   />
                 </div>
               );
@@ -80,40 +106,33 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
             <p className=" font-normal text-lg">No users to show right now</p>
           )}
         </div>
-
         {/* //? show selected users  */}
-        <div className=" flex flex-col justify-center items-center mt-5">
+        <div className=" flex flex-col justify-center items-center mt-5 ">
           <p className=" mb-3 text-2xl font-light italic">
             Selected collaborators
           </p>
-          <div className="flex items-center justify-center gap-2">
-            <img
-              className="w-10 h-10 rounded-full cursor-pointer"
-              src="https://randomuser.me/api/portraits/women/26.jpg"
-              alt="Rounded avatar"
-            />
-            <img
-              className="w-10 h-10 rounded-full cursor-pointer"
-              src="https://randomuser.me/api/portraits/women/27.jpg"
-              alt="Rounded avatar"
-            />
-            <img
-              className="w-10 h-10 rounded-full cursor-pointer"
-              src="https://randomuser.me/api/portraits/women/28.jpg"
-              alt="Rounded avatar"
-            />
-            <img
-              className="w-10 h-10 rounded-full cursor-pointer"
-              src="https://randomuser.me/api/portraits/women/29.jpg"
-              alt="Rounded avatar"
-            />
-            <img
-              className="w-10 h-10 rounded-full cursor-pointer"
-              src="https://randomuser.me/api/portraits/women/30.jpg"
-              alt="Rounded avatar"
-            />
+          <div className="flex items-center justify-start gap-2 overflow-x-auto scrollbar-none">
+            {collaborators &&
+              collaborators.map((collaborator) => {
+                return (
+                  <SelectedCollaborators
+                    id={collaborator.id}
+                    firstName={collaborator.firstName}
+                    photoURL={collaborator.photoURL || ""}
+                    setCollaborators={setCollaborators}
+                  />
+                );
+              })}
           </div>
         </div>
+
+        {/* //? sent invitation button  */}
+
+        {collaborators.length > 0 && (
+          <button className=" bg-orange-500 text-white p-2 rounded-lg text-lg mt-6">
+            Sent invitation
+          </button>
+        )}
       </div>
     </div>
   );

@@ -164,6 +164,8 @@ const EditorComponent = () => {
       {showCollaborationSearch && (
         <CollaboratorSearch
           setShowCollaborationSearch={setShowCollaborationSearch}
+          collaborators={collaborators}
+          setCollaborators={setCollaborators}
         />
       )}
       <form
