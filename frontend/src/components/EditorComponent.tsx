@@ -3,18 +3,11 @@ import React, { useRef, useState } from "react";
 import Tiptap from "./Tiptap";
 import FlareDropdown from "./FlareDropdown";
 import Swal from "sweetalert2";
-import { NewsSchema } from "@tamaldip/common";
+import { NewsSchema, userForCollaboration } from "@tamaldip/common";
 import { useRouter } from "next/navigation";
 import { CircleX } from "lucide-react";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
-
-interface collaboratorsType {
-  id: string;
-  firstName: string;
-  lastName: string;
-  photoURL?: string;
-}
 
 const appId = "7j9y6m10";
 const generateRoomId = () => {
@@ -42,7 +35,9 @@ const EditorComponent = () => {
   const [posterImage, setPosterImage] = useState<string>("");
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
-  const [collaborators, setCollaborators] = useState<collaboratorsType[]>([]);
+  const [collaborators, setCollaborators] = useState<userForCollaboration[]>(
+    []
+  );
   const [showCollaborationSearch, setShowCollaborationSearch] =
     useState<boolean>(true);
   const filePicker = useRef<HTMLInputElement | null>(null);

@@ -438,7 +438,8 @@ export const getUserForCollaboration = async (req: Request, res: Response, next:
                 id:true,
                 firstName: true,
                 lastName: true,
-                userName:true
+                userName: true,
+                photoURL: true
             }
         });
         res.status(200).json({users})

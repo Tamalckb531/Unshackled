@@ -167,4 +167,5 @@ export interface userForCollaboration {
     firstName: string;
     lastName: string;
     userName: string | null;
+    photoURL?: string | null;
 }
