@@ -43,6 +43,8 @@ const EditorComponent = () => {
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
   const [collaborators, setCollaborators] = useState<collaboratorsType[]>([]);
+  const [showCollaborationSearch, setShowCollaborationSearch] =
+    useState<boolean>(true);
   const filePicker = useRef<HTMLInputElement | null>(null);
 
   const router = useRouter();
@@ -157,91 +159,102 @@ const EditorComponent = () => {
     }
   };
 
+  const handleCollaboration = async (e: any) => {};
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full h-full flex flex-col gap-3 items-center mx-auto p-10 mb-10"
-    >
-      {/*//? collaboration and cancel button  */}
-      <div className="flex w-full items-center justify-end gap-5">
-        <button
-          type="button"
-          className="text-sm p-3 mt-2 rounded bg-blue-500 text-white"
-        >
-          Collaboration
-        </button>
-        <button
-          type="button"
-          className="text-sm p-2 mt-2 rounded bg-red-500 text-white"
-        >
-          <CircleX size={30} />
-        </button>
-      </div>
-
-      <p className=" text-3xl text-center mb-14 font-bold">
-        Compose Your News With Our Advance Editor
-      </p>
-
-      <div className=" w-full flex items-start justify-between mt-5 px-6 ">
-        <div className="upload_file flex">
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileUpload}
-            ref={filePicker}
-          />
+    <>
+      {showCollaborationSearch && (
+        <div className="fixed top-0 left-0 h-screen w-screen z-50 bg-transparent backdrop-blur-lg flex items-center justify-center">
+          <p className=" bg-white text-xl font-bold p-5 rounded-md">
+            Collaboration search
+          </p>
+        </div>
+      )}
+      <form
+        onSubmit={handleSubmit}
+        className="w-full h-full flex flex-col gap-3 items-center mx-auto p-10 mb-10 z-0"
+      >
+        {/*//? collaboration and cancel button  */}
+        <div className="flex w-full items-center justify-end gap-5">
           <button
             type="button"
-            className="text-sm p-2 mt-2 rounded bg-blue-500 text-white"
-            onClick={() => filePicker.current?.click()}
+            className="text-sm p-3 mt-2 rounded bg-blue-500 text-white"
           >
-            Upload Poster Image
+            Collaboration
+          </button>
+          <button
+            type="button"
+            className="text-sm p-2 mt-2 rounded bg-red-500 text-white"
+          >
+            <CircleX size={30} />
           </button>
         </div>
 
-        <span className=" flex gap-2 justify-center items-center">
-          <FlareDropdown changeFlare={changeFlare} />{" "}
-          <p className=" text-lg ml-2">{flare}</p>
-        </span>
+        <p className=" text-3xl text-center mb-14 font-bold">
+          Compose Your News With Our Advance Editor
+        </p>
 
-        <label className="inline-flex items-center mt-4 cursor-pointer">
-          <input
-            type="checkbox"
-            className="sr-only peer"
-            onClick={() => setIsAuthorAnonymous(!isAuthorAnonymous)}
-          />
-          <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-          <span className="ms-3 text-sm font-medium text-gray-900">
-            Anonymous
+        <div className=" w-full flex items-start justify-between mt-5 px-6 ">
+          <div className="upload_file flex">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileUpload}
+              ref={filePicker}
+            />
+            <button
+              type="button"
+              className="text-sm p-2 mt-2 rounded bg-blue-500 text-white"
+              onClick={() => filePicker.current?.click()}
+            >
+              Upload Poster Image
+            </button>
+          </div>
+
+          <span className=" flex gap-2 justify-center items-center">
+            <FlareDropdown changeFlare={changeFlare} />{" "}
+            <p className=" text-lg ml-2">{flare}</p>
           </span>
-        </label>
-      </div>
 
-      {posterImage && (
-        <img
-          src={posterImage}
-          alt=""
-          className="w-full mx-auto my-5 rounded-lg shadow-lg border border-gray-300 object-cover"
+          <label className="inline-flex items-center mt-4 cursor-pointer">
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              onClick={() => setIsAuthorAnonymous(!isAuthorAnonymous)}
+            />
+            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+            <span className="ms-3 text-sm font-medium text-gray-900">
+              Anonymous
+            </span>
+          </label>
+        </div>
+
+        {posterImage && (
+          <img
+            src={posterImage}
+            alt=""
+            className="w-full mx-auto my-5 rounded-lg shadow-lg border border-gray-300 object-cover"
+          />
+        )}
+
+        <input
+          className=" w-full p-4 mt-8 outline-none text-3xl"
+          placeholder="Write your title here....."
+          value={title}
+          required
+          onChange={(e) => setTitle(e.target.value)}
         />
-      )}
 
-      <input
-        className=" w-full p-4 mt-8 outline-none text-3xl"
-        placeholder="Write your title here....."
-        value={title}
-        required
-        onChange={(e) => setTitle(e.target.value)}
-      />
-
-      <Tiptap
-        content={content}
-        onChange={(newContent: string) => handleContentChange(newContent)}
-        provider={provider}
-        ydoc={ydoc}
-        room={room}
-      />
-    </form>
+        <Tiptap
+          content={content}
+          onChange={(newContent: string) => handleContentChange(newContent)}
+          provider={provider}
+          ydoc={ydoc}
+          room={room}
+        />
+      </form>
+    </>
   );
 };
 
