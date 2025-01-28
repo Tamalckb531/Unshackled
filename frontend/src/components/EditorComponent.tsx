@@ -154,15 +154,145 @@ const EditorComponent = () => {
     }
   };
 
-  const handleCollaboration = async (e: any) => {};
+  const handleCollaboration = async (e: any) => {
+    setShowCollaborationSearch(!showCollaborationSearch);
+  };
 
   return (
     <>
       {showCollaborationSearch && (
-        <div className="fixed top-0 left-0 h-screen w-screen z-50 bg-transparent backdrop-blur-lg flex items-center justify-center">
-          <p className=" bg-white text-xl font-bold p-5 rounded-md">
-            Collaboration search
-          </p>
+        <div
+          className="fixed top-0 left-0 h-screen w-screen z-50 bg-transparent backdrop-blur-lg flex items-center justify-center"
+          onClick={() => setShowCollaborationSearch(false)}
+        >
+          <div
+            className=" bg-white text-xl font-bold p-5 rounded-lg w-[500px] border shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className=" text-center text-2xl">Collaboration search</p>
+            <input
+              className="outline-none w-full p-3 text-lg font-light mt-2 border-b"
+              placeholder="search by name, username or email"
+            />
+
+            {/* //? render users  */}
+            <div className="flex flex-col justify-center gap-3 mt-5 pb-4 border-b">
+              <div className=" flex items-center justify-between">
+                <span className="flex gap-5 items-center">
+                  <img
+                    className="w-10 h-10 rounded-full cursor-pointer"
+                    src="https://randomuser.me/api/portraits/women/26.jpg"
+                    alt="Rounded avatar"
+                  />
+                  <span className="flex items-center gap-2">
+                    <h1 className=" font-normal text-xl">john doe</h1>
+                    <p className=" font-light text-gray-400 text-xs">
+                      @johnXqc99
+                    </p>
+                  </span>
+                </span>
+                <input
+                  type="checkbox"
+                  value=""
+                  className="w-4 h-4 accent-orange-300 bg-gray-100 border-gray-300 rounded-sm "
+                />
+              </div>
+              <div className=" flex items-center justify-between">
+                <span className="flex gap-5 items-center">
+                  <img
+                    className="w-10 h-10 rounded-full cursor-pointer"
+                    src="https://randomuser.me/api/portraits/women/26.jpg"
+                    alt="Rounded avatar"
+                  />
+                  <span className="flex items-center gap-2">
+                    <h1 className=" font-normal text-xl">john doe</h1>
+                    <p className=" font-light text-gray-400 text-xs">
+                      @johnXqc99
+                    </p>
+                  </span>
+                </span>
+                <input
+                  type="checkbox"
+                  value=""
+                  className="w-4 h-4 accent-orange-300 bg-gray-100 border-gray-300 rounded-sm "
+                />
+              </div>
+              <div className=" flex items-center justify-between">
+                <span className="flex gap-5 items-center">
+                  <img
+                    className="w-10 h-10 rounded-full cursor-pointer"
+                    src="https://randomuser.me/api/portraits/women/26.jpg"
+                    alt="Rounded avatar"
+                  />
+                  <span className="flex items-center gap-2">
+                    <h1 className=" font-normal text-xl">john doe</h1>
+                    <p className=" font-light text-gray-400 text-xs">
+                      @johnXqc99
+                    </p>
+                  </span>
+                </span>
+                <input
+                  type="checkbox"
+                  value=""
+                  className="w-4 h-4 accent-orange-300 bg-gray-100 border-gray-300 rounded-sm "
+                />
+              </div>
+              <div className=" flex items-center justify-between">
+                <span className="flex gap-5 items-center">
+                  <img
+                    className="w-10 h-10 rounded-full cursor-pointer"
+                    src="https://randomuser.me/api/portraits/women/26.jpg"
+                    alt="Rounded avatar"
+                  />
+                  <span className="flex items-center gap-2">
+                    <h1 className=" font-normal text-xl">john doe</h1>
+                    <p className=" font-light text-gray-400 text-xs">
+                      @johnXqc99
+                    </p>
+                  </span>
+                </span>
+                <input
+                  type="checkbox"
+                  value=""
+                  className="w-4 h-4 accent-orange-300 bg-gray-100 border-gray-300 rounded-sm "
+                />
+              </div>
+            </div>
+
+            {/* //? show selected users  */}
+            <div className=" flex flex-col justify-center items-center mt-5">
+              <p className=" mb-3 text-2xl font-light italic">
+                Selected collaborators
+              </p>
+              <div className="flex items-center justify-center gap-2">
+                <img
+                  className="w-10 h-10 rounded-full cursor-pointer"
+                  src="https://randomuser.me/api/portraits/women/26.jpg"
+                  alt="Rounded avatar"
+                />
+                <img
+                  className="w-10 h-10 rounded-full cursor-pointer"
+                  src="https://randomuser.me/api/portraits/women/27.jpg"
+                  alt="Rounded avatar"
+                />
+                <img
+                  className="w-10 h-10 rounded-full cursor-pointer"
+                  src="https://randomuser.me/api/portraits/women/28.jpg"
+                  alt="Rounded avatar"
+                />
+                <img
+                  className="w-10 h-10 rounded-full cursor-pointer"
+                  src="https://randomuser.me/api/portraits/women/29.jpg"
+                  alt="Rounded avatar"
+                />
+                <img
+                  className="w-10 h-10 rounded-full cursor-pointer"
+                  src="https://randomuser.me/api/portraits/women/30.jpg"
+                  alt="Rounded avatar"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
       <form
@@ -174,6 +304,7 @@ const EditorComponent = () => {
           <button
             type="button"
             className="text-sm p-3 mt-2 rounded bg-blue-500 text-white"
+            onClick={handleCollaboration}
           >
             Collaboration
           </button>
@@ -189,6 +320,7 @@ const EditorComponent = () => {
           Compose Your News With Our Advance Editor
         </p>
 
+        {/* //? posterImage, flare and anonymous  */}
         <div className=" w-full flex items-start justify-between mt-5 px-6 ">
           <div className="upload_file flex">
             <input
