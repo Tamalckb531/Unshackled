@@ -1,19 +1,25 @@
+import * as Y from "yjs";
 import useCollaboratorSearch from "@/hooks/useCollaboratorSearch";
 import useDebounce from "@/hooks/useDebounce";
 import { userForCollaboration } from "@tamaldip/common";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SelectedCollaborators from "./SelectedCollaborators";
+import Cookies from "js-cookie";
 
 interface collaborationSearchProps {
   setShowCollaborationSearch: (value: boolean) => void;
   collaborators: userForCollaboration[];
   setCollaborators: (value: any) => void;
+  ydoc: Y.Doc;
+  room: string;
 }
 
 const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   setShowCollaborationSearch,
   collaborators,
   setCollaborators,
+  ydoc,
+  room,
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { users, changeSearchTerm } = useCollaboratorSearch(
@@ -21,10 +27,26 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   );
 
   const debouncedInput: string = useDebounce(searchTerm, 500);
+  const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     changeSearchTerm(debouncedInput);
   }, [debouncedInput, changeSearchTerm]);
+
+  useEffect(() => {
+    const token = Cookies.get("access_token");
+    if (!token) return;
+
+    console.log(token);
+
+    ws.current = new WebSocket(`ws://localhost:3000?token=${token}`);
+    ws.current.onopen = () => console.log("WebSocket connected");
+    ws.current.onclose = () => console.log("WebSocket disconnected");
+
+    return () => {
+      ws.current?.close();
+    };
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -45,6 +67,19 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
         prev.filter(
           (collaborator: userForCollaboration) => collaborator.id !== user.id
         )
+      );
+    }
+  };
+
+  const sentInvitation = () => {
+    if (ws.current?.readyState === WebSocket.OPEN) {
+      ws.current.send(
+        JSON.stringify({
+          type: "send_invitation",
+          collaborators: collaborators.map((col) => col.id),
+          ydoc,
+          room,
+        })
       );
     }
   };
@@ -129,7 +164,10 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
         {/* //? sent invitation button  */}
 
         {collaborators.length > 0 && (
-          <button className=" bg-orange-500 text-white p-2 rounded-lg text-lg mt-6">
+          <button
+            className=" bg-orange-500 text-white p-2 rounded-lg text-lg mt-6"
+            onClick={sentInvitation}
+          >
             Sent invitation
           </button>
         )}

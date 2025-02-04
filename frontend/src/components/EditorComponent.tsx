@@ -166,6 +166,8 @@ const EditorComponent = () => {
           setShowCollaborationSearch={setShowCollaborationSearch}
           collaborators={collaborators}
           setCollaborators={setCollaborators}
+          ydoc={ydoc}
+          room={room}
         />
       )}
       <form

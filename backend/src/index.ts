@@ -92,7 +92,7 @@ wss.on('connection', async (ws, req) => {
 
       ws.on('message', async (msg) => {
         try {
-          const { type, collaborators } = JSON.parse(msg.toString());
+          const { type, collaborators, ydoc, room } = JSON.parse(msg.toString());
   
           if (type === "send_invitation") {
             for (const collabId of collaborators) {
@@ -103,11 +103,14 @@ wss.on('connection', async (ws, req) => {
                   from: user.userName,
                   firstName: user.firstName,
                   lastName: user.lastName,
-                  photoURL: user.photoURL
+                  photoURL: user.photoURL,
+                  ydoc: ydoc,
+                  room: room
                 }));
               }
             }
           }
+          
         } catch (error) {
           console.error("Error in message handling:", error);
           clients.delete(userId);
