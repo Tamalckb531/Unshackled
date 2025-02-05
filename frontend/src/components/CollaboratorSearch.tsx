@@ -77,7 +77,7 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
         JSON.stringify({
           type: "send_invitation",
           collaborators: collaborators.map((col) => col.id),
-          ydoc,
+          ydoc: Y.encodeStateAsUpdate(ydoc), //? Encoding for send as string compatibility
           room,
         })
       );
