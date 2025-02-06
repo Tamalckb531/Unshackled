@@ -8,9 +8,10 @@ import Cookies from "js-cookie";
 
 interface InvitationData {
   type: "invitation";
+  hostId: string;
   firstName: string;
   lastName: string;
-  userName: string;
+  from: string;
   photoURL: string;
   ydoc: string;
   room: string;
@@ -75,6 +76,7 @@ const Header = () => {
       const response = {
         type: "invitation_response",
         status: result.isConfirmed ? "accepted" : "rejected",
+        host: data.hostId,
       };
       if (ws.current?.readyState === WebSocket.OPEN) {
         ws.current.send(JSON.stringify(response));

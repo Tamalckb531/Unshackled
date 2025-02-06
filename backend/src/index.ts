@@ -92,22 +92,36 @@ wss.on('connection', async (ws, req) => {
 
       ws.on('message', async (msg) => {
         try {
-          const { type, collaborators, ydoc, room } = JSON.parse(msg.toString());
+          const data = JSON.parse(msg.toString());
   
-          if (type === "send_invitation") {
-            for (const collabId of collaborators) {
+          if (data.type === "send_invitation") {
+            for (const collabId of data.collaborators) {
               const collabWs = clients.get(collabId);
               if (collabWs) {
                 collabWs.ws.send(JSON.stringify({
                   type: "invitation",
+                  hostId: user.id,
                   from: user.userName,
                   firstName: user.firstName,
                   lastName: user.lastName,
                   photoURL: user.photoURL,
-                  ydoc: ydoc,
-                  room: room
+                  ydoc: data.ydoc,
+                  room: data.room
                 }));
               }
+            }
+          } else if (data.type === "invitation_response") {
+            const hostWs = clients.get(data.host);
+            if (hostWs) {
+              hostWs.ws.send(JSON.stringify({
+                  type: "collaborator_response",
+                  status: data.status,
+                  collaboratorId: user.id,
+                  from: user.userName,
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  photoURL: user.photoURL,
+              }))
             }
           }
           
