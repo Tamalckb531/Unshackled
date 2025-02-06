@@ -6,6 +6,16 @@ import { userState } from "@/store/atom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 
+interface InvitationData {
+  type: "invitation";
+  firstName: string;
+  lastName: string;
+  userName: string;
+  photoURL: string;
+  ydoc: string;
+  room: string;
+}
+
 const Header = () => {
   const [showDropdown, setShowDropDown] = useState<boolean>(false);
   const user = useRecoilState(userState)[0];
@@ -28,8 +38,14 @@ const Header = () => {
           if (data.type == "invitation") {
             handleInvitation(data);
           }
-        } catch (error) {
-          console.error("Error parsing WebSocket message: ", error);
+        } catch (error: any) {
+          Swal.fire({
+            position: "bottom-end",
+            icon: "error",
+            title: error.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       };
     } else {
@@ -44,7 +60,7 @@ const Header = () => {
     };
   }, [user]);
 
-  const handleInvitation = (data: any) => {
+  const handleInvitation = (data: InvitationData) => {
     Swal.fire({
       title: "Collaboration Invitation",
       text: `${data.firstName} ${data.lastName} has invited you to join a collaboration room.`,
@@ -56,8 +72,15 @@ const Header = () => {
       confirmButtonText: "Join Room",
       cancelButtonText: "Decline",
     }).then((result: any) => {
+      const response = {
+        type: "invitation_response",
+        status: result.isConfirmed ? "accepted" : "rejected",
+      };
+      if (ws.current?.readyState === WebSocket.OPEN) {
+        ws.current.send(JSON.stringify(response));
+      }
       if (result.isConfirmed) {
-        router.push(`/editor`);
+        router.push(`/editor?ydoc=${data.ydoc}&room=${data.room}`);
       }
     });
   };
