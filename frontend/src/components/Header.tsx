@@ -1,15 +1,66 @@
 "use client";
-import React, { use, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { userState } from "@/store/atom";
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const [showDropdown, setShowDropDown] = useState<boolean>(false);
   const user = useRecoilState(userState)[0];
   const resetUser = useResetRecoilState(userState);
   const router = useRouter();
+  const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    if (user && !ws.current) {
+      const token = Cookies.get("access_token");
+      if (!token) return;
+
+      console.log(token);
+
+      ws.current = new WebSocket(`ws://localhost:3000?token=${token}`);
+
+      ws.current.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type == "invitation") {
+            handleInvitation(data);
+          }
+        } catch (error) {
+          console.error("Error parsing WebSocket message: ", error);
+        }
+      };
+    } else {
+      ws.current?.close();
+    }
+
+    return () => {
+      if (ws.current) {
+        ws.current.close();
+        ws.current = null;
+      }
+    };
+  }, [user]);
+
+  const handleInvitation = (data: any) => {
+    Swal.fire({
+      title: "Collaboration Invitation",
+      text: `${data.firstName} ${data.lastName} has invited you to join a collaboration room.`,
+      imageUrl: data.photoURL,
+      imageWidth: 80,
+      imageHeight: 80,
+      imageAlt: "User Profile Picture",
+      showCancelButton: true,
+      confirmButtonText: "Join Room",
+      cancelButtonText: "Decline",
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        router.push(`/editor`);
+      }
+    });
+  };
 
   const singOutFunc = async () => {
     try {
