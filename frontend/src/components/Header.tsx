@@ -17,6 +17,16 @@ interface InvitationData {
   room: string;
 }
 
+interface StatusData {
+  type: "invitation";
+  status: string;
+  collaboratorId: string;
+  from: string;
+  firstName: string;
+  lastName: string;
+  photoURL: string;
+}
+
 const Header = () => {
   const [showDropdown, setShowDropDown] = useState<boolean>(false);
   const user = useRecoilState(userState)[0];
@@ -39,6 +49,9 @@ const Header = () => {
           if (data.type == "invitation") {
             handleInvitation(data);
           }
+          if (data.type == "collaborator_response") {
+            handleStatus(data);
+          }
         } catch (error: any) {
           Swal.fire({
             position: "bottom-end",
@@ -60,6 +73,16 @@ const Header = () => {
       }
     };
   }, [user]);
+
+  const handleStatus = (data: StatusData) => {
+    Swal.fire({
+      position: "bottom-end",
+      icon: `${data.status === "accepted" ? "success" : "error"}`,
+      title: `${data.firstName} ${data.lastName} has ${data.status} the invitation`,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
 
   const handleInvitation = (data: InvitationData) => {
     Swal.fire({
