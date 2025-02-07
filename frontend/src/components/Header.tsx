@@ -6,6 +6,8 @@ import { userState } from "@/store/atom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 
+//? check
+
 interface InvitationData {
   type: "invitation";
   hostId: string;
