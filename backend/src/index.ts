@@ -105,7 +105,6 @@ wss.on('connection', async (ws, req) => {
                   firstName: user.firstName,
                   lastName: user.lastName,
                   photoURL: user.photoURL,
-                  ydoc: data.ydoc,
                   room: data.room
                 }));
               }

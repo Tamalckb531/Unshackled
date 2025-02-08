@@ -15,7 +15,6 @@ interface InvitationData {
   lastName: string;
   from: string;
   photoURL: string;
-  ydoc: string;
   room: string;
 }
 
@@ -107,7 +106,7 @@ const Header = () => {
         ws.current.send(JSON.stringify(response));
       }
       if (result.isConfirmed) {
-        router.push(`/editor?ydoc=${data.ydoc}&room=${data.room}`);
+        router.push(`/editor?room=${data.room}`);
       }
     });
   };

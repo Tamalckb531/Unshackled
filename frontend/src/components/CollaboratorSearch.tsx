@@ -10,7 +10,6 @@ interface collaborationSearchProps {
   setShowCollaborationSearch: (value: boolean) => void;
   collaborators: userForCollaboration[];
   setCollaborators: (value: any) => void;
-  ydoc: Y.Doc;
   room: string;
 }
 
@@ -18,7 +17,6 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   setShowCollaborationSearch,
   collaborators,
   setCollaborators,
-  ydoc,
   room,
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -77,7 +75,6 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
         JSON.stringify({
           type: "send_invitation",
           collaborators: collaborators.map((col) => col.id),
-          ydoc: Y.encodeStateAsUpdate(ydoc), //? Encoding for send as string compatibility
           room,
         })
       );
