@@ -5,6 +5,8 @@ import { userForCollaboration } from "@tamaldip/common";
 import React, { useEffect, useRef, useState } from "react";
 import SelectedCollaborators from "./SelectedCollaborators";
 import Cookies from "js-cookie";
+import { useRecoilValue } from "recoil";
+import { WebSocketState } from "@/store/atom";
 
 interface collaborationSearchProps {
   setShowCollaborationSearch: (value: boolean) => void;
@@ -26,20 +28,18 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
 
   const debouncedInput: string = useDebounce(searchTerm, 500);
   const ws = useRef<WebSocket | null>(null);
+  const websocketConnection = useRecoilValue(WebSocketState);
 
   useEffect(() => {
     changeSearchTerm(debouncedInput);
   }, [debouncedInput, changeSearchTerm]);
 
   useEffect(() => {
-    const token = Cookies.get("access_token");
-    if (!token) return;
-
-    console.log(token);
-
-    ws.current = new WebSocket(`ws://localhost:3000?token=${token}`);
-    ws.current.onopen = () => console.log("WebSocket connected");
-    ws.current.onclose = () => console.log("WebSocket disconnected");
+    ws.current = websocketConnection;
+    if (ws.current) {
+      ws.current.onopen = () => console.log("WebSocket connected");
+      ws.current.onclose = () => console.log("WebSocket disconnected");
+    }
 
     return () => {
       ws.current?.close();
