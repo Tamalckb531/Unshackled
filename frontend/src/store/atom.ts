@@ -12,3 +12,8 @@ export const userState = atom({
   default: null, 
   effects_UNSTABLE: [persistAtom],
 });
+
+export const WebSocketState = atom<WebSocket | null>({
+  key: "webSocketState",
+  default: null,
+})

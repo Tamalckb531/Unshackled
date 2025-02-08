@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useRecoilState, useResetRecoilState } from "recoil";
-import { userState } from "@/store/atom";
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
+import { userState, WebSocketState } from "@/store/atom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 
@@ -34,6 +34,7 @@ const Header = () => {
   const resetUser = useResetRecoilState(userState);
   const router = useRouter();
   const ws = useRef<WebSocket | null>(null);
+  const setWebSocket = useSetRecoilState(WebSocketState);
 
   useEffect(() => {
     if (user && !ws.current) {
@@ -43,6 +44,7 @@ const Header = () => {
       console.log(token);
 
       ws.current = new WebSocket(`ws://localhost:3000?token=${token}`);
+      setWebSocket(ws.current);
 
       ws.current.onmessage = (event) => {
         try {
@@ -71,6 +73,7 @@ const Header = () => {
       if (ws.current) {
         ws.current.close();
         ws.current = null;
+        setWebSocket(null);
       }
     };
   }, [user]);
@@ -123,6 +126,12 @@ const Header = () => {
       }
 
       resetUser();
+
+      if (ws.current) {
+        ws.current.close();
+        setWebSocket(null);
+        ws.current = null;
+      }
 
       Swal.fire({
         position: "bottom-end",
