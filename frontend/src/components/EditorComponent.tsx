@@ -1,10 +1,10 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import Tiptap from "./Tiptap";
 import FlareDropdown from "./FlareDropdown";
 import Swal from "sweetalert2";
 import { NewsSchema, userForCollaboration } from "@tamaldip/common";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CircleX } from "lucide-react";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
@@ -21,16 +21,25 @@ const generateRoomId = () => {
   return `room-${roomId}`;
 };
 
-const room = generateRoomId();
-
 const ydoc = new Y.Doc();
-const provider = new TiptapCollabProvider({
-  appId,
-  name: room,
-  document: ydoc,
-});
 
 const EditorComponent = () => {
+  const searchParams = useSearchParams();
+  const room = useMemo(
+    () => searchParams.get("room") || generateRoomId(),
+    [searchParams]
+  );
+
+  const provider = useMemo(
+    () =>
+      new TiptapCollabProvider({
+        appId,
+        name: room,
+        document: ydoc,
+      }),
+    [room]
+  );
+
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [posterImage, setPosterImage] = useState<string>("");
