@@ -53,7 +53,7 @@ const page = () => {
       Swal.fire({
         position: "bottom-end",
         icon: "error",
-        title: "Something went wrong",
+        title: error.message,
         showConfirmButton: false,
         timer: 1500,
       });

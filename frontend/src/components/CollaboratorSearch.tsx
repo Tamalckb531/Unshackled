@@ -1,10 +1,8 @@
-import * as Y from "yjs";
 import useCollaboratorSearch from "@/hooks/useCollaboratorSearch";
 import useDebounce from "@/hooks/useDebounce";
 import { userForCollaboration } from "@tamaldip/common";
 import React, { useEffect, useRef, useState } from "react";
 import SelectedCollaborators from "./SelectedCollaborators";
-import Cookies from "js-cookie";
 import { useRecoilValue } from "recoil";
 import { WebSocketState } from "@/store/atom";
 
@@ -36,6 +34,9 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
 
   useEffect(() => {
     ws.current = websocketConnection;
+    console.log(ws.current);
+    console.log(websocketConnection);
+
     if (ws.current) {
       ws.current.onopen = () => console.log("WebSocket connected");
       ws.current.onclose = () => console.log("WebSocket disconnected");
@@ -70,7 +71,11 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   };
 
   const sentInvitation = () => {
+    console.log(ws.current);
+
     if (ws.current?.readyState === WebSocket.OPEN) {
+      console.log("Invitation going");
+
       ws.current.send(
         JSON.stringify({
           type: "send_invitation",

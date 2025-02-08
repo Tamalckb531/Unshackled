@@ -37,9 +37,16 @@ const Header = () => {
   const setWebSocket = useSetRecoilState(WebSocketState);
 
   useEffect(() => {
+    console.log("This run");
+    console.log(user);
+    console.log(ws.current);
+
     if (user && !ws.current) {
       const token = Cookies.get("access_token");
-      if (!token) return;
+      if (!token) {
+        console.log("Cookies not found");
+        return;
+      }
 
       console.log(token);
 
