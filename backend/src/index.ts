@@ -147,7 +147,7 @@ wss.on('connection', async (ws, req) => {
 //! --------- Web Socket server ---------
 
 // Start the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
 

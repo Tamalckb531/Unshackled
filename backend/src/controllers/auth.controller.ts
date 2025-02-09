@@ -49,7 +49,7 @@ export const signUpProcess = async (req: Request, res: Response) => {
         const { password: pass, ...userWithoutPass } = newUser;
 
         res.status(200).cookie('access_token', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             path: '/' //? Ensure cookie is valid for all routes
@@ -107,7 +107,7 @@ export const loginProcess = async(req: Request, res: Response) => {
 
         
         res.status(200).cookie('access_token', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             path: '/'
@@ -150,7 +150,7 @@ export const google = async (req: Request, res: Response, next: NextFunction) =>
             const { password: pass, ...userWithoutPass } = User;
             
             res.status(200).cookie('access_token', token, {
-                httpOnly: true,
+                httpOnly: false,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 path:'/'
@@ -189,7 +189,7 @@ export const google = async (req: Request, res: Response, next: NextFunction) =>
             const { password: pass, ...userWithoutPass } = newUser;
 
             res.status(200).cookie('access_token', token, {
-                httpOnly: true,
+                httpOnly: false,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 path:'/'

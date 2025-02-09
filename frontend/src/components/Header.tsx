@@ -39,7 +39,6 @@ const Header = () => {
   useEffect(() => {
     console.log("This run");
     console.log(user);
-    console.log(ws.current);
 
     if (user && !ws.current) {
       const token = Cookies.get("access_token");
@@ -48,9 +47,9 @@ const Header = () => {
         return;
       }
 
-      console.log(token);
-
       ws.current = new WebSocket(`ws://localhost:3000?token=${token}`);
+      console.log(ws.current);
+
       setWebSocket(ws.current);
 
       ws.current.onmessage = (event) => {

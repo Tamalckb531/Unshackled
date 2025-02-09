@@ -18,7 +18,7 @@ const generateRoomId = () => {
   for (let i = 0; i < 9; i++) {
     roomId += chars[Math.floor(Math.random() * chars.length)];
   }
-  return `room-${roomId}`;
+  return roomId;
 };
 
 const ydoc = new Y.Doc();
