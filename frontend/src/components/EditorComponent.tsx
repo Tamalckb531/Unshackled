@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Tiptap from "./Tiptap";
 import FlareDropdown from "./FlareDropdown";
 import Swal from "sweetalert2";
@@ -9,8 +9,8 @@ import { CircleX } from "lucide-react";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import CollaboratorSearch from "./CollaboratorSearch";
-import { useSetRecoilState } from "recoil";
-import { paramState } from "@/store/atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { paramState, WebSocketState } from "@/store/atom";
 
 const appId = "7j9y6m10";
 const generateRoomId = () => {
@@ -44,6 +44,24 @@ const EditorComponent = () => {
       }),
     [room]
   );
+
+  const websocketConnection = useRecoilValue(WebSocketState);
+  const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    ws.current = websocketConnection;
+
+    return () => {
+      if (!param && ws.current?.readyState === WebSocket.OPEN) {
+        ws.current.send(
+          JSON.stringify({
+            type: "host_disconnect",
+            collaborators: collaborators.map((col) => col.id),
+          })
+        );
+      }
+    };
+  }, []);
 
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -200,6 +218,7 @@ const EditorComponent = () => {
             <button
               type="button"
               className="text-sm p-2 mt-2 rounded bg-red-500 text-white"
+              onClick={() => router.push("/dashboard")}
             >
               <CircleX size={30} />
             </button>

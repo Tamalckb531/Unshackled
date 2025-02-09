@@ -65,6 +65,7 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
         })
       );
     }
+    setShowCollaborationSearch(false);
   };
 
   return (

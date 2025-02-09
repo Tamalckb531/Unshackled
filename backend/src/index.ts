@@ -122,6 +122,15 @@ wss.on('connection', async (ws, req) => {
                   photoURL: user.photoURL,
               }))
             }
+          } else if (data.type === "host_disconnect") {
+            for (const collabId of data.collaborators) {
+              const collabWs = clients.get(collabId);
+              if (collabWs) {
+                collabWs.ws.send(JSON.stringify({
+                  type: "host_disconnect_msg",
+                }));
+              }
+            }
           }
           
         } catch (error) {

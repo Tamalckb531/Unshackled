@@ -50,9 +50,10 @@ const Header = () => {
           const data = JSON.parse(event.data);
           if (data.type == "invitation") {
             handleInvitation(data);
-          }
-          if (data.type == "collaborator_response") {
+          } else if (data.type == "collaborator_response") {
             handleStatus(data);
+          } else if (data.type == "host_disconnect_msg") {
+            handleDisconnectMsg();
           }
         } catch (error: any) {
           Swal.fire({
@@ -87,6 +88,15 @@ const Header = () => {
       showConfirmButton: false,
       timer: 1500,
     });
+  };
+
+  const handleDisconnectMsg = () => {
+    Swal.fire({
+      title: "Host Disconnected",
+      text: "Go to dashboard",
+      icon: "question",
+    });
+    router.push("/dashboard");
   };
 
   const handleInvitation = (data: InvitationData) => {
