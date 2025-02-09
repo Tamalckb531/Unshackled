@@ -9,8 +9,8 @@ import { CircleX } from "lucide-react";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import CollaboratorSearch from "./CollaboratorSearch";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { paramState, WebSocketState } from "@/store/atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { collaboratorState, paramState, WebSocketState } from "@/store/atom";
 
 const appId = "7j9y6m10";
 const generateRoomId = () => {
@@ -32,9 +32,7 @@ const EditorComponent = () => {
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
   const [isNotSubmit, setIsNotSubmit] = useState<boolean>(true);
-  const [collaborators, setCollaborators] = useState<userForCollaboration[]>(
-    []
-  );
+  const collaborators = useRecoilValue(collaboratorState);
   const [showCollaborationSearch, setShowCollaborationSearch] =
     useState<boolean>(false);
   const filePicker = useRef<HTMLInputElement | null>(null);
@@ -68,6 +66,7 @@ const EditorComponent = () => {
 
     return () => {
       if (isNotSubmit && !param && ws.current?.readyState === WebSocket.OPEN) {
+        console.log("clean-up Running", collaborators, collaboratorState);
         ws.current.send(
           JSON.stringify({
             type: "host_disconnect",
@@ -208,7 +207,6 @@ const EditorComponent = () => {
         <CollaboratorSearch
           setShowCollaborationSearch={setShowCollaborationSearch}
           collaborators={collaborators}
-          setCollaborators={setCollaborators}
           room={room}
         />
       )}

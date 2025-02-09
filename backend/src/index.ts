@@ -123,18 +123,24 @@ wss.on('connection', async (ws, req) => {
               }))
             }
           } else if (data.type === "host_disconnect") {
+            console.log("Data coming in host disconnect", data);
+            
             for (const collabId of data.collaborators) {
               const collabWs = clients.get(collabId);
               if (collabWs) {
+                console.log("Data going for host disconnect msg");
                 collabWs.ws.send(JSON.stringify({
                   type: "host_disconnect_msg",
                 }));
               }
             }
           } else if (data.type === "news_submitted") {
+            console.log("Data coming in news submitted", data);
+
             for (const collabId of data.collaborators) {
               const collabWs = clients.get(collabId);
               if (collabWs) {
+                console.log("Data going for host submitted msg");
                 collabWs.ws.send(JSON.stringify({
                   type: "host_submitted_news",
                   newsId:data.newsId

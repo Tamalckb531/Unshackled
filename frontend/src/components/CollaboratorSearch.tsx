@@ -3,27 +3,25 @@ import useDebounce from "@/hooks/useDebounce";
 import { userForCollaboration } from "@tamaldip/common";
 import React, { useEffect, useRef, useState } from "react";
 import SelectedCollaborators from "./SelectedCollaborators";
-import { useRecoilValue } from "recoil";
-import { WebSocketState } from "@/store/atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { collaboratorState, WebSocketState } from "@/store/atom";
 
 interface collaborationSearchProps {
   setShowCollaborationSearch: (value: boolean) => void;
   collaborators: userForCollaboration[];
-  setCollaborators: (value: any) => void;
   room: string;
 }
 
 const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   setShowCollaborationSearch,
   collaborators,
-  setCollaborators,
   room,
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { users, changeSearchTerm } = useCollaboratorSearch(
     "http://localhost:3000/api/news/editor/userSearch"
   );
-
+  const setCollaborators = useSetRecoilState(collaboratorState);
   const debouncedInput: string = useDebounce(searchTerm, 500);
   const websocketConnection = useRecoilValue(WebSocketState);
   const ws = useRef<WebSocket | null>(websocketConnection);
@@ -31,6 +29,12 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   useEffect(() => {
     changeSearchTerm(debouncedInput);
   }, [debouncedInput, changeSearchTerm]);
+
+  useEffect(() => {
+    return () => {
+      console.log(collaborators);
+    };
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

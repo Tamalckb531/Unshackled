@@ -53,8 +53,10 @@ const Header = () => {
           } else if (data.type == "collaborator_response") {
             handleStatus(data);
           } else if (data.type == "host_disconnect_msg") {
+            console.log("host disconnect msg triggers");
             handleDisconnectMsg();
           } else if (data.type === "host_submitted_news") {
+            console.log("host submitted msg triggers");
             handleSubmitMsg(data);
           }
         } catch (error: any) {

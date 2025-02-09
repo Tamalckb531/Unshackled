@@ -1,3 +1,4 @@
+import { userForCollaboration } from '@tamaldip/common';
 import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist'
 
@@ -21,4 +22,9 @@ export const WebSocketState = atom<WebSocket | null>({
 export const paramState = atom<string | null>({
   key: "paramState",
   default: null,
+})
+
+export const collaboratorState = atom<userForCollaboration[] | []>({
+  key: "collaboratorsState",
+  default: [],
 })
