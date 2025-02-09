@@ -26,6 +26,21 @@ const generateRoomId = () => {
 const ydoc = new Y.Doc();
 
 const EditorComponent = () => {
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [posterImage, setPosterImage] = useState<string>("");
+  const [flare, setFlare] = useState<string>("");
+  const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
+  const [isNotSubmit, setIsNotSubmit] = useState<boolean>(true);
+  const [collaborators, setCollaborators] = useState<userForCollaboration[]>(
+    []
+  );
+  const [showCollaborationSearch, setShowCollaborationSearch] =
+    useState<boolean>(false);
+  const filePicker = useRef<HTMLInputElement | null>(null);
+
+  const router = useRouter();
+
   const searchParams = useSearchParams();
   const param = searchParams.get("room");
   const setParamState = useSetRecoilState(paramState);
@@ -52,7 +67,7 @@ const EditorComponent = () => {
     ws.current = websocketConnection;
 
     return () => {
-      if (!param && ws.current?.readyState === WebSocket.OPEN) {
+      if (isNotSubmit && !param && ws.current?.readyState === WebSocket.OPEN) {
         ws.current.send(
           JSON.stringify({
             type: "host_disconnect",
@@ -62,20 +77,6 @@ const EditorComponent = () => {
       }
     };
   }, []);
-
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
-  const [posterImage, setPosterImage] = useState<string>("");
-  const [flare, setFlare] = useState<string>("");
-  const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
-  const [collaborators, setCollaborators] = useState<userForCollaboration[]>(
-    []
-  );
-  const [showCollaborationSearch, setShowCollaborationSearch] =
-    useState<boolean>(false);
-  const filePicker = useRef<HTMLInputElement | null>(null);
-
-  const router = useRouter();
 
   const handleContentChange = (reason: any) => {
     setContent(reason);
@@ -123,13 +124,23 @@ const EditorComponent = () => {
 
       const response = await res.json();
 
-      console.log(response);
-
       Swal.fire({
         icon: "success",
         title: "News Created!",
         text: `News ID: ${response.newsId}`,
       });
+
+      setIsNotSubmit(false);
+
+      if (!param && ws.current?.readyState === WebSocket.OPEN) {
+        ws.current.send(
+          JSON.stringify({
+            type: "news_submitted",
+            collaborators: collaborators.map((col) => col.id),
+            newsId: response.newsId,
+          })
+        );
+      }
 
       // Go to news page
       router.push(`/newsfeed/${response.newsId}`);

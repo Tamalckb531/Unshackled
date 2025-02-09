@@ -54,6 +54,8 @@ const Header = () => {
             handleStatus(data);
           } else if (data.type == "host_disconnect_msg") {
             handleDisconnectMsg();
+          } else if (data.type === "host_submitted_news") {
+            handleSubmitMsg(data);
           }
         } catch (error: any) {
           Swal.fire({
@@ -97,6 +99,15 @@ const Header = () => {
       icon: "question",
     });
     router.push("/dashboard");
+  };
+
+  const handleSubmitMsg = (data: any) => {
+    Swal.fire({
+      title: "Host Submitted news",
+      text: "Go to the news section",
+      icon: "success",
+    });
+    router.push(`/newsfeed/${data.newsId}`);
   };
 
   const handleInvitation = (data: InvitationData) => {

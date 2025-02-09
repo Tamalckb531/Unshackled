@@ -131,6 +131,16 @@ wss.on('connection', async (ws, req) => {
                 }));
               }
             }
+          } else if (data.type === "news_submitted") {
+            for (const collabId of data.collaborators) {
+              const collabWs = clients.get(collabId);
+              if (collabWs) {
+                collabWs.ws.send(JSON.stringify({
+                  type: "host_submitted_news",
+                  newsId:data.newsId
+                }));
+              }
+            }
           }
           
         } catch (error) {
