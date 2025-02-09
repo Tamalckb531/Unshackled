@@ -37,18 +37,11 @@ const Header = () => {
   const setWebSocket = useSetRecoilState(WebSocketState);
 
   useEffect(() => {
-    console.log("This run");
-    console.log(user);
-
     if (user && !ws.current) {
       const token = Cookies.get("access_token");
-      if (!token) {
-        console.log("Cookies not found");
-        return;
-      }
+      if (!token) return;
 
       ws.current = new WebSocket(`ws://localhost:3000?token=${token}`);
-      console.log(ws.current);
 
       setWebSocket(ws.current);
 
@@ -71,8 +64,10 @@ const Header = () => {
           });
         }
       };
-    } else {
+    } else if (!user) {
       ws.current?.close();
+      ws.current = null;
+      setWebSocket(null);
     }
 
     return () => {
