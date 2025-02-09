@@ -13,7 +13,7 @@ import CollaboratorSearch from "./CollaboratorSearch";
 const appId = "7j9y6m10";
 const generateRoomId = () => {
   const chars =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*?";
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let roomId = "";
   for (let i = 0; i < 9; i++) {
     roomId += chars[Math.floor(Math.random() * chars.length)];

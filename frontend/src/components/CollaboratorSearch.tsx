@@ -74,7 +74,7 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
     console.log(ws.current);
 
     if (ws.current?.readyState === WebSocket.OPEN) {
-      console.log("Invitation going");
+      console.log("Invitation going ", room);
 
       ws.current.send(
         JSON.stringify({

@@ -155,7 +155,7 @@ const Tiptap = ({ content, onChange, provider, ydoc, room }: any) => {
                   editor.storage.collaborationCursor.users.length === 1
                     ? ""
                     : "s"
-                } online in ${room} ok`
+                } online in room-${room} ok`
               : "offline"}
           </label>
           <p
