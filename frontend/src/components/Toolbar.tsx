@@ -16,6 +16,8 @@ import SuperscriptBtn from "./editorButtons/SuperscriptBtn";
 import LinkBtn from "./editorButtons/LinkBtn";
 import TextAlignBtn from "./editorButtons/TextAlignBtn";
 import ImageBtn from "./editorButtons/ImageBtn";
+import { useRecoilValue } from "recoil";
+import { paramState } from "@/store/atom";
 
 interface editorProps {
   editor: Editor | null;
@@ -23,6 +25,7 @@ interface editorProps {
 }
 
 export const Toolbar = ({ editor, content }: editorProps) => {
+  const param = useRecoilValue(paramState);
   if (!editor) return null;
   return (
     <div className=" px-4 py-4 rounded flex justify-between items-start gap-5 w-full flex-wrap">
@@ -45,7 +48,7 @@ export const Toolbar = ({ editor, content }: editorProps) => {
         <ImageBtn editor={editor} />
       </div>
 
-      {content && (
+      {!param && content && (
         <button
           type="submit"
           className="py-1 px-2 text-lg bg-sky-700 text-white rounded-lg"

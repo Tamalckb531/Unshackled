@@ -9,6 +9,8 @@ import { CircleX } from "lucide-react";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import CollaboratorSearch from "./CollaboratorSearch";
+import { useSetRecoilState } from "recoil";
+import { paramState } from "@/store/atom";
 
 const appId = "7j9y6m10";
 const generateRoomId = () => {
@@ -25,6 +27,9 @@ const ydoc = new Y.Doc();
 
 const EditorComponent = () => {
   const searchParams = useSearchParams();
+  const param = searchParams.get("room");
+  const setParamState = useSetRecoilState(paramState);
+  setParamState(param);
   const room = useMemo(
     () => searchParams.get("room") || generateRoomId(),
     [searchParams]
@@ -183,64 +188,73 @@ const EditorComponent = () => {
         className="w-full h-full flex flex-col gap-3 items-center mx-auto p-10 mb-10 z-0"
       >
         {/*//? collaboration and cancel button  */}
-        <div className="flex w-full items-center justify-end gap-5">
-          <button
-            type="button"
-            className="text-sm p-3 mt-2 rounded bg-blue-500 text-white"
-            onClick={handleCollaboration}
-          >
-            Collaboration
-          </button>
-          <button
-            type="button"
-            className="text-sm p-2 mt-2 rounded bg-red-500 text-white"
-          >
-            <CircleX size={30} />
-          </button>
-        </div>
+        {!param && (
+          <div className="flex w-full items-center justify-end gap-5">
+            <button
+              type="button"
+              className="text-sm p-3 mt-2 rounded bg-blue-500 text-white"
+              onClick={handleCollaboration}
+            >
+              Collaboration
+            </button>
+            <button
+              type="button"
+              className="text-sm p-2 mt-2 rounded bg-red-500 text-white"
+            >
+              <CircleX size={30} />
+            </button>
+          </div>
+        )}
 
         <p className=" text-3xl text-center mb-14 font-bold">
-          Compose Your News With Our Advance Editor
+          Compose Your News With Our Advance Editor{" "}
+          {param && (
+            <span className=" text-xl">
+              (invited users can only use the editor)
+            </span>
+          )}
         </p>
 
         {/* //? posterImage, flare and anonymous  */}
-        <div className=" w-full flex items-start justify-between mt-5 px-6 ">
-          <div className="upload_file flex">
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileUpload}
-              ref={filePicker}
-            />
-            <button
-              type="button"
-              className="text-sm p-2 mt-2 rounded bg-blue-500 text-white"
-              onClick={() => filePicker.current?.click()}
-            >
-              Upload Poster Image
-            </button>
-          </div>
+        {!param && (
+          <div className=" w-full flex items-start justify-between mt-5 px-6 ">
+            <div className="upload_file flex">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileUpload}
+                ref={filePicker}
+              />
+              <button
+                type="button"
+                className="text-sm p-2 mt-2 rounded bg-blue-500 text-white"
+                onClick={() => filePicker.current?.click()}
+              >
+                Upload Poster Image
+              </button>
+            </div>
 
-          <span className=" flex gap-2 justify-center items-center">
-            <FlareDropdown changeFlare={changeFlare} />{" "}
-            <p className=" text-lg ml-2">{flare}</p>
-          </span>
-
-          <label className="inline-flex items-center mt-4 cursor-pointer">
-            <input
-              type="checkbox"
-              className="sr-only peer"
-              onClick={() => setIsAuthorAnonymous(!isAuthorAnonymous)}
-            />
-            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-            <span className="ms-3 text-sm font-medium text-gray-900">
-              Anonymous
+            <span className=" flex gap-2 justify-center items-center">
+              <FlareDropdown changeFlare={changeFlare} />{" "}
+              <p className=" text-lg ml-2">{flare}</p>
             </span>
-          </label>
-        </div>
 
-        {posterImage && (
+            <label className="inline-flex items-center mt-4 cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                onClick={() => setIsAuthorAnonymous(!isAuthorAnonymous)}
+              />
+              <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+              <span className="ms-3 text-sm font-medium text-gray-900">
+                Anonymous
+              </span>
+            </label>
+          </div>
+        )}
+
+        {!param && posterImage && (
           <img
             src={posterImage}
             alt=""
@@ -248,13 +262,15 @@ const EditorComponent = () => {
           />
         )}
 
-        <input
-          className=" w-full p-4 mt-8 outline-none text-3xl"
-          placeholder="Write your title here....."
-          value={title}
-          required
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        {!param && (
+          <input
+            className=" w-full p-4 mt-8 outline-none text-3xl"
+            placeholder="Write your title here....."
+            value={title}
+            required
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        )}
 
         <Tiptap
           content={content}

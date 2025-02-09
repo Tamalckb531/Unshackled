@@ -17,3 +17,8 @@ export const WebSocketState = atom<WebSocket | null>({
   key: "webSocketState",
   default: null,
 })
+
+export const paramState = atom<string | null>({
+  key: "paramState",
+  default: null,
+})
