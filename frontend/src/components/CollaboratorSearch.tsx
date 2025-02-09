@@ -25,27 +25,12 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   );
 
   const debouncedInput: string = useDebounce(searchTerm, 500);
-  const ws = useRef<WebSocket | null>(null);
   const websocketConnection = useRecoilValue(WebSocketState);
+  const ws = useRef<WebSocket | null>(websocketConnection);
 
   useEffect(() => {
     changeSearchTerm(debouncedInput);
   }, [debouncedInput, changeSearchTerm]);
-
-  useEffect(() => {
-    ws.current = websocketConnection;
-    console.log(ws.current);
-    console.log(websocketConnection);
-
-    if (ws.current) {
-      ws.current.onopen = () => console.log("WebSocket connected");
-      ws.current.onclose = () => console.log("WebSocket disconnected");
-    }
-
-    return () => {
-      ws.current?.close();
-    };
-  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -71,11 +56,7 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   };
 
   const sentInvitation = () => {
-    console.log(ws.current);
-
     if (ws.current?.readyState === WebSocket.OPEN) {
-      console.log("Invitation going ", room);
-
       ws.current.send(
         JSON.stringify({
           type: "send_invitation",
