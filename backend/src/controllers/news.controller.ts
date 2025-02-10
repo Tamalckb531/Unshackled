@@ -205,7 +205,9 @@ export const createNews = async (req: Request, res: Response, next: NextFunction
             posterImage,
             is_Author_Anonymous,
             authorId: userId,
-            collaborators
+            collaborators: {
+                connect: collaborators?.map((collaborator) => ({ id: collaborator.id })) || []
+            }
         };
         
         const newNews:News = await prisma.news.create({
@@ -218,6 +220,7 @@ export const createNews = async (req: Request, res: Response, next: NextFunction
         });
         
     } catch (error: any) {
+        
         if (error instanceof z.ZodError) {
             return res.status(400).json({ error: error.errors });
         }

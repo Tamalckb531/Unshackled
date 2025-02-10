@@ -32,8 +32,10 @@ const EditorComponent = () => {
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
   const [isNotSubmit, setIsNotSubmit] = useState<boolean>(true);
+
   const [collaborators, setCollaborators] = useRecoilState(collaboratorState);
   const collaboratorsRef = useRef<userForCollaboration[]>(collaborators);
+
   const [showCollaborationSearch, setShowCollaborationSearch] =
     useState<boolean>(false);
   const filePicker = useRef<HTMLInputElement | null>(null);
@@ -71,7 +73,6 @@ const EditorComponent = () => {
 
     return () => {
       if (isNotSubmit && !param && ws.current?.readyState === WebSocket.OPEN) {
-        console.log("Run on clean-up : ", collaboratorsRef.current);
         ws.current.send(
           JSON.stringify({
             type: "host_disconnect",
@@ -81,13 +82,6 @@ const EditorComponent = () => {
       }
     };
   }, []);
-
-  useEffect(() => {
-    console.log(
-      "Run each time collaborator search re-render : ",
-      collaborators
-    );
-  }, [showCollaborationSearch]);
 
   const handleCollaboratorChange = (
     user: userForCollaboration,
@@ -105,10 +99,6 @@ const EditorComponent = () => {
         );
         break;
     }
-    console.log(
-      "Run on each time handleCollaboratorChange trigger : ",
-      collaborators
-    );
   };
 
   const handleContentChange = (reason: any) => {
@@ -174,6 +164,8 @@ const EditorComponent = () => {
           })
         );
       }
+
+      setContent("");
 
       // Go to news page
       router.push(`/newsfeed/${response.newsId}`);

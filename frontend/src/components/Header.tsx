@@ -55,7 +55,6 @@ const Header = () => {
           } else if (data.type == "host_disconnect_msg") {
             handleDisconnectMsg();
           } else if (data.type === "host_submitted_news") {
-            console.log("host submitted msg triggers");
             handleSubmitMsg(data);
           }
         } catch (error: any) {
@@ -105,7 +104,7 @@ const Header = () => {
   const handleSubmitMsg = (data: any) => {
     Swal.fire({
       title: "Host Submitted news",
-      text: "Go to the news section",
+      text: `Go to the news section (NewsId : ${data.newsId})`,
       icon: "success",
     });
     router.push(`/newsfeed/${data.newsId}`);
