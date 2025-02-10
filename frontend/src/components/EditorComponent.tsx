@@ -31,7 +31,8 @@ const EditorComponent = () => {
   const [posterImage, setPosterImage] = useState<string>("");
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
-  const [isNotSubmit, setIsNotSubmit] = useState<boolean>(true);
+
+  const NotSubmittedRef = useRef<boolean>(true);
 
   const [collaborators, setCollaborators] = useRecoilState(collaboratorState);
   const collaboratorsRef = useRef<userForCollaboration[]>(collaborators);
@@ -72,7 +73,11 @@ const EditorComponent = () => {
     ws.current = websocketConnection;
 
     return () => {
-      if (isNotSubmit && !param && ws.current?.readyState === WebSocket.OPEN) {
+      if (
+        NotSubmittedRef.current &&
+        !param &&
+        ws.current?.readyState === WebSocket.OPEN
+      ) {
         ws.current.send(
           JSON.stringify({
             type: "host_disconnect",
@@ -153,7 +158,7 @@ const EditorComponent = () => {
         text: `News ID: ${response.newsId}`,
       });
 
-      setIsNotSubmit(false);
+      NotSubmittedRef.current = false;
 
       if (!param && ws.current?.readyState === WebSocket.OPEN) {
         ws.current.send(
