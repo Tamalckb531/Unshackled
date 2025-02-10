@@ -32,7 +32,8 @@ const EditorComponent = () => {
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
   const [isNotSubmit, setIsNotSubmit] = useState<boolean>(true);
-  const collaborators = useRecoilValue(collaboratorState);
+  const [collaborators, setCollaborators] = useRecoilState(collaboratorState);
+  const collaboratorsRef = useRef<userForCollaboration[]>(collaborators);
   const [showCollaborationSearch, setShowCollaborationSearch] =
     useState<boolean>(false);
   const filePicker = useRef<HTMLInputElement | null>(null);
@@ -62,20 +63,53 @@ const EditorComponent = () => {
   const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
+    collaboratorsRef.current = collaborators;
+  }, [collaborators]);
+
+  useEffect(() => {
     ws.current = websocketConnection;
 
     return () => {
       if (isNotSubmit && !param && ws.current?.readyState === WebSocket.OPEN) {
-        console.log("clean-up Running", collaborators, collaboratorState);
+        console.log("Run on clean-up : ", collaboratorsRef.current);
         ws.current.send(
           JSON.stringify({
             type: "host_disconnect",
-            collaborators: collaborators.map((col) => col.id),
+            collaborators: collaboratorsRef.current.map((col) => col.id),
           })
         );
       }
     };
   }, []);
+
+  useEffect(() => {
+    console.log(
+      "Run each time collaborator search re-render : ",
+      collaborators
+    );
+  }, [showCollaborationSearch]);
+
+  const handleCollaboratorChange = (
+    user: userForCollaboration,
+    action: string
+  ) => {
+    switch (action) {
+      case "add_user":
+        setCollaborators((prev: userForCollaboration[]) => [...prev, user]);
+        break;
+      case "remove_user":
+        setCollaborators((prev: userForCollaboration[]) =>
+          prev.filter(
+            (collaborator: userForCollaboration) => collaborator.id !== user.id
+          )
+        );
+        break;
+    }
+    console.log(
+      "Run on each time handleCollaboratorChange trigger : ",
+      collaborators
+    );
+  };
 
   const handleContentChange = (reason: any) => {
     setContent(reason);
@@ -206,6 +240,7 @@ const EditorComponent = () => {
       {showCollaborationSearch && (
         <CollaboratorSearch
           setShowCollaborationSearch={setShowCollaborationSearch}
+          handleCollaboratorChange={handleCollaboratorChange}
           collaborators={collaborators}
           room={room}
         />

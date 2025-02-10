@@ -8,12 +8,17 @@ import { collaboratorState, WebSocketState } from "@/store/atom";
 
 interface collaborationSearchProps {
   setShowCollaborationSearch: (value: boolean) => void;
+  handleCollaboratorChange: (
+    user: userForCollaboration,
+    action: string
+  ) => void;
   collaborators: userForCollaboration[];
   room: string;
 }
 
 const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
   setShowCollaborationSearch,
+  handleCollaboratorChange,
   collaborators,
   room,
 }) => {
@@ -32,7 +37,7 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
 
   useEffect(() => {
     return () => {
-      console.log(collaborators);
+      console.log("Collaborator Search Clean-up : ", collaborators);
     };
   });
 
@@ -48,14 +53,16 @@ const CollaboratorSearch: React.FC<collaborationSearchProps> = ({
       // Add the user to collaborators if checked
       const exist = collaborators.some((obj) => obj.id === user.id);
       if (exist) return;
-      setCollaborators((prev: userForCollaboration[]) => [...prev, user]);
+      // setCollaborators((prev: userForCollaboration[]) => [...prev, user]);
+      handleCollaboratorChange(user, "add_user");
     } else {
       // Remove the user from collaborators if unchecked
-      setCollaborators((prev: userForCollaboration[]) =>
-        prev.filter(
-          (collaborator: userForCollaboration) => collaborator.id !== user.id
-        )
-      );
+      // setCollaborators((prev: userForCollaboration[]) =>
+      //   prev.filter(
+      //     (collaborator: userForCollaboration) => collaborator.id !== user.id
+      //   )
+      // );
+      handleCollaboratorChange(user, "remove_user");
     }
   };
 

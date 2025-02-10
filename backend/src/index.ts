@@ -123,7 +123,6 @@ wss.on('connection', async (ws, req) => {
               }))
             }
           } else if (data.type === "host_disconnect") {
-            console.log("Data coming in host disconnect", data);
             
             for (const collabId of data.collaborators) {
               const collabWs = clients.get(collabId);
