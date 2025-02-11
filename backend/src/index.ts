@@ -44,6 +44,8 @@ app.get('/test', (req: Request, res: Response) => {
 });
 
 //! --------- Web Socket server ---------
+
+//? collaboration feature done
 const wss = new WebSocketServer({ server });
 
 interface JwtPayload{
