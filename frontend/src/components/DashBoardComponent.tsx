@@ -5,7 +5,7 @@ import ProfileNewsFetcher from "./ProfileNewsFetcher";
 
 const DashBoardComponent = () => {
   return (
-    <div>
+    <div className=" flex flex-col items-center">
       <ProfileInfo />
       <ProfileDataBox />
       <ProfileNewsFetcher />
