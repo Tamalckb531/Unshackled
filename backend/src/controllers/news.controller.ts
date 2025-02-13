@@ -191,6 +191,7 @@ export const getNewsById = async (req: Request, res: Response, next: NextFunctio
     }
 } 
 
+//? create the news -> increment newCount for user -> increment collaborationCount for collaborators
 export const createNews = async (req: Request, res: Response, next: NextFunction) => {
     const { title, content, flare, posterImage, is_Author_Anonymous,collaborators }: CreateNewsTypes = req.body;
     const userId = req.user?.id;
@@ -213,6 +214,26 @@ export const createNews = async (req: Request, res: Response, next: NextFunction
         const newNews:News = await prisma.news.create({
             data,
         });
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                newsCount: {
+                    increment: 1
+                }
+            }
+        });
+
+        if (collaborators && collaborators.length > 0) {
+            await prisma.user.updateMany({
+                where: {
+                    id:{in:collaborators.map((collaborator)=>collaborator.id)}
+                },
+                data: {
+                    collaborationCount:{increment:1}
+                }
+            })
+        }
 
         res.status(201).json({
             msg: "News created successfully",
