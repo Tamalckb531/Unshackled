@@ -5,6 +5,13 @@ interface databox {
   reason: string;
 }
 
+interface profileDataInfo {
+  followerCount: number;
+  followeeCount: number;
+  newCount: number;
+  collaborationCount: number;
+}
+
 const ProfileDataBox = () => {
   return (
     <>
