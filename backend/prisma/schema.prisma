@@ -16,21 +16,22 @@ datasource db {
 // Prisma schema for Unshackled
 
 model User {
-  id                String    @id @default(uuid()) @db.Uuid
-  firstName         String
-  lastName          String
-  email             String    @unique
-  password          String
-  userName          String?   @unique @default(cuid())
-  bio               String?
-  photoURL          String?
-  location          String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime? @updatedAt
-  isProfileComplete Boolean   @default(false)
-  followerCount     Int       @default(0)
-  followeeCount     Int       @default(0)
-  newsCount         Int       @default(0)
+  id                 String    @id @default(uuid()) @db.Uuid
+  firstName          String
+  lastName           String
+  email              String    @unique
+  password           String
+  userName           String?   @unique @default(cuid())
+  bio                String?
+  photoURL           String?
+  location           String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime? @updatedAt
+  isProfileComplete  Boolean   @default(false)
+  followerCount      Int       @default(0)
+  followeeCount      Int       @default(0)
+  newsCount          Int       @default(0)
+  collaborationCount Int       @default(0)
 
   //? Relations
   newsPosted        News[]
