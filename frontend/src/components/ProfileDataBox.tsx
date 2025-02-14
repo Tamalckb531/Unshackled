@@ -8,18 +8,23 @@ interface databox {
 interface profileDataInfo {
   followerCount: number;
   followeeCount: number;
-  newCount: number;
+  newsCount: number;
   collaborationCount: number;
 }
 
-const ProfileDataBox = () => {
+const ProfileDataBox = ({
+  followeeCount,
+  followerCount,
+  newsCount,
+  collaborationCount,
+}: profileDataInfo) => {
   return (
     <>
       <div className=" w-[60vw] flex items-center justify-around mb-5">
-        <Databox num={121} reason="Followers" />
-        <Databox num={162} reason="Followings" />
-        <Databox num={25} reason="News" />
-        <Databox num={30} reason="Collaborations" />
+        <Databox num={followerCount} reason="Followers" />
+        <Databox num={followeeCount} reason="Followings" />
+        <Databox num={newsCount} reason="News" />
+        <Databox num={collaborationCount} reason="Collaborations" />
       </div>
       <hr className="h-px w-[80vw] my-10 border-0 bg-gray-500" />
     </>

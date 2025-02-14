@@ -1,10 +1,7 @@
 "use client";
 import DashBoardComponent from "@/components/DashBoardComponent";
-import { userState } from "@/store/atom";
-
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useRecoilValue } from "recoil";
 
 const demo = {
   analytics: null,
@@ -25,7 +22,6 @@ const demo = {
 };
 
 const page = () => {
-  const user = useRecoilValue(userState);
   const router = useRouter();
 
   return (
