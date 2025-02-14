@@ -6,7 +6,7 @@ const NewsContainer = () => {
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm h-full">
       <img
-        className="rounded-t-lg object-cover h-[15vh]"
+        className="rounded-t-lg object-cover h-[20vh]"
         src="https://loremflickr.com/2272/223?lock=6176318523910789"
         alt=""
       />
