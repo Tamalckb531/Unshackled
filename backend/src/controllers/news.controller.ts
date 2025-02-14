@@ -471,3 +471,99 @@ export const getUserForCollaboration = async (req: Request, res: Response, next:
         next(err);
     }
 }
+
+export const getUserNews = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { userId, flare } = req.params;
+        let news;
+        //? flare cases : "featured", "allNews", "upvoted", "bookmarked", "collaboration"
+        switch (flare) {
+            case "featured":
+                news = await prisma.news.findMany({
+                    where: { featuredBy: { some: { id: userId } } },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                userName: true
+                            }
+                        }
+                    }
+                });
+                break;
+            
+            case "allNews":
+                news = await prisma.news.findMany({
+                    where: { authorId:userId },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                userName: true
+                            }
+                        }
+                    }
+                });
+                break;
+
+            case "upvoted":
+                news = await prisma.news.findMany({
+                    where: { upvotedBy: { some: { id: userId } } },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                userName: true
+                            }
+                        }
+                    }
+                });
+                break;
+
+            case "bookmarked":
+                news = await prisma.news.findMany({
+                    where: { bookmarkedBy: { some: { id: userId } } },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                userName: true
+                            }
+                        }
+                    }
+                });
+                break;
+
+            case "collaboration":
+                news = await prisma.news.findMany({
+                    where: { collaborators: { some: { id: userId } } },
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                userName: true
+                            }
+                        }
+                    }
+                });
+                break;
+            
+            default:
+                return res.status(400).json({ msg: "Invalid flare type" });
+        }
+
+        return res.status(200).json({ news });
+    } catch (error: any) {
+        next(error);
+    }
+}

@@ -44,6 +44,7 @@ model User {
   followees         Follow[]  @relation("UserFollowees")
   collaboratorNews  News[]    @relation("CollaboratorNews")
   comments          Comment[]
+  featuredNews      News[]    @relation("UserFeaturedNews")
 
   analytics Json?
 }
@@ -68,6 +69,7 @@ model News {
   bookmarkedBy  User[]    @relation("UserBookmarkedNews")
   upvotedBy     User[]    @relation("UserUpvotedNews")
   downvotedBy   User[]    @relation("UserDownvotedNews")
+  featuredBy    User[]    @relation("UserFeaturedNews")
 }
 
 model Comment {
