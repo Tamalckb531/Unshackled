@@ -114,7 +114,7 @@ const ProfileNewsFetcher = ({ userId }: UserId) => {
           Sorry! No news to show here :)
         </p>
       )}
-      <div className="grid grid-cols-3 mt-4 gap-x-5 gap-y-8">
+      <div className="grid grid-cols-3 my-4 gap-x-5 gap-y-8">
         {news.length > 0 &&
           news?.map((n) => (
             <NewsContainer
