@@ -25,7 +25,7 @@ const DashBoardComponent = () => {
         newsCount={user.newsCount}
         collaborationCount={user.collaborationCount}
       />
-      <ProfileNewsFetcher />
+      <ProfileNewsFetcher userId={user.id} />
     </div>
   );
 };

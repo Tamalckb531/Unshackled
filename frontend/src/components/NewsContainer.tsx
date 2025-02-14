@@ -1,34 +1,68 @@
+import { useRouter } from "next/navigation";
 import React from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { CiBookmark } from "react-icons/ci";
+import DOMPurify from "dompurify";
 
-const NewsContainer = () => {
+interface News {
+  id: string;
+  title: string;
+  content: string;
+  posterImage?: string;
+  flare: string;
+  is_Author_Anonymous: boolean;
+  postingTime: string;
+  upvotes: number;
+  downvotes: number;
+  bookmarkCount: number;
+}
+
+const NewsContainer = ({
+  id,
+  title,
+  content,
+  posterImage,
+  flare,
+  is_Author_Anonymous,
+  postingTime,
+  upvotes,
+  downvotes,
+  bookmarkCount,
+}: News) => {
+  const router = useRouter();
+  const sanitizedContent = DOMPurify.sanitize(content.slice(0, 250));
+
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm h-full">
+    <div
+      className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm h-full cursor-pointer"
+      onClick={() => {
+        router.push(`/newsfeed/${id}`);
+      }}
+    >
       <img
         className="rounded-t-lg object-cover h-[20vh]"
-        src="https://loremflickr.com/2272/223?lock=6176318523910789"
-        alt=""
+        src={posterImage}
+        alt={title}
       />
       <div className="p-5">
         <p>
           <h5 className="mb-3 text-2xl font-bold tracking-tight text-gray-900">
-            Noteworthy technology acquisitions 2021
+            {title}
           </h5>
         </p>
-        <p className="mb-6 font-normal text-gray-700 dark:text-gray-400">
-          Here are the biggest enterprise technology acquisitions of 2021 so
-          far, in reverse chronological order......
-        </p>
+        <div
+          className="mb-6 font-normal text-gray-700 dark:text-gray-400"
+          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+        />
         <div className="flex justify-around gap-10">
           <span className=" flex items-center gap-3 bg-slate-300 rounded py-1 px-6">
-            <BiUpvote /> 12
+            <BiUpvote /> {upvotes}
           </span>
           <span className="flex items-center gap-3 bg-slate-300 rounded  py-1 px-6">
-            <BiDownvote /> 3
+            <BiDownvote /> {downvotes}
           </span>
           <span className=" flex items-center gap-3 bg-slate-300 rounded  py-1 px-6">
-            <CiBookmark /> 5
+            <CiBookmark /> {bookmarkCount}
           </span>
         </div>
       </div>
