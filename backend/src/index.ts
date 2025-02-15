@@ -8,6 +8,7 @@ import authRoute from './routes/auth.route'
 import userRoute from './routes/user.route'
 import newsRoute from './routes/news.route'
 import commentRoute from './routes/comment.route'
+import profileRoute from './routes/profile.route'
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 
@@ -34,6 +35,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
 app.use('/api/news', newsRoute);
 app.use('/api/comments', commentRoute);
+app.use('/api/profile', profileRoute);
 
 // test
 app.get('/test', (req: Request, res: Response) => {
