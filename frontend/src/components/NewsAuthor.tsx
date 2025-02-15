@@ -1,4 +1,5 @@
 import { userState } from "@/store/atom";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline, MdOutlineFeaturedPlayList } from "react-icons/md";
@@ -33,6 +34,7 @@ const NewsAuthor = ({
   collaborators,
 }: Author) => {
   const user = useRecoilState(userState)[0];
+  const router = useRouter();
 
   return (
     <div className=" mt-2">
@@ -44,14 +46,20 @@ const NewsAuthor = ({
           <div>
             <div className=" flex flex-col items-center justify-center my-4 gap-1">
               <img
-                className="w-10 h-10 rounded-full"
+                className="w-10 h-10 rounded-full cursor-pointer"
                 src={photoUrl}
                 alt={userName}
+                onClick={() => router.push(`/profile/${id}`)}
               />
               <h2 className=" text-nowrap text-xl">
                 {firstName} {lastName}
               </h2>
-              <h3 className=" text-sm font-thin cursor-pointer">@{userName}</h3>
+              <h3
+                className=" text-sm font-thin cursor-pointer"
+                onClick={() => router.push(`/profile/${id}`)}
+              >
+                @{userName}
+              </h3>
               <h3 className=" text-sm mt-2">{email}</h3>
             </div>
             <p className=" font-light text-sm ">{bio}</p>
@@ -69,7 +77,8 @@ const NewsAuthor = ({
               return (
                 <div
                   key={clb.id}
-                  className=" flex items-center justify-around gap-3 overflow-hidden"
+                  className=" flex items-center justify-around gap-3 overflow-hidden cursor-pointer"
+                  onClick={() => router.push(`/profile/${clb.id}`)}
                 >
                   <img
                     className="w-10 h-10 rounded-full"
@@ -86,7 +95,7 @@ const NewsAuthor = ({
         </div>
       )}
 
-      {id !== user?.id && (
+      {id === user?.id && (
         <div className=" flex flex-col gap-2 mt-20 ml-7 text-lg cursor-pointer">
           <h1 className="text-lg font-bold mb-6">Action </h1>
           <p className=" flex items-center gap-2 text-emerald-700">
