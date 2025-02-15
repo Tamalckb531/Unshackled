@@ -43,3 +43,16 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
         next(error);
     }
 }
+
+export const getUser = async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: userId }
+        });
+        if (!user) return res.status(404).json({ msg: "User not found" });
+        return res.status(200).json(user);
+    } catch (error: any) {
+        next(error);
+    }
+}
