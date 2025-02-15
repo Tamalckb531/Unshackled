@@ -1,9 +1,10 @@
 import timeAgo from "@/helper/timeAgo";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { CiBookmark } from "react-icons/ci";
 import DOMPurify from "dompurify";
+import formatDatetime from "@/helper/DMY&TimeFormatter";
 
 interface Author {
   firstName: string;
@@ -34,6 +35,7 @@ interface NewsData {
 const NewsCard = ({ data }: { data: NewsData }) => {
   const router = useRouter();
   const sanitizedContent = DOMPurify.sanitize(data.content.slice(0, 250));
+  const [timeToggle, setTimeToggle] = useState<boolean>(false);
   return (
     <div className="flex w-full h-[270px] items-center rounded-lg hover:bg-gray-100 ">
       <img
@@ -55,7 +57,14 @@ const NewsCard = ({ data }: { data: NewsData }) => {
             {data.is_Author_Anonymous ? "Anonymous" : data.author.firstName}
           </span>{" "}
           on <span className=" italic text-sky-700">{data.flare}</span>{" "}
-          <span className=" italic ml-5">{timeAgo(data.postingTime)}</span>
+          <span
+            className=" italic ml-5 cursor-pointer"
+            onClick={() => setTimeToggle((prev) => !prev)}
+          >
+            {timeToggle
+              ? formatDatetime(data.postingTime)
+              : timeAgo(data.postingTime)}
+          </span>
         </h2>
         <div
           className="mb-3 font-light text-sm text-gray-700 "

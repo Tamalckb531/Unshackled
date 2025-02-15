@@ -230,8 +230,8 @@ const Header = () => {
           <div>
             <img
               className="w-10 h-10 rounded-full cursor-pointer"
-              src="https://randomuser.me/api/portraits/women/26.jpg"
-              alt="Rounded avatar"
+              src={user.photoURL}
+              alt={`profile image of ${user.userName}`}
               onClick={() => {
                 setShowDropDown(!showDropdown);
               }}

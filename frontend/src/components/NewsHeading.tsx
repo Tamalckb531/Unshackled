@@ -1,5 +1,6 @@
+import formatDatetime from "@/helper/DMY&TimeFormatter";
 import timeAgo from "@/helper/timeAgo";
-import React from "react";
+import React, { useState } from "react";
 
 interface Heading {
   posterImage: string;
@@ -18,6 +19,7 @@ const NewsHeading = ({
   posterImage,
   postingTime,
 }: Heading) => {
+  const [timeToggle, setTimeToggle] = useState<boolean>(false);
   return (
     <div className=" flex flex-col gap-12 mb-12">
       {/* news image  */}
@@ -39,8 +41,11 @@ const NewsHeading = ({
           </span>{" "}
           on{" "}
           <span className=" text-purple-400 italic font-semibold">{flare}</span>{" "}
-          <span className=" ml-12 text-base italic">
-            {timeAgo(postingTime)}
+          <span
+            className=" italic ml-12 text-base cursor-pointer"
+            onClick={() => setTimeToggle((prev) => !prev)}
+          >
+            {timeToggle ? formatDatetime(postingTime) : timeAgo(postingTime)}
           </span>
         </p>
       </div>
