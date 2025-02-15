@@ -28,7 +28,18 @@ const ProfileInfo = ({
 
   return (
     <>
-      {showEdit && <ProfileEditor setShowEdit={setShowEdit} />}
+      {showEdit && (
+        <ProfileEditor
+          setShowEdit={setShowEdit}
+          firstName={firstName}
+          lastName={lastName}
+          userName={userName}
+          email={email}
+          photoUrl={photoUrl}
+          bio={bio}
+          location={location}
+        />
+      )}
       <div className="flex flex-col justify-center items-center p-10 gap-2 w-[60vw]">
         <img
           className="w-32 h-32 object-cover rounded-full border-slate-500 border-4 border-opacity-50"
