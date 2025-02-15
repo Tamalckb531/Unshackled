@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoginSchema = exports.NewsSchema = exports.CommentSchema = exports.SignUpSchema = void 0;
+exports.LoginSchema = exports.profileEditSchema = exports.NewsSchema = exports.CommentSchema = exports.SignUpSchema = void 0;
 const zod_1 = require("zod");
 //? Zod Schema
 const BaseAuthSchema = zod_1.z.object({
@@ -27,6 +27,25 @@ exports.NewsSchema = zod_1.z.object({
         lastName: zod_1.z.string(),
         photoURL: zod_1.z.string().url().optional(),
     })).optional(),
+});
+/*
+firstName          String
+  lastName           String
+  email              String    @unique
+  password           String
+  userName           String?   @unique @default(cuid())
+  bio                String?
+  photoURL           String?
+  location
+*/
+exports.profileEditSchema = zod_1.z.object({
+    firstName: zod_1.z.string().min(3).max(10),
+    lastName: zod_1.z.string().min(3).max(10),
+    email: zod_1.z.string().email(),
+    userName: zod_1.z.string().min(7).max(15),
+    bio: zod_1.z.string().max(40).optional(),
+    photoUrl: zod_1.z.string().optional(),
+    location: zod_1.z.string().optional()
 });
 exports.LoginSchema = BaseAuthSchema;
 ;

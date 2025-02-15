@@ -25,7 +25,7 @@ const page = () => {
   const router = useRouter();
 
   return (
-    <div className=" bg-[#F0F7FF] min-h-[100vh] text-black border border-red-500">
+    <div className=" bg-[#F0F7FF] min-h-[100vh] text-black">
       {/* <h1 className=" font-bold text-5xl">
         {user ? `Hi ${user.firstName}!` : "no user"}
       </h1>

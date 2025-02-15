@@ -73,6 +73,31 @@ export declare const NewsSchema: z.ZodObject<{
         photoURL?: string | undefined;
     }[] | undefined;
 }>;
+export declare const profileEditSchema: z.ZodObject<{
+    firstName: z.ZodString;
+    lastName: z.ZodString;
+    email: z.ZodString;
+    userName: z.ZodString;
+    bio: z.ZodOptional<z.ZodString>;
+    photoUrl: z.ZodOptional<z.ZodString>;
+    location: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    email: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    bio?: string | undefined;
+    photoUrl?: string | undefined;
+    location?: string | undefined;
+}, {
+    email: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    bio?: string | undefined;
+    photoUrl?: string | undefined;
+    location?: string | undefined;
+}>;
 export declare const LoginSchema: z.ZodObject<{
     email: z.ZodString;
     password: z.ZodString;
@@ -87,6 +112,7 @@ export type SignUpBodyTypes = z.infer<typeof SignUpSchema>;
 export type LoginBodyTypes = Pick<SignUpBodyTypes, 'email' | 'password'>;
 export type CommentBodyTypes = z.infer<typeof CommentSchema>;
 export type CreateNewsTypes = z.infer<typeof NewsSchema>;
+export type profileEditTypes = z.infer<typeof profileEditSchema>;
 export interface NewsData {
     id: string;
     title: string;

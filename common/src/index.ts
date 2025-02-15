@@ -32,6 +32,27 @@ export const NewsSchema = z.object({
   ).optional(),
 });
 
+/*
+firstName          String
+  lastName           String
+  email              String    @unique
+  password           String
+  userName           String?   @unique @default(cuid())
+  bio                String?
+  photoURL           String?
+  location 
+*/
+
+export const profileEditSchema = z.object({
+  firstName: z.string().min(3).max(10),
+  lastName: z.string().min(3).max(10),
+  email: z.string().email(),
+  userName: z.string().min(7).max(15),
+  bio: z.string().max(40).optional(),
+  photoUrl: z.string().optional(),
+  location: z.string().optional()
+})
+
 export const LoginSchema = BaseAuthSchema;
 
 //? Types from zod
@@ -39,6 +60,8 @@ export type SignUpBodyTypes = z.infer<typeof SignUpSchema>
 export type LoginBodyTypes = Pick<SignUpBodyTypes, 'email' | 'password'>;
 export type CommentBodyTypes = z.infer<typeof CommentSchema>;
 export type CreateNewsTypes = z.infer<typeof NewsSchema>; 
+export type profileEditTypes = z.infer<typeof profileEditSchema>; 
+
 
 
 //? Interfaces
