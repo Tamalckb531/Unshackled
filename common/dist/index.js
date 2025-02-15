@@ -8,8 +8,8 @@ const BaseAuthSchema = zod_1.z.object({
     password: zod_1.z.string().min(5)
 });
 exports.SignUpSchema = BaseAuthSchema.extend({
-    firstName: zod_1.z.string().min(3).max(10),
-    lastName: zod_1.z.string().min(3).max(10),
+    firstName: zod_1.z.string().min(3).max(15),
+    lastName: zod_1.z.string().min(3).max(20),
 });
 exports.CommentSchema = zod_1.z.object({
     content: zod_1.z.string().trim().min(2).max(1000),
@@ -39,8 +39,8 @@ firstName          String
   location
 */
 exports.profileEditSchema = zod_1.z.object({
-    firstName: zod_1.z.string().min(3).max(10),
-    lastName: zod_1.z.string().min(3).max(10),
+    firstName: zod_1.z.string().min(3).max(15),
+    lastName: zod_1.z.string().min(3).max(20),
     email: zod_1.z.string().email(),
     userName: zod_1.z.string().min(7).max(15),
     bio: zod_1.z.string().max(40).optional(),

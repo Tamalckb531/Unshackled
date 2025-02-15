@@ -7,8 +7,8 @@ const BaseAuthSchema = z.object({
 });
 
 export const SignUpSchema = BaseAuthSchema.extend({
-    firstName: z.string().min(3).max(10),
-    lastName: z.string().min(3).max(10),
+    firstName: z.string().min(3).max(15),
+    lastName: z.string().min(3).max(20),
 });
 
 export const CommentSchema = z.object({
@@ -44,8 +44,8 @@ firstName          String
 */
 
 export const profileEditSchema = z.object({
-  firstName: z.string().min(3).max(10),
-  lastName: z.string().min(3).max(10),
+  firstName: z.string().min(3).max(15),
+  lastName: z.string().min(3).max(20),
   email: z.string().email(),
   userName: z.string().min(7).max(15),
   bio: z.string().max(40).optional(),
