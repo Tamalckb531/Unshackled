@@ -1,10 +1,14 @@
 import formatDate from "@/helper/DMYFormatter";
 import { Calendar, Mail, MapPin } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProfileEditor from "./ProfileEditor";
 import { useRouter } from "next/navigation";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/store/atom";
+import Swal from "sweetalert2";
 
 interface profileInfo {
+  id: string;
   firstName: string;
   lastName: string;
   userName: string;
@@ -17,6 +21,7 @@ interface profileInfo {
 }
 
 const ProfileInfo = ({
+  id,
   firstName,
   lastName,
   userName,
@@ -28,9 +33,38 @@ const ProfileInfo = ({
   isOwnerProfile,
 }: profileInfo) => {
   const [showEdit, setShowEdit] = useState<boolean>(false);
-  const [isFollowing, setIsFollowing] = useState<boolean>(true);
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [hover, setHover] = useState(false);
   const router = useRouter();
+  const user = useRecoilValue(userState);
+
+  useEffect(() => {
+    if (!user || isOwnerProfile) return;
+    const alreadyFollowing = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/profile/isfollowing/${id}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.msg || "Failed to fetch user profile");
+        }
+        const result = await res.json();
+        setIsFollowing(result);
+      } catch (error: any) {
+        Swal.fire({
+          icon: "error",
+          title: "Couldn't get the user",
+          text: error.message,
+        });
+      }
+    };
+    alreadyFollowing();
+  }, []);
 
   return (
     <>

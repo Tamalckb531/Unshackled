@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import ProfileInfo from "./ProfileInfo";
 import ProfileDataBox from "./ProfileDataBox";
 import ProfileNewsFetcher from "./ProfileNewsFetcher";
@@ -10,6 +10,7 @@ const DashBoardComponent = ({ user }: any) => {
   return (
     <div className=" flex flex-col items-center">
       <ProfileInfo
+        id={user.id}
         firstName={user.firstName}
         lastName={user.lastName}
         userName={user.userName}

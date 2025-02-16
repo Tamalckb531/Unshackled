@@ -8,7 +8,6 @@ import DashBoardComponent from "./DashBoardComponent";
 const ProfileWrapper = () => {
   const router = useRouter();
   const { userId } = useParams();
-  console.log("This is userId: ", userId);
 
   const user = useRecoilValue(userState);
   const [userProfile, setUserProfile] = useState();
@@ -28,7 +27,6 @@ const ProfileWrapper = () => {
           throw new Error(errorData.msg || "Failed to fetch user profile");
         }
         const user = await res.json();
-        console.log("This is response from backend: ", user);
         setUserProfile(user);
       } catch (error: any) {
         Swal.fire({
@@ -40,8 +38,6 @@ const ProfileWrapper = () => {
     };
     if (userId) fetchUser();
   }, [userId, user]);
-
-  console.log("This is user state: ", userProfile);
 
   return <div>{userProfile && <DashBoardComponent user={userProfile} />}</div>;
 };
