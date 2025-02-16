@@ -28,6 +28,8 @@ const ProfileInfo = ({
   isOwnerProfile,
 }: profileInfo) => {
   const [showEdit, setShowEdit] = useState<boolean>(false);
+  const [isFollowing, setIsFollowing] = useState<boolean>(true);
+  const [hover, setHover] = useState(false);
   const router = useRouter();
 
   return (
@@ -73,14 +75,28 @@ const ProfileInfo = ({
               Write News
             </button>
           )}
-          {!isOwnerProfile && (
-            <button
-              type="button"
-              className="text-white bg-black font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 "
-            >
-              Follow
-            </button>
-          )}
+          {!isOwnerProfile &&
+            (!isFollowing ? (
+              <button
+                type="button"
+                className="text-white bg-black font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 "
+              >
+                Follow
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={`border-2 font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 transition-all duration-300 ${
+                  hover
+                    ? "border-red-500 text-red-500"
+                    : "border-black text-black"
+                }`}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
+                {hover ? "Unfollow" : "Following"}
+              </button>
+            ))}
           {!isOwnerProfile && (
             <button
               type="button"
