@@ -56,3 +56,66 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
         next(error);
     }
 }
+
+export const followUser = async (req: Request, res: Response, next: NextFunction) => {
+    const { followId } = req.params;
+    const userId = req.user?.id as string;
+
+    if (userId === followId) return res.status(400).json({ msg: "You can't follow yourself" });
+
+    try {
+        const userToFollow = await prisma.user.findUnique({
+            where: { id: followId },
+        });
+
+        if (!userToFollow) return res.status(404).json({ msg: "User not found" });
+
+        //? already followed 
+        const alreadyFollowed = await prisma.follow.findFirst({
+            where: {
+                followeeId: followId,
+                followerId: userId,
+            },
+        });
+
+        if (alreadyFollowed) {
+            await prisma.$transaction([
+                prisma.follow.deleteMany({
+                    where: { followerId: userId, followeeId: followId }
+                }),
+                prisma.user.update({
+                    where: { id: followId },
+                    data: { followeeCount: { decrement: 1 } },
+                }),
+                prisma.user.update({
+                    where: { id: userId },
+                    data: { followerCount: { decrement: 1 } },
+                }),
+            ]);
+
+            return res.status(200).json({ msg: "User un-followed successfully" });
+        } else {
+            await prisma.$transaction([
+                prisma.follow.create({
+                    data: {
+                        followerId: userId,
+                        followeeId: followId
+                    },
+                }),
+                prisma.user.update({
+                    where: { id: followId },
+                    data: { followeeCount: { increment: 1 } },
+                }),
+                prisma.user.update({
+                    where: { id: userId },
+                    data: { followerCount: { increment: 1 } },
+                }),
+            ]);
+            
+            return res.status(200).json({ msg: "User followed successfully" });
+        }
+
+    } catch (error: any) {
+        next(error);
+    }
+}
