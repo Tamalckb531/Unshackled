@@ -175,7 +175,7 @@ export const getFollowees = async (req: Request, res: Response, next: NextFuncti
     const { userId } = req.params;
 
     try {
-        const followers = await prisma.follow.findMany({
+        const followees = await prisma.follow.findMany({
             where: { followerId: userId },
             select: {
                 followee: {
@@ -190,9 +190,9 @@ export const getFollowees = async (req: Request, res: Response, next: NextFuncti
             }
         });
 
-        if (followers.length === 0) return res.status(204).end();
+        if (followees.length === 0) return res.status(204).end();
 
-        res.status(200).json(followers);
+        res.status(200).json(followees);
     } catch (error: any) {
         next(error);
     }
