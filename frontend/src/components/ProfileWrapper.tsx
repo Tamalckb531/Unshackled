@@ -1,0 +1,49 @@
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/store/atom";
+import Swal from "sweetalert2";
+import DashBoardComponent from "./DashBoardComponent";
+
+const ProfileWrapper = () => {
+  const router = useRouter();
+  const { userId } = useParams();
+  console.log("This is userId: ", userId);
+
+  const user = useRecoilValue(userState);
+  const [userProfile, setUserProfile] = useState();
+
+  if (user.id === userId) router.push("/dashboard");
+  if (!userId) return <p>Loading......</p>;
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/profile/${userId}`, {
+          method: "GET",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.msg || "Failed to fetch user profile");
+        }
+        const user = await res.json();
+        console.log("This is response from backend: ", user);
+        setUserProfile(user);
+      } catch (error: any) {
+        Swal.fire({
+          icon: "error",
+          title: "Couldn't get the user",
+          text: error.message,
+        });
+      }
+    };
+    if (userId) fetchUser();
+  }, [userId, user]);
+
+  console.log("This is user state: ", userProfile);
+
+  return <div>{userProfile && <DashBoardComponent user={userProfile} />}</div>;
+};
+
+export default ProfileWrapper;

@@ -2,6 +2,7 @@ import formatDate from "@/helper/DMYFormatter";
 import { Calendar, Mail, MapPin } from "lucide-react";
 import React, { useState } from "react";
 import ProfileEditor from "./ProfileEditor";
+import { useRouter } from "next/navigation";
 
 interface profileInfo {
   firstName: string;
@@ -12,6 +13,7 @@ interface profileInfo {
   email: string;
   createdAt: string;
   photoUrl: string;
+  isOwnerProfile: boolean;
 }
 
 const ProfileInfo = ({
@@ -23,8 +25,10 @@ const ProfileInfo = ({
   email,
   createdAt,
   photoUrl,
+  isOwnerProfile,
 }: profileInfo) => {
   const [showEdit, setShowEdit] = useState<boolean>(false);
+  const router = useRouter();
 
   return (
     <>
@@ -51,18 +55,40 @@ const ProfileInfo = ({
         </h1>
         <p className="text-slate-500 text-sm">@{userName}</p>
         <div className="button-group flex items-center justify-between gap-20 m-3 px-2">
-          <button
-            className="text-white bg-black font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 "
-            onClick={() => setShowEdit((prev) => !prev)}
-          >
-            Edit Profile
-          </button>
-          {/* <button className="text-white bg-black font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 ">
-          Follow
-        </button> */}
-          <button className="border-2 border-black hover:bg-black hover:text-white font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 ">
-            Write News
-          </button>
+          {isOwnerProfile && (
+            <button
+              type="button"
+              className="text-white bg-black font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 "
+              onClick={() => setShowEdit((prev) => !prev)}
+            >
+              Edit Profile
+            </button>
+          )}
+          {isOwnerProfile && (
+            <button
+              type="button"
+              className="border-2 border-black hover:bg-black hover:text-white font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 "
+              onClick={() => router.push("/editor")}
+            >
+              Write News
+            </button>
+          )}
+          {!isOwnerProfile && (
+            <button
+              type="button"
+              className="text-white bg-black font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 "
+            >
+              Follow
+            </button>
+          )}
+          {!isOwnerProfile && (
+            <button
+              type="button"
+              className="text-white bg-red-400 font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 "
+            >
+              Donate
+            </button>
+          )}
         </div>
         <p className="p-2 mb-5 text-lg text-slate-700 indent-8 leading-8 tracking-wide">
           {bio}

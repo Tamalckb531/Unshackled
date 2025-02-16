@@ -5,8 +5,8 @@ import ProfileNewsFetcher from "./ProfileNewsFetcher";
 import { userState } from "@/store/atom";
 import { useRecoilValue } from "recoil";
 
-const DashBoardComponent = () => {
-  const user = useRecoilValue(userState);
+const DashBoardComponent = ({ user }: any) => {
+  const owner = useRecoilValue(userState);
   return (
     <div className=" flex flex-col items-center">
       <ProfileInfo
@@ -18,6 +18,7 @@ const DashBoardComponent = () => {
         email={user.email}
         createdAt={user.createdAt}
         photoUrl={user.photoURL}
+        isOwnerProfile={user.id === owner.id}
       />
       <ProfileDataBox
         followerCount={user.followerCount}
@@ -25,7 +26,10 @@ const DashBoardComponent = () => {
         newsCount={user.newsCount}
         collaborationCount={user.collaborationCount}
       />
-      <ProfileNewsFetcher userId={user.id} />
+      <ProfileNewsFetcher
+        userId={user.id}
+        isOwnerProfile={user.id === owner.id}
+      />
     </div>
   );
 };

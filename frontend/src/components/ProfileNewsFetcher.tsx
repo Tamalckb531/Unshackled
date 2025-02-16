@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import NewsContainer from "./NewsContainer";
 import Swal from "sweetalert2";
 
-interface UserId {
+interface UserInfo {
   userId: string;
+  isOwnerProfile: boolean;
 }
 
 interface News {
@@ -19,7 +20,7 @@ interface News {
   bookmarkCount: number;
 }
 
-const ProfileNewsFetcher = ({ userId }: UserId) => {
+const ProfileNewsFetcher = ({ userId, isOwnerProfile }: UserInfo) => {
   const [flare, setFlare] = useState<string>("featured");
   const [loading, setLoading] = useState<boolean>(false);
   const [news, setNews] = useState<News[]>([]);
@@ -51,13 +52,9 @@ const ProfileNewsFetcher = ({ userId }: UserId) => {
 
     if (flare) fetchNews();
   }, [flare]);
-
-  console.log(news.length);
-
-  if (loading) return <p>News Loading........</p>;
   return (
     <div className=" flex flex-col gap-2">
-      <div className="button-group flex items-center justify-around gap-14 m-3">
+      <div className="button-group flex items-center justify-center gap-14 m-3">
         <button
           className={`${
             flare === "featured"
@@ -78,26 +75,30 @@ const ProfileNewsFetcher = ({ userId }: UserId) => {
         >
           All News
         </button>
-        <button
-          className={`${
-            flare === "bookmarked"
-              ? "bg-black text-white "
-              : "border-2 border-black "
-          }hover:bg-slate-700 hover:text-white font-medium rounded-full text-md px-4 py-2 text-center me-2 mb-2 `}
-          onClick={() => setFlare("bookmarked")}
-        >
-          Bookmarked
-        </button>
-        <button
-          className={`${
-            flare === "upvoted"
-              ? "bg-black text-white "
-              : "border-2 border-black "
-          }hover:bg-slate-700 hover:text-white font-medium rounded-full text-md px-4 py-2 text-center me-2 mb-2 `}
-          onClick={() => setFlare("upvoted")}
-        >
-          Upvoted
-        </button>
+        {isOwnerProfile && (
+          <button
+            className={`${
+              flare === "bookmarked"
+                ? "bg-black text-white "
+                : "border-2 border-black "
+            }hover:bg-slate-700 hover:text-white font-medium rounded-full text-md px-4 py-2 text-center me-2 mb-2 `}
+            onClick={() => setFlare("bookmarked")}
+          >
+            Bookmarked
+          </button>
+        )}
+        {isOwnerProfile && (
+          <button
+            className={`${
+              flare === "upvoted"
+                ? "bg-black text-white "
+                : "border-2 border-black "
+            }hover:bg-slate-700 hover:text-white font-medium rounded-full text-md px-4 py-2 text-center me-2 mb-2 `}
+            onClick={() => setFlare("upvoted")}
+          >
+            Upvoted
+          </button>
+        )}
         <button
           className={`${
             flare === "collaboration"
@@ -109,13 +110,17 @@ const ProfileNewsFetcher = ({ userId }: UserId) => {
           Collaborations
         </button>
       </div>
-      {news.length === 0 && (
+      {news.length === 0 && !loading && (
         <p className=" text-2xl text-center p-5">
           Sorry! No news to show here :)
         </p>
       )}
+      {loading && (
+        <p className=" text-2xl text-center p-5">News Loading........</p>
+      )}
       <div className="grid grid-cols-3 my-4 gap-x-5 gap-y-8">
         {news.length > 0 &&
+          !loading &&
           news?.map((n) => (
             <NewsContainer
               id={n.id}
