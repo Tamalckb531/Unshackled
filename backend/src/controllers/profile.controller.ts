@@ -119,3 +119,27 @@ export const followUser = async (req: Request, res: Response, next: NextFunction
         next(error);
     }
 }
+
+export const isFollowing = async (req: Request, res: Response, next: NextFunction) => {
+    const { followId } = req.params;
+    const userId = req.user?.id as string;
+
+    if (userId === followId) return res.status(204).end();
+
+    try {
+        const following = await prisma.follow.findFirst({
+            where: {
+                followeeId: followId,
+                followerId: userId,
+            },
+        });
+
+        if (following) {
+            return res.status(200).json(true);
+        } else {
+            return res.status(200).json(false);
+        }
+    }catch (error: any) {
+        next(error);
+    }
+}
