@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import FollowList from "./FollowList";
 
 interface databox {
   num: number;
   reason: string;
+  handleShowList: (reason: string) => void;
 }
 
 interface profileDataInfo {
@@ -18,13 +20,39 @@ const ProfileDataBox = ({
   newsCount,
   collaborationCount,
 }: profileDataInfo) => {
+  const [showList, setShowList] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>("");
+
+  const handleShowList = (reason: string) => {
+    if (reason === "Followers" || reason === "Followings") {
+      setShowList((prev) => !prev);
+      setTitle(reason);
+    }
+  };
   return (
     <>
+      {showList && <FollowList setShowList={setShowList} title={title} />}
       <div className=" w-[60vw] flex items-center justify-around mb-5">
-        <Databox num={followerCount} reason="Followers" />
-        <Databox num={followeeCount} reason="Followings" />
-        <Databox num={newsCount} reason="News" />
-        <Databox num={collaborationCount} reason="Collaborations" />
+        <Databox
+          num={followerCount}
+          reason="Followers"
+          handleShowList={handleShowList}
+        />
+        <Databox
+          num={followeeCount}
+          reason="Followings"
+          handleShowList={handleShowList}
+        />
+        <Databox
+          num={newsCount}
+          reason="News"
+          handleShowList={handleShowList}
+        />
+        <Databox
+          num={collaborationCount}
+          reason="Collaborations"
+          handleShowList={handleShowList}
+        />
       </div>
       <hr className="h-px w-[80vw] my-10 border-0 bg-gray-500" />
     </>
@@ -33,9 +61,14 @@ const ProfileDataBox = ({
 
 export default ProfileDataBox;
 
-const Databox = ({ num, reason }: databox) => {
+const Databox = ({ num, reason, handleShowList }: databox) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-1 bg-black text-white rounded-md p-5 shadow-xl w-[150px]">
+    <div
+      className={`flex flex-col items-center justify-center gap-1 bg-black text-white rounded-md p-5 shadow-xl w-[150px] ${
+        (reason === "Followers" || reason === "Followings") && " cursor-pointer"
+      }`}
+      onClick={() => handleShowList(reason)}
+    >
       <p className=" text-2xl">{num}</p>
       <p className=" font-bold">{reason}</p>
     </div>
