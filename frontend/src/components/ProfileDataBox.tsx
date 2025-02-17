@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FollowList from "./FollowList";
+import { useRecoilState } from "recoil";
+import { followState } from "@/store/atom";
 
 interface databox {
   num: number;

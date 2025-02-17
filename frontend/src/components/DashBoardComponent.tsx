@@ -2,11 +2,12 @@ import React from "react";
 import ProfileInfo from "./ProfileInfo";
 import ProfileDataBox from "./ProfileDataBox";
 import ProfileNewsFetcher from "./ProfileNewsFetcher";
-import { userState } from "@/store/atom";
+import { followState, userState } from "@/store/atom";
 import { useRecoilValue } from "recoil";
 
 const DashBoardComponent = ({ user }: any) => {
   const owner = useRecoilValue(userState);
+  const follower = useRecoilValue(followState);
   return (
     <div className=" flex flex-col items-center">
       <ProfileInfo
@@ -23,7 +24,7 @@ const DashBoardComponent = ({ user }: any) => {
       />
       <ProfileDataBox
         id={user.id}
-        followerCount={user.followerCount}
+        followerCount={follower}
         followeeCount={user.followeeCount}
         newsCount={user.newsCount}
         collaborationCount={user.collaborationCount}

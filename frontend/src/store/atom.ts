@@ -24,6 +24,11 @@ export const paramState = atom<string | null>({
   default: null,
 })
 
+export const followState = atom<number>({
+  key: "followState",
+  default: 0,
+})
+
 export const collaboratorState = atom<userForCollaboration[] | []>({
   key: "collaboratorsState",
   default: [],

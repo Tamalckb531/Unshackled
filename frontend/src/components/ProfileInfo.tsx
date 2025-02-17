@@ -3,8 +3,8 @@ import { Calendar, Mail, MapPin } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import ProfileEditor from "./ProfileEditor";
 import { useRouter } from "next/navigation";
-import { useRecoilValue } from "recoil";
-import { userState } from "@/store/atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { followState, userState } from "@/store/atom";
 import Swal from "sweetalert2";
 
 interface profileInfo {
@@ -37,6 +37,7 @@ const ProfileInfo = ({
   const [hover, setHover] = useState(false);
   const router = useRouter();
   const user = useRecoilValue(userState);
+  const setFollower = useSetRecoilState(followState);
 
   useEffect(() => {
     if (!user || isOwnerProfile) return;
@@ -65,6 +66,35 @@ const ProfileInfo = ({
     };
     alreadyFollowing();
   }, []);
+
+  const handleFollow = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/profile/follow/${id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+        }
+      );
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.msg || "Failed to fetch user profile");
+      }
+      setIsFollowing((prev) => !prev);
+
+      if (isFollowing) {
+        setFollower((prev) => prev - 1);
+      } else {
+        setFollower((prev) => prev + 1);
+      }
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Couldn't get the user",
+        text: error.message,
+      });
+    }
+  };
 
   return (
     <>
@@ -114,6 +144,7 @@ const ProfileInfo = ({
               <button
                 type="button"
                 className="text-white bg-black font-medium rounded-full text-md px-5 py-2.5 text-center me-2 mb-2 "
+                onClick={handleFollow}
               >
                 Follow
               </button>
@@ -127,6 +158,7 @@ const ProfileInfo = ({
                 }`}
                 onMouseEnter={() => setHover(true)}
                 onMouseLeave={() => setHover(false)}
+                onClick={handleFollow}
               >
                 {hover ? "Unfollow" : "Following"}
               </button>

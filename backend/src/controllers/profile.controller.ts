@@ -85,11 +85,11 @@ export const followUser = async (req: Request, res: Response, next: NextFunction
                 }),
                 prisma.user.update({
                     where: { id: followId },
-                    data: { followeeCount: { decrement: 1 } },
+                    data: { followerCount: { decrement: 1 } },
                 }),
                 prisma.user.update({
                     where: { id: userId },
-                    data: { followerCount: { decrement: 1 } },
+                    data: { followeeCount: { decrement: 1 } },
                 }),
             ]);
 
@@ -104,11 +104,11 @@ export const followUser = async (req: Request, res: Response, next: NextFunction
                 }),
                 prisma.user.update({
                     where: { id: followId },
-                    data: { followeeCount: { increment: 1 } },
+                    data: { followerCount: { increment: 1 } },
                 }),
                 prisma.user.update({
                     where: { id: userId },
-                    data: { followerCount: { increment: 1 } },
+                    data: { followeeCount: { increment: 1 } },
                 }),
             ]);
             

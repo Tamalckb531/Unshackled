@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useRecoilValue } from "recoil";
-import { userState } from "@/store/atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { followState, userState } from "@/store/atom";
 import Swal from "sweetalert2";
 import DashBoardComponent from "./DashBoardComponent";
 
 const ProfileWrapper = () => {
   const router = useRouter();
   const { userId } = useParams();
+  const setFollower = useSetRecoilState(followState);
 
   const user = useRecoilValue(userState);
   const [userProfile, setUserProfile] = useState();
@@ -28,6 +29,7 @@ const ProfileWrapper = () => {
         }
         const user = await res.json();
         setUserProfile(user);
+        setFollower(user.followerCount);
       } catch (error: any) {
         Swal.fire({
           icon: "error",
