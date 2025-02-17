@@ -13,7 +13,7 @@ const ProfileWrapper = () => {
   const user = useRecoilValue(userState);
   const [userProfile, setUserProfile] = useState();
 
-  if (user.id === userId) router.push("/dashboard");
+  if (user?.id === userId) router.push("/dashboard");
   if (!userId) return <p>Loading......</p>;
 
   useEffect(() => {

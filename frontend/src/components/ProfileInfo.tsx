@@ -69,6 +69,7 @@ const ProfileInfo = ({
 
   const handleFollow = async () => {
     try {
+      if (!user) router.push("login");
       const res = await fetch(
         `http://localhost:3000/api/profile/follow/${id}`,
         {
