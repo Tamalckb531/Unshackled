@@ -8,6 +8,7 @@ interface databox {
 }
 
 interface profileDataInfo {
+  id: string;
   followerCount: number;
   followeeCount: number;
   newsCount: number;
@@ -15,6 +16,7 @@ interface profileDataInfo {
 }
 
 const ProfileDataBox = ({
+  id,
   followeeCount,
   followerCount,
   newsCount,
@@ -31,7 +33,9 @@ const ProfileDataBox = ({
   };
   return (
     <>
-      {showList && <FollowList setShowList={setShowList} title={title} />}
+      {showList && (
+        <FollowList setShowList={setShowList} title={title} userId={id} />
+      )}
       <div className=" w-[60vw] flex items-center justify-around mb-5">
         <Databox
           num={followerCount}

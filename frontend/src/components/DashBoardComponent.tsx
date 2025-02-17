@@ -22,6 +22,7 @@ const DashBoardComponent = ({ user }: any) => {
         isOwnerProfile={user.id === owner.id}
       />
       <ProfileDataBox
+        id={user.id}
         followerCount={user.followerCount}
         followeeCount={user.followeeCount}
         newsCount={user.newsCount}
