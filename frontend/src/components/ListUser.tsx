@@ -19,7 +19,7 @@ const ListUser = ({ id, firstName, lastName, userName, photoURL }: Users) => {
   const user = useRecoilValue(userState);
 
   useEffect(() => {
-    if (!user) return;
+    if (user.id === id || !user) return;
     const alreadyFollowing = async () => {
       try {
         const res = await fetch(
@@ -38,7 +38,7 @@ const ListUser = ({ id, firstName, lastName, userName, photoURL }: Users) => {
       } catch (error: any) {
         Swal.fire({
           icon: "error",
-          title: "Couldn't get the user",
+          title: "Couldn't get the user from list user",
           text: error.message,
         });
       }
@@ -64,7 +64,7 @@ const ListUser = ({ id, firstName, lastName, userName, photoURL }: Users) => {
     } catch (error: any) {
       Swal.fire({
         icon: "error",
-        title: "Couldn't get the user",
+        title: "Couldn't get the user from",
         text: error.message,
       });
     }
