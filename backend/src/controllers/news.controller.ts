@@ -573,3 +573,37 @@ export const featureNews = async (req: Request, res: Response, next: NextFunctio
         next(error);
     }
 }
+
+export const isFeaturedNews = async (req: Request, res: Response, next: NextFunction) => {
+    const { newsId } = req.params;
+    const userId = req.user?.id as string;
+    
+    try {
+        const news = await prisma.news.findUnique({
+            where: { id: newsId }
+        });
+        
+        if (!news) return res.status(404).json({ msg: "News not found" });
+        
+        if (news.authorId !== userId) return res.status(403).json({ msg: "You can only feature your own news" });
+        
+
+        //? already featured
+        const alreadyFeatured = await prisma.news.findUnique({
+            where: { id: newsId },
+            select: {
+                featuredBy: {
+                    where: { id: userId }
+                }
+            }
+        });
+
+        if (alreadyFeatured) {
+            return res.status(200).json(true);
+        } else {
+            return res.status(200).json(false);
+        }
+    } catch (error: any) {
+        next(error);
+    }
+}
