@@ -10,7 +10,7 @@ router.get('/posts/flares', getFlare);
 router.get('/posts/:newsId', getUserMid, getNewsById);
 router.get('/posts/userNews/:userId/:flare', getUserNews);
 router.get('/editor/userSearch', verifyToken, getUserForCollaboration);
-router.get('/isFeatured/:newsId', verifyToken, isFeaturedNews);
+router.get('/posts/isFeatured/:newsId', verifyToken, isFeaturedNews);
 
 router.put('/posts/upvote/:newsId', verifyToken, upvoteNews);
 router.put('/posts/downvote/:newsId', verifyToken, downvoteNews); 
