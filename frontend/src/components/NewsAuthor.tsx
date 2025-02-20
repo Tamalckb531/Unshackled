@@ -1,12 +1,14 @@
 import { userState } from "@/store/atom";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline, MdOutlineFeaturedPlayList } from "react-icons/md";
 import { useRecoilState } from "recoil";
+import Swal from "sweetalert2";
 
 interface Author {
   id: string;
+  newsId: string;
   firstName: string;
   lastName: string;
   userName: string;
@@ -24,6 +26,7 @@ interface Author {
 
 const NewsAuthor = ({
   id,
+  newsId,
   firstName,
   lastName,
   userName,
@@ -35,6 +38,44 @@ const NewsAuthor = ({
 }: Author) => {
   const user = useRecoilState(userState)[0];
   const router = useRouter();
+
+  const [isFeatured, setIsFeatured] = useState<boolean>(false);
+
+  const handleFeature = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/news/posts/feature/${newsId}`,
+        {
+          method: "PUT",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.msg || "Failed to toggle feature");
+      }
+      setIsFeatured((prev) => !prev);
+
+      if (!isFeatured) {
+        Swal.fire({
+          icon: "success",
+          title: "News featured successfully",
+        });
+      } else {
+        Swal.fire({
+          icon: "success",
+          title: "News removed form being featured",
+        });
+      }
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Error occured in feature operation",
+        text: error.message,
+      });
+    }
+  };
 
   return (
     <div className=" mt-2">
@@ -98,15 +139,19 @@ const NewsAuthor = ({
       {id === user?.id && (
         <div className=" flex flex-col gap-2 mt-20 ml-7 text-lg cursor-pointer">
           <h1 className="text-lg font-bold mb-6">Action </h1>
-          <p className=" flex items-center gap-2 text-emerald-700">
-            <MdOutlineFeaturedPlayList size={25} /> Feature this post
-          </p>
-          <p className=" flex items-center gap-2 text-blue-700">
+          <button
+            className=" flex items-center gap-2 text-emerald-700"
+            onClick={handleFeature}
+          >
+            <MdOutlineFeaturedPlayList size={25} />{" "}
+            {!isFeatured ? "Feature this news" : "Remove from being featured"}
+          </button>
+          <button className=" flex items-center gap-2 text-blue-700">
             <CiEdit size={25} /> Edit this post
-          </p>
-          <p className=" flex items-center gap-2 text-red-500">
+          </button>
+          <button className=" flex items-center gap-2 text-red-500">
             <MdDeleteOutline size={25} /> Delete this post
-          </p>
+          </button>
         </div>
       )}
     </div>

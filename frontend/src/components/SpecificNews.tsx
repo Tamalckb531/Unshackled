@@ -78,6 +78,7 @@ const SpecificNews = () => {
         </div>
         <NewsAuthor
           id={data.author.id}
+          newsId={data.id}
           firstName={data.author.firstName}
           lastName={data.author.lastName}
           userName={data.author.userName}
