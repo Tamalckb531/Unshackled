@@ -1,6 +1,6 @@
 import { userState } from "@/store/atom";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline, MdOutlineFeaturedPlayList } from "react-icons/md";
 import { useRecoilState } from "recoil";
@@ -41,10 +41,42 @@ const NewsAuthor = ({
 
   const [isFeatured, setIsFeatured] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (!user || id !== user?.id) return;
+
+    const alreadyFeatured = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/news/posts/isFeatured/${newsId}`, //?isFeatured
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.msg || "Failed to check feature state");
+        }
+
+        const result = await res.json();
+        setIsFeatured(result);
+      } catch (error: any) {
+        Swal.fire({
+          icon: "error",
+          title: "Error occured in feature state check operation",
+          text: error.message,
+        });
+      }
+    };
+
+    alreadyFeatured();
+  }, []);
+
   const handleFeature = async () => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/news/posts/feature/${newsId}`,
+        `http://localhost:3000/api/news/posts/feature/${newsId}`, //?isFeatured
         {
           method: "PUT",
           credentials: "include",
@@ -65,7 +97,7 @@ const NewsAuthor = ({
       } else {
         Swal.fire({
           icon: "success",
-          title: "News removed form being featured",
+          title: "News removed from being featured",
         });
       }
     } catch (error: any) {

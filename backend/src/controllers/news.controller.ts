@@ -580,30 +580,19 @@ export const isFeaturedNews = async (req: Request, res: Response, next: NextFunc
     
     try {
         const news = await prisma.news.findUnique({
-            where: { id: newsId }
-        });
-        
-        if (!news) return res.status(404).json({ msg: "News not found" });
-        
-        if (news.authorId !== userId) return res.status(403).json({ msg: "You can only feature your own news" });
-        
-
-        //? already featured
-        const alreadyFeatured = await prisma.news.findUnique({
             where: { id: newsId },
-            select: {
-                featuredBy: {
-                    where: { id: userId }
-                }
-            }
+            include: { featuredBy: true } // Include featuredBy users
         });
 
-        if (alreadyFeatured) {
-            return res.status(200).json(true);
-        } else {
-            return res.status(200).json(false);
-        }
+        if (!news) return res.status(404).json({ msg: "News not found" });
+
+        if (news.authorId !== userId) return res.status(403).json({ msg: "You can only check your own news" });
+
+        // Check if the user has featured this news
+        const isFeatured = news.featuredBy.some(user => user.id === userId);
+
+        return res.status(200).json(isFeatured);
     } catch (error: any) {
         next(error);
     }
-}
+};
