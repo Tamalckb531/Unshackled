@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { followState, userState } from "@/store/atom";
+import {
+  collaborationCount,
+  followeeState,
+  followState,
+  newsCount,
+  userState,
+} from "@/store/atom";
 import Swal from "sweetalert2";
 import DashBoardComponent from "./DashBoardComponent";
 
 const ProfileWrapper = () => {
   const router = useRouter();
   const { userId } = useParams();
+  const setNewsCount = useSetRecoilState(newsCount);
+  const setCollaborationCount = useSetRecoilState(collaborationCount);
+  const setFollowee = useSetRecoilState(followeeState);
   const setFollower = useSetRecoilState(followState);
 
   const user = useRecoilValue(userState);
@@ -29,6 +38,9 @@ const ProfileWrapper = () => {
         }
         const user = await res.json();
         setUserProfile(user);
+        setNewsCount(user.newsCount);
+        setCollaborationCount(user.collaborationCount);
+        setFollowee(user.followeeCount);
         setFollower(user.followerCount);
       } catch (error: any) {
         Swal.fire({

@@ -24,8 +24,20 @@ export const paramState = atom<string | null>({
   default: null,
 })
 
+export const newsCount = atom<number>({
+  key: "newsCount",
+  default: 0,
+})
+export const collaborationCount = atom<number>({
+  key: "collaborationCount",
+  default: 0,
+})
 export const followState = atom<number>({
   key: "followState",
+  default: 0,
+})
+export const followeeState = atom<number>({
+  key: "followeeState",
   default: 0,
 })
 
