@@ -1,8 +1,10 @@
 import express from "express";
-import { signout } from "../controllers/user.controller";
+import { getCount, signout } from "../controllers/user.controller";
+import verifyToken from "../utils/verifyToken";
 
 const router = express.Router();
 
 router.post('/signout', signout);
+router.post('/getCount', verifyToken, getCount);
 
 export default router;
