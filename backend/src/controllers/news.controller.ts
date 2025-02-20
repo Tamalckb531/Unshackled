@@ -596,3 +596,40 @@ export const isFeaturedNews = async (req: Request, res: Response, next: NextFunc
         next(error);
     }
 };
+
+export const deleteNews = async (req: Request, res: Response, next: NextFunction) => {
+    const { newsId } = req.params;
+    const userId = req.user?.id;
+
+    try {
+        const news = await prisma.news.findUnique({
+            where: { id: newsId }
+        });
+
+        if (!news) return res.status(404).json({ msg: "News not found" });
+        if (userId !== news.authorId) return res.status(403).json({ msg: "Only author of news can delete it" });
+
+        await prisma.comment.deleteMany({
+            where: { newsId: newsId },
+        });
+
+        await prisma.news.update({
+            where: { id: newsId },
+            data: {
+                collaborators: { set: [] },
+                upvotedBy: { set: [] },
+                downvotedBy: { set: [] },
+                bookmarkedBy: { set: [] },
+                featuredBy: { set: [] },
+            }
+        });
+
+        await prisma.news.delete({
+            where: { id: newsId }
+        });
+
+        return res.status(200).json({ msg: "News deleted successfully" });
+    } catch (error: any) {
+        next(error);
+    }
+}
