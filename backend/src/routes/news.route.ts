@@ -1,5 +1,5 @@
 import express from "express";
-import { bookmarkedNews, createNews, downvoteNews, getFlare, getNews, getNewsById, getUserForCollaboration, getUserNews, upvoteNews } from "../controllers/news.controller";
+import { bookmarkedNews, createNews, downvoteNews, featureNews, getFlare, getNews, getNewsById, getUserForCollaboration, getUserNews, upvoteNews } from "../controllers/news.controller";
 import verifyToken from "../utils/verifyToken";
 import getUserMid from "../utils/getUserMid";
 
@@ -13,6 +13,7 @@ router.get('/editor/userSearch', verifyToken, getUserForCollaboration);
 router.put('/posts/upvote/:newsId', verifyToken, upvoteNews);
 router.put('/posts/downvote/:newsId', verifyToken, downvoteNews); 
 router.put('/posts/bookmark/:newsId', verifyToken, bookmarkedNews); 
+router.put('/posts/feature/:newsId', verifyToken, featureNews); 
 router.post('/editor/create', verifyToken, createNews);
 
 export default router;
