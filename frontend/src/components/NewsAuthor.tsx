@@ -109,6 +109,47 @@ const NewsAuthor = ({
     }
   };
 
+  const validateDelete = () => {
+    Swal.fire({
+      title: "Do you want to delete this post?",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete();
+      }
+    });
+  };
+
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/news/posts/delete/${newsId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.msg || "Failed to toggle feature");
+      }
+      Swal.fire({
+        icon: "success",
+        title: "News deleted successfully!",
+      });
+
+      router.push("/dashboard");
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Error occured in delete operation",
+        text: error.message,
+      });
+    }
+  };
+
   return (
     <div className=" mt-2">
       <div className="min-w-[17vw] border border-slate-500 p-5 rounded-2xl">
@@ -181,7 +222,10 @@ const NewsAuthor = ({
           <button className=" flex items-center gap-2 text-blue-700">
             <CiEdit size={25} /> Edit this post
           </button>
-          <button className=" flex items-center gap-2 text-red-500">
+          <button
+            className=" flex items-center gap-2 text-red-500"
+            onClick={validateDelete}
+          >
             <MdDeleteOutline size={25} /> Delete this post
           </button>
         </div>
