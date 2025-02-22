@@ -18,7 +18,7 @@ router.put('/posts/bookmark/:newsId', verifyToken, bookmarkedNews);
 router.put('/posts/feature/:newsId', verifyToken, featureNews); 
 
 router.post('/editor/create', verifyToken, createNews);
-router.post('/editor/update/:newsId', verifyToken, updateNews);
+router.put('/editor/update/:newsId', verifyToken, updateNews);
 
 router.delete('/posts/delete/:newsId', verifyToken, deleteNews);
 

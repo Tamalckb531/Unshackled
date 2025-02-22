@@ -1,15 +1,10 @@
-import {  News, Prisma, User} from "@prisma/client";
+import {  News } from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
 import { CreateNewsTypes, NewsSchema, userForCollaboration } from "@tamaldip/common";
 import { NextFunction, Request, Response } from 'express';
-import { json } from "stream/consumers";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
-
-const newsContentSchema = z.object({
-
-})
 
 export const getNews = async (req: Request, res: Response, next: NextFunction)=>{
     try {

@@ -10,7 +10,12 @@ import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import CollaboratorSearch from "./CollaboratorSearch";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { collaboratorState, paramState, WebSocketState } from "@/store/atom";
+import {
+  collaboratorState,
+  contentState,
+  paramState,
+  WebSocketState,
+} from "@/store/atom";
 
 const appId = "7j9y6m10";
 const generateRoomId = () => {
@@ -31,6 +36,7 @@ const EditorComponent = () => {
   const [posterImage, setPosterImage] = useState<string>("");
   const [flare, setFlare] = useState<string>("");
   const [isAuthorAnonymous, setIsAuthorAnonymous] = useState<boolean>(false);
+  const updateContent = useRecoilValue(contentState);
 
   const NotSubmittedRef = useRef<boolean>(true);
 
@@ -45,8 +51,17 @@ const EditorComponent = () => {
 
   const searchParams = useSearchParams();
   const param = searchParams.get("room");
+  const newsIdParam = searchParams.get("newsId");
+
   const setParamState = useSetRecoilState(paramState);
   setParamState(param);
+
+  useEffect(() => {
+    if (newsIdParam) {
+      setContent(updateContent);
+    }
+  }, [newsIdParam]); // Runs only when newsIdParam changes
+
   const room = useMemo(
     () => searchParams.get("room") || generateRoomId(),
     [searchParams]
@@ -110,8 +125,67 @@ const EditorComponent = () => {
     setContent(reason);
   };
 
+  const handleUpdate = async () => {
+    const data = { content };
+    const ContentSchema = NewsSchema.pick({
+      content: true,
+    });
+
+    const validationResult = ContentSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: validationResult.error.errors
+          .map((err) => `${err.path[0]}: ${err.message}`)
+          .join("\n"),
+      });
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/news/editor/update/${newsIdParam}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+          credentials: "include", // Include cookies in the request
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to update news.");
+      }
+
+      const response = await res.json();
+
+      Swal.fire({
+        icon: "success",
+        title: "News Updated Successfully!",
+        text: `News ID: ${response.newsId}`,
+      });
+
+      // Go to news page
+      router.push(`/newsfeed/${response.newsId}`);
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: error.message,
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (newsIdParam) {
+      handleUpdate();
+      return;
+    }
 
     const data = {
       title: title.trim(),
@@ -247,7 +321,7 @@ const EditorComponent = () => {
         className="w-full h-full flex flex-col gap-3 items-center mx-auto p-10 mb-10 z-0"
       >
         {/*//? collaboration and cancel button  */}
-        {!param && (
+        {!param && !newsIdParam && (
           <div className="flex w-full items-center justify-end gap-5">
             <button
               type="button"
@@ -273,10 +347,13 @@ const EditorComponent = () => {
               (invited users can only use the editor)
             </span>
           )}
+          {newsIdParam && (
+            <span className=" text-xl">(you can only change the content)</span>
+          )}
         </p>
 
         {/* //? posterImage, flare and anonymous  */}
-        {!param && (
+        {!param && !newsIdParam && (
           <div className=" w-full flex items-start justify-between mt-5 px-6 ">
             <div className="upload_file flex">
               <input
@@ -314,7 +391,7 @@ const EditorComponent = () => {
           </div>
         )}
 
-        {!param && posterImage && (
+        {!param && !newsIdParam && posterImage && (
           <img
             src={posterImage}
             alt=""
@@ -322,7 +399,7 @@ const EditorComponent = () => {
           />
         )}
 
-        {!param && (
+        {!param && !newsIdParam && (
           <input
             className=" w-full p-4 mt-8 outline-none text-3xl"
             placeholder="Write your title here....."
