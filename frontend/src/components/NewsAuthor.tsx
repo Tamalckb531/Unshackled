@@ -1,9 +1,9 @@
-import { userState } from "@/store/atom";
+import { contentState, userState } from "@/store/atom";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline, MdOutlineFeaturedPlayList } from "react-icons/md";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Swal from "sweetalert2";
 
 interface Author {
@@ -219,7 +219,12 @@ const NewsAuthor = ({
             <MdOutlineFeaturedPlayList size={25} />{" "}
             {!isFeatured ? "Feature this news" : "Remove from being featured"}
           </button>
-          <button className=" flex items-center gap-2 text-blue-700">
+          <button
+            className=" flex items-center gap-2 text-blue-700"
+            onClick={() => {
+              router.push(`/editor?newsId=${newsId}`);
+            }}
+          >
             <CiEdit size={25} /> Edit this post
           </button>
           <button

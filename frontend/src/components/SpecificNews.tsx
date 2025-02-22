@@ -6,8 +6,8 @@ import NewsActionBar from "./NewsActionBar";
 import NewsAuthor from "./NewsAuthor";
 import NewsComment from "./NewsComment";
 import { useParams } from "next/navigation";
-import { userState } from "@/store/atom";
-import { useRecoilState } from "recoil";
+import { contentState, userState } from "@/store/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { NewsData } from "@tamaldip/common";
 
 const SpecificNews = () => {
@@ -17,6 +17,7 @@ const SpecificNews = () => {
   const [isUserDownvoted, setIsUserDownvoted] = useState<boolean>(false);
   const [isUserBookmarked, setIsUserBookmarked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const setContentState = useSetRecoilState(contentState);
 
   const user = useRecoilState(userState)[0];
 
@@ -39,6 +40,7 @@ const SpecificNews = () => {
         setIsUserUpvoted(data.upvotedBy?.length > 0);
         setIsUserDownvoted(data.downvotedBy?.length > 0);
         setIsUserBookmarked(data.bookmarkedBy?.length > 0);
+        setContentState(data.content);
       } catch (error: any) {
         console.error("Error fetching news: ", error);
       } finally {
