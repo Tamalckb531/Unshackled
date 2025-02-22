@@ -2,9 +2,14 @@ import {  News, Prisma, User} from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
 import { CreateNewsTypes, NewsSchema, userForCollaboration } from "@tamaldip/common";
 import { NextFunction, Request, Response } from 'express';
+import { json } from "stream/consumers";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
+
+const newsContentSchema = z.object({
+
+})
 
 export const getNews = async (req: Request, res: Response, next: NextFunction)=>{
     try {
@@ -250,6 +255,84 @@ export const createNews = async (req: Request, res: Response, next: NextFunction
             return res.status(409).json({ error: "Duplicate entry" });
         }
         next(error);
+    }
+}
+
+export const deleteNews = async (req: Request, res: Response, next: NextFunction) => {
+    const { newsId } = req.params;
+    const userId = req.user?.id;
+
+    try {
+        const news = await prisma.news.findUnique({
+            where: { id: newsId }
+        });
+
+        if (!news) return res.status(404).json({ msg: "News not found" });
+        if (userId !== news.authorId) return res.status(403).json({ msg: "Only author of news can delete it" });
+
+        await prisma.comment.deleteMany({
+            where: { newsId: newsId },
+        });
+
+        await prisma.news.update({
+            where: { id: newsId },
+            data: {
+                collaborators: { set: [] },
+                upvotedBy: { set: [] },
+                downvotedBy: { set: [] },
+                bookmarkedBy: { set: [] },
+                featuredBy: { set: [] },
+            }
+        });
+
+        await prisma.news.delete({
+            where: { id: newsId }
+        });
+
+        return res.status(200).json({ msg: "News deleted successfully" });
+    } catch (error: any) {
+        next(error);
+    }
+}
+
+export const updateNews = async (req: Request, res: Response, next: NextFunction) => {
+    const { content }:{content:string} = req.body;
+    const { newsId } = req.params;
+    const userId = req.user?.id;
+
+    try {
+        const ContentSchema = NewsSchema.pick({
+            content: true,
+        }); 
+        ContentSchema.parse({ content });
+
+        const news = await prisma.news.findUnique({
+            where: { id: newsId }
+        });
+
+        if (!news) return res.status(404).json({ msg: "News not found" });
+        if (userId !== news.authorId) return res.status(403).json({ msg: "Only author of news can delete it" });
+
+        const updateNews = await prisma.news.update({
+            where: { id: newsId },
+            data: {
+                content: content,
+            }
+        });
+
+        return res.status(200).json({
+            msg: "News updated successfully",
+            newsId: updateNews.id
+        });
+    } catch (error: any) {
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ error: error.errors });
+        }
+
+        if (error.code === 'P2002') {
+            return res.status(409).json({ error: "Duplicate entry" });
+        }
+        next(error)
     }
 }
 
@@ -597,39 +680,3 @@ export const isFeaturedNews = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-export const deleteNews = async (req: Request, res: Response, next: NextFunction) => {
-    const { newsId } = req.params;
-    const userId = req.user?.id;
-
-    try {
-        const news = await prisma.news.findUnique({
-            where: { id: newsId }
-        });
-
-        if (!news) return res.status(404).json({ msg: "News not found" });
-        if (userId !== news.authorId) return res.status(403).json({ msg: "Only author of news can delete it" });
-
-        await prisma.comment.deleteMany({
-            where: { newsId: newsId },
-        });
-
-        await prisma.news.update({
-            where: { id: newsId },
-            data: {
-                collaborators: { set: [] },
-                upvotedBy: { set: [] },
-                downvotedBy: { set: [] },
-                bookmarkedBy: { set: [] },
-                featuredBy: { set: [] },
-            }
-        });
-
-        await prisma.news.delete({
-            where: { id: newsId }
-        });
-
-        return res.status(200).json({ msg: "News deleted successfully" });
-    } catch (error: any) {
-        next(error);
-    }
-}
