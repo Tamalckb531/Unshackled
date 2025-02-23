@@ -5,6 +5,9 @@ import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { userState, WebSocketState } from "@/store/atom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
+import { X } from "lucide-react";
+import { BiNotification } from "react-icons/bi";
+import { MdNotifications } from "react-icons/md";
 
 //? check
 
@@ -202,26 +205,15 @@ const Header = () => {
         </span>
         <div className="ml-auto flex items-center gap-4"></div>
       </h1>
-      <nav className="ml-auto mr-3 flex gap-4 sm:gap-6">
-        <button
-          className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
-          aria-label="Toggle theme"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-6 w-6"
-          >
-            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-          </svg>
-        </button>
+      <nav className="ml-auto mr-3 flex items-center justify-center gap-4 sm:gap-6">
+        {user && (
+          <div className="flex-shrink-0 mt-2 mx-1 relative">
+            <button className="absolute -top-1 -right-1 bg-red-400 text-white rounded-full w-5 h-5 flex items-center justify-center">
+              <span className=" text-xs">5</span>
+            </button>
+            <MdNotifications size={30} />
+          </div>
+        )}
         {/* <div
           className="w-fit whitespace-nowrap rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 px-2 py-1 text-xs font-medium flex items-center gap-1"
           data-v0-t="badge"
