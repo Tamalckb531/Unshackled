@@ -214,10 +214,6 @@ const Header = () => {
             <MdNotifications size={30} />
           </div>
         )}
-        {/* <div
-          className="w-fit whitespace-nowrap rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 px-2 py-1 text-xs font-medium flex items-center gap-1"
-          data-v0-t="badge"
-        > */}
         {user ? (
           <div>
             <img
