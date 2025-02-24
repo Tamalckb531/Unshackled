@@ -5,9 +5,8 @@ import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { userState, WebSocketState } from "@/store/atom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
-import { X } from "lucide-react";
-import { BiNotification } from "react-icons/bi";
 import { MdNotifications } from "react-icons/md";
+import NotificationBar from "./NotificationBar";
 
 //? check
 
@@ -33,6 +32,7 @@ interface StatusData {
 
 const Header = () => {
   const [showDropdown, setShowDropDown] = useState<boolean>(false);
+  const [showNotification, setShowNotification] = useState<boolean>(false);
   const user = useRecoilState(userState)[0];
   const resetUser = useResetRecoilState(userState);
   const router = useRouter();
@@ -195,81 +195,89 @@ const Header = () => {
   };
 
   return (
-    <header className="px-4 lg:px-6 h-14 flex items-center">
-      <h1
-        className="flex items-center justify-center cursor-pointer"
-        onClick={() => router.push("/")}
-      >
-        <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#3b82f6] via-[#9333ea] to-[#f472b6]">
-          Unshackled
-        </span>
-        <div className="ml-auto flex items-center gap-4"></div>
-      </h1>
-      <nav className="ml-auto mr-3 flex items-center justify-center gap-4 sm:gap-6">
-        {user && (
-          <div className="flex-shrink-0 mt-2 mx-1 relative">
-            <button className="absolute -top-1 -right-1 bg-red-400 text-white rounded-full w-5 h-5 flex items-center justify-center">
-              <span className=" text-xs">5</span>
-            </button>
-            <MdNotifications size={30} />
-          </div>
-        )}
-        {user ? (
-          <div>
-            <img
-              className="w-10 h-10 rounded-full cursor-pointer"
-              src={user.photoURL}
-              alt={`profile image of ${user.userName}`}
-              onClick={() => {
-                setShowDropDown(!showDropdown);
-              }}
-            ></img>
-            {showDropdown ? (
-              <div className="z-1 fixed top-14 right-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                <div className="mt-4 mb-3 ml-4 text-sm text-gray-900 dark:text-white">
-                  <div className=" mb-1">
-                    {user.firstName} {user.lastName}
+    <>
+      {showNotification && (
+        <NotificationBar setShowNotification={setShowNotification} />
+      )}
+      <header className="px-4 lg:px-6 h-14 flex items-center">
+        <h1
+          className="flex items-center justify-center cursor-pointer"
+          onClick={() => router.push("/")}
+        >
+          <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#3b82f6] via-[#9333ea] to-[#f472b6]">
+            Unshackled
+          </span>
+          <div className="ml-auto flex items-center gap-4"></div>
+        </h1>
+        <nav className="ml-auto mr-3 flex items-center justify-center gap-4 sm:gap-6">
+          {user && (
+            <div
+              className="flex-shrink-0 mt-2 mx-1 relative"
+              onClick={() => setShowNotification((prev) => !prev)}
+            >
+              <button className="absolute -top-1 -right-1 bg-red-400 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                <span className=" text-xs">5</span>
+              </button>
+              <MdNotifications size={30} />
+            </div>
+          )}
+          {user ? (
+            <div>
+              <img
+                className="w-10 h-10 rounded-full cursor-pointer"
+                src={user.photoURL}
+                alt={`profile image of ${user.userName}`}
+                onClick={() => {
+                  setShowDropDown(!showDropdown);
+                }}
+              ></img>
+              {showDropdown ? (
+                <div className="z-1 fixed top-14 right-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                  <div className="mt-4 mb-3 ml-4 text-sm text-gray-900 dark:text-white">
+                    <div className=" mb-1">
+                      {user.firstName} {user.lastName}
+                    </div>
+                    <div className="font-medium truncate">{user.email}</div>
                   </div>
-                  <div className="font-medium truncate">{user.email}</div>
-                </div>
-                <ul
-                  className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                  aria-labelledby="avatarButton"
-                >
-                  <li>
-                    <a
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
-                      onClick={() => router.push("/dashboard")}
-                    >
-                      Dashboard
-                    </a>
-                  </li>
-                </ul>
-                <div className="py-1">
-                  <a
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    onClick={handleSignOut}
+                  <ul
+                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                    aria-labelledby="avatarButton"
                   >
-                    Sign out
-                  </a>
+                    <li>
+                      <a
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                        onClick={() => router.push("/dashboard")}
+                      >
+                        Dashboard
+                      </a>
+                    </li>
+                  </ul>
+                  <div className="py-1">
+                    <a
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                      onClick={handleSignOut}
+                    >
+                      Sign out
+                    </a>
+                  </div>
                 </div>
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <button
-            onClick={() => {
-              router.push("/login");
-            }}
-          >
-            {" "}
-            Sign in
-          </button>
-        )}
+              ) : null}
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                router.push("/login");
+              }}
+            >
+              {" "}
+              Sign in
+            </button>
+          )}
 
-        {/* </div> */}
-      </nav>
-    </header>
+          {/* </div> */}
+        </nav>
+      </header>
+    </>
   );
 };
 
