@@ -147,6 +147,12 @@ wss.on('connection', async (ws, req) => {
                 }));
               }
             }
+          }else if (data.type === "send_notification") {
+
+            //? save data in the notification table for the authorId
+            
+            //? send the data to the authorId ws if it's available
+            
           }
           
         } catch (error) {
