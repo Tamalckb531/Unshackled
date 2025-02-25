@@ -35,16 +35,17 @@ model User {
 
   //? Relations
   newsPosted        News[]
-  bookmarkedNews    News[]    @relation("UserBookmarkedNews")
-  upvotedNews       News[]    @relation("UserUpvotedNews")
-  downvotedNews     News[]    @relation("UserDownvotedNews")
-  upvotedComments   Comment[] @relation("UserUpvotedComments")
-  downvotedComments Comment[] @relation("UserDownvotedComments")
-  followers         Follow[]  @relation("UserFollowers")
-  followees         Follow[]  @relation("UserFollowees")
-  collaboratorNews  News[]    @relation("CollaboratorNews")
+  AllNotifications  Notification[]
+  bookmarkedNews    News[]         @relation("UserBookmarkedNews")
+  upvotedNews       News[]         @relation("UserUpvotedNews")
+  downvotedNews     News[]         @relation("UserDownvotedNews")
+  upvotedComments   Comment[]      @relation("UserUpvotedComments")
+  downvotedComments Comment[]      @relation("UserDownvotedComments")
+  followers         Follow[]       @relation("UserFollowers")
+  followees         Follow[]       @relation("UserFollowees")
+  collaboratorNews  News[]         @relation("CollaboratorNews")
   comments          Comment[]
-  featuredNews      News[]    @relation("UserFeaturedNews")
+  featuredNews      News[]         @relation("UserFeaturedNews")
 
   analytics Json?
 }
@@ -103,4 +104,18 @@ model Follow {
   followee User @relation("UserFollowers", fields: [followeeId], references: [id])
 
   createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  sender    String
+  senderImg String
+  isChecked Boolean
+  newsId    String   @default("")
+  topic     String
+  createdAt DateTime @default(now())
+
+  //? relation
+  receiver   User   @relation(fields: [receiverId], references: [id])
+  receiverId String @db.Uuid
 }
