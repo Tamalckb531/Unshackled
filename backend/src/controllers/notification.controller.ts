@@ -36,3 +36,23 @@ export const getUnCheckedCount = async(req: Request, res: Response, next: NextFu
         next(error);
     }
 }
+
+export const setCheckNotifications = async (req: Request, res: Response, next: NextFunction) => { 
+    const userId = req.user?.id;
+
+    try {
+        await prisma.notification.updateMany({
+            where: {
+                receiverId: userId,
+                isChecked: false,
+            },
+            data: {
+                isChecked: true
+            }
+        });
+
+        res.status(201).json({ msg: "Set all unChecked notification to checked successfully" });
+    } catch (error: any) {
+        next(error);
+    }
+}
