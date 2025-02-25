@@ -21,3 +21,18 @@ export const getNotifications = async (req: Request, res: Response, next: NextFu
     }
 }
 
+export const getCheckedCount = async(req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user?.id;
+
+    try {
+        const checkedCount: number = await prisma.notification.count({
+            where: {
+                receiverId: userId,
+                isChecked: false,
+            }
+        });
+        return res.status(200).json(checkedCount);
+    } catch (error: any) {
+        next(error);
+    }
+}
