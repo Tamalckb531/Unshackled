@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import {  Notification } from "@prisma/client";
 import { PrismaClient } from '@prisma/client'
+import { createNotificationType } from '@tamaldip/common';
+
 
 const prisma = new PrismaClient();
 
@@ -32,6 +34,28 @@ export const getUnCheckedCount = async(req: Request, res: Response, next: NextFu
             }
         });
         return res.status(200).json(uncheckedCount);
+    } catch (error: any) {
+        next(error);
+    }
+}
+
+export const createNotification = async (req: Request, res: Response, next: NextFunction) => { 
+    const { sender,senderImg,newsId,topic}: createNotificationType = req.body;
+    const { receiverId } = req.params;
+
+    try {
+        const data: any = {
+            sender,
+            senderImg,
+            isChecked: false,
+            newsId,
+            topic,
+            receiverId:receiverId
+        };
+
+        await prisma.news.create({ data });
+
+        res.status(200).json({ msg: "notification created successfully" });
     } catch (error: any) {
         next(error);
     }
