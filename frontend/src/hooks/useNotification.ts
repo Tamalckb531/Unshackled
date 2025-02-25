@@ -27,7 +27,7 @@ const useNotification = () => {
         }
     }
   
-    return sentNotification;
+    return {sentNotification};
 }
 
 export default useNotification

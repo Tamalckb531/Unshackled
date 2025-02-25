@@ -1,3 +1,4 @@
+import useNotification from "@/hooks/useNotification";
 import { userState } from "@/store/atom";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -38,9 +39,9 @@ const NewsActionBar = ({
     useState<number>(bookmarkCount);
   const [upvotesState, setUpvotesState] = useState<number>(upvotes);
   const [downvotesState, setDownvotesState] = useState<number>(downvotes);
+  const { sentNotification } = useNotification();
 
   const user = useRecoilState(userState)[0];
-  console.log(user);
 
   const router = useRouter();
 
@@ -89,6 +90,10 @@ const NewsActionBar = ({
 
       setUpvotesState((prev) => (isUpvoted ? prev - 1 : prev + 1));
       setIsUpvote((prev) => !prev);
+      const sender = `${user.firstName} ${user.lastName}`;
+      const senderImg = user.photoUrl;
+      const topic = "upvoted";
+      sentNotification({ sender, senderImg, newsId, topic });
     } catch (error: any) {
       Swal.fire({
         icon: "error",
