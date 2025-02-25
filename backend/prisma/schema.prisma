@@ -110,7 +110,7 @@ model Notification {
   id        String   @id @default(cuid())
   sender    String
   senderImg String
-  isChecked Boolean
+  isChecked Boolean  @default(false)
   newsId    String   @default("")
   topic     String
   createdAt DateTime @default(now())
