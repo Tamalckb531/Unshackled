@@ -143,3 +143,11 @@ export interface userForCollaboration{
   userName: string | null,
   photoURL?: string | null,
 };
+
+export interface createNotificationType{
+  sender: string;
+  senderImg: string;
+  isChecked: boolean;
+  newsId: string;
+  topic: string;
+}
