@@ -14,6 +14,7 @@ import { useRecoilState } from "recoil";
 import Swal from "sweetalert2";
 
 interface NewsAction {
+  authorId: string;
   newsId: string;
   upvotes: number;
   downvotes: number;
@@ -24,6 +25,7 @@ interface NewsAction {
 }
 
 const NewsActionBar = ({
+  authorId,
   newsId,
   upvotes,
   downvotes,
@@ -93,7 +95,7 @@ const NewsActionBar = ({
       const sender = `${user.firstName} ${user.lastName}`;
       const senderImg = user.photoUrl;
       const topic = "upvoted";
-      sentNotification({ sender, senderImg, newsId, topic });
+      sentNotification({ authorId, sender, senderImg, newsId, topic });
     } catch (error: any) {
       Swal.fire({
         icon: "error",

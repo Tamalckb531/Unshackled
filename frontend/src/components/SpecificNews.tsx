@@ -68,6 +68,7 @@ const SpecificNews = () => {
         <div className=" flex flex-col gap-5">
           <NewsContent content={data.content || ""} />
           <NewsActionBar
+            authorId={data.author.id}
             newsId={data.id}
             upvotes={data.upvotes}
             downvotes={data.downvotes}

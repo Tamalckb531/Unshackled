@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { useRecoilValue } from "recoil";
 
 interface notification{
+    authorId:string,
     sender: string,
     senderImg: string,
     newsId: string,
@@ -13,11 +14,12 @@ const useNotification = () => {
     const websocketConnection = useRecoilValue(WebSocketState);
     const ws = useRef<WebSocket | null>(websocketConnection);
     
-    const sentNotification = ({ sender,senderImg,newsId,topic}:notification) => {
+    const sentNotification = ({ authorId,sender,senderImg,newsId,topic}:notification) => {
         if (ws.current?.readyState === WebSocket.OPEN) {
             ws.current.send(
                 JSON.stringify({
                     type: "send_notification",
+                    authorId,
                     sender,
                     senderImg,
                     newsId,
