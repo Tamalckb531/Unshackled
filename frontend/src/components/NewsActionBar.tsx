@@ -95,7 +95,7 @@ const NewsActionBar = ({
       const sender = `${user.firstName} ${user.lastName}`;
       const senderImg = user.photoUrl;
       const topic = "upvoted";
-      sentNotification({ authorId, sender, senderImg, newsId, topic });
+      sentNotification(authorId);
     } catch (error: any) {
       Swal.fire({
         icon: "error",
