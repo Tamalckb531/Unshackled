@@ -1,5 +1,6 @@
 import useNotification from "@/hooks/useNotification";
 import { userState } from "@/store/atom";
+import { createNotificationType } from "@tamaldip/common";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
@@ -92,12 +93,15 @@ const NewsActionBar = ({
 
       setUpvotesState((prev) => (isUpvoted ? prev - 1 : prev + 1));
       setIsUpvote((prev) => !prev);
-      const sender = `${user.firstName} ${user.lastName}`;
-      const senderImg = user.photoUrl;
-      const topic = "upvoted";
 
-      createNotification({ authorId, sender, senderImg, newsId, topic });
-      sentNotification(authorId);
+      if (!isUpvoted) {
+        const sender = `${user.firstName} ${user.lastName}`;
+        const senderImg = `${user.photoURL}`;
+        const topic = "upvoted";
+
+        createNotification({ authorId, sender, senderImg, newsId, topic });
+        sentNotification(authorId);
+      }
     } catch (error: any) {
       Swal.fire({
         icon: "error",
