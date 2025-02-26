@@ -41,7 +41,7 @@ const NewsActionBar = ({
     useState<number>(bookmarkCount);
   const [upvotesState, setUpvotesState] = useState<number>(upvotes);
   const [downvotesState, setDownvotesState] = useState<number>(downvotes);
-  const { sentNotification } = useNotification();
+  const { createNotification, sentNotification } = useNotification();
 
   const user = useRecoilState(userState)[0];
 
@@ -95,6 +95,8 @@ const NewsActionBar = ({
       const sender = `${user.firstName} ${user.lastName}`;
       const senderImg = user.photoUrl;
       const topic = "upvoted";
+
+      createNotification({ authorId, sender, senderImg, newsId, topic });
       sentNotification(authorId);
     } catch (error: any) {
       Swal.fire({
@@ -167,6 +169,13 @@ const NewsActionBar = ({
 
       setBookmarkCountState((prev) => (isBookmarked ? prev - 1 : prev + 1));
       setIsBookmarked((prev) => !prev);
+
+      const sender = `${user.firstName} ${user.lastName}`;
+      const senderImg = user.photoUrl;
+      const topic = "upvoted";
+
+      createNotification({ authorId, sender, senderImg, newsId, topic });
+      sentNotification(authorId);
     } catch (error: any) {
       Swal.fire({
         icon: "error",

@@ -44,6 +44,13 @@ export const createNotification = async (req: Request, res: Response, next: Next
     const { receiverId } = req.params;
 
     try {
+        const userExists = await prisma.user.findUnique({
+            where: { id: receiverId },
+        });
+
+        if (!userExists) {
+            return res.status(400).json({ msg: "Receiver user does not exist." });
+        }
         const data: any = {
             sender,
             senderImg,
@@ -53,7 +60,7 @@ export const createNotification = async (req: Request, res: Response, next: Next
             receiverId:receiverId
         };
 
-        await prisma.news.create({ data });
+        await prisma.notification.create({ data });
 
         res.status(200).json({ msg: "notification created successfully" });
     } catch (error: any) {
