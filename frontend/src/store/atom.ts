@@ -40,6 +40,10 @@ export const followeeState = atom<number>({
   key: "followeeState",
   default: 0,
 })
+export const notificationState = atom<number>({
+  key: "notificationState",
+  default: 0,
+})
 export const contentState = atom<string>({
   key: "contentState",
   default: "",

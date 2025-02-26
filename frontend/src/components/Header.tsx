@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
-import { userState, WebSocketState } from "@/store/atom";
+import { notificationState, userState, WebSocketState } from "@/store/atom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import { MdNotifications } from "react-icons/md";
@@ -38,6 +38,8 @@ const Header = () => {
   const router = useRouter();
   const ws = useRef<WebSocket | null>(null);
   const setWebSocket = useSetRecoilState(WebSocketState);
+  const [notificationCount, setNotificationCount] =
+    useRecoilState(notificationState);
 
   useEffect(() => {
     if (user && !ws.current) {
@@ -59,6 +61,8 @@ const Header = () => {
             handleDisconnectMsg();
           } else if (data.type === "host_submitted_news") {
             handleSubmitMsg(data);
+          } else if (data.type === "receive_notification") {
+            setNotificationCount((prev) => prev + 1);
           }
         } catch (error: any) {
           Swal.fire({
@@ -215,9 +219,17 @@ const Header = () => {
               className="flex-shrink-0 mt-2 mx-1 relative"
               onClick={() => setShowNotification((prev) => !prev)}
             >
-              <button className="absolute -top-1 -right-1 bg-red-400 text-white rounded-full w-5 h-5 flex items-center justify-center">
-                <span className=" text-xs">5</span>
-              </button>
+              {notificationCount > 0 && (
+                <button className="absolute -top-1 -right-1 bg-red-400 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                  <span
+                    className={`${
+                      notificationCount < 99 ? " text-xs" : "text-[0.6rem]"
+                    }`}
+                  >
+                    {notificationCount < 99 ? notificationCount : "99+"}
+                  </span>
+                </button>
+              )}
               <MdNotifications size={30} />
             </div>
           )}
