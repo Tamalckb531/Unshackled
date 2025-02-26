@@ -7,6 +7,6 @@ const router = express.Router();
 router.get('/bulk', verifyToken, getNotifications);
 router.get('/getUnCheck', verifyToken, getUnCheckedCount);
 router.put('/setCheck', verifyToken, setCheckNotifications);
-router.post('/create', verifyToken, createNotification);
+router.post('/create/:receiverId', verifyToken, createNotification);
 
 export default router;
