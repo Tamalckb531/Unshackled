@@ -174,12 +174,14 @@ const NewsActionBar = ({
       setBookmarkCountState((prev) => (isBookmarked ? prev - 1 : prev + 1));
       setIsBookmarked((prev) => !prev);
 
-      const sender = `${user.firstName} ${user.lastName}`;
-      const senderImg = user.photoUrl;
-      const topic = "upvoted";
+      if (!isBookmarked) {
+        const sender = `${user.firstName} ${user.lastName}`;
+        const senderImg = `${user.photoURL}`;
+        const topic = "bookmarked";
 
-      createNotification({ authorId, sender, senderImg, newsId, topic });
-      sentNotification(authorId);
+        createNotification({ authorId, sender, senderImg, newsId, topic });
+        sentNotification(authorId);
+      }
     } catch (error: any) {
       Swal.fire({
         icon: "error",

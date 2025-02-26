@@ -150,11 +150,12 @@ wss.on('connection', async (ws, req) => {
               }
             }
           }else if (data.type === "send_notification") {
-
-            //? save data in the notification table for the authorId
-            
-            //? send the data to the authorId ws if it's available
-            
+            const receiverWs = clients.get(data.authorId);
+            if (receiverWs) {
+              receiverWs.ws.send(JSON.stringify({
+                type: "receive_notification",
+              }))
+            }
           }
           
         } catch (error) {

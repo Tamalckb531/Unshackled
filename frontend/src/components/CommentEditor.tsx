@@ -71,40 +71,6 @@ const CommentEditor = ({
       }
       reset();
       editorHandler && editorHandler();
-      // if (isContent) {
-      //   const res = await fetch(
-      //     `http://localhost:3000/api/comments/edit/${parentId}`,
-      //     {
-      //       method: "PUT",
-      //       headers: { "Content-Type": "application/json" },
-      //       body: JSON.stringify(values),
-      //       credentials: "include",
-      //     }
-      //   );
-      //   if (!res.ok) throw Error("Edit operation failed");
-      //   const data = await res.json();
-      //   contentHandler && contentHandler(data.comment.content || "");
-      //   reset();
-      //   editorHandler && editorHandler();
-      // } else {
-      //   if (parentId) values.parentId = parentId;
-      //   const res = await fetch(
-      //     `http://localhost:3000/api/comments/post/${newsId}`,
-      //     {
-      //       method: "POST",
-      //       headers: { "Content-Type": "application/json" },
-      //       body: JSON.stringify(values),
-      //       credentials: "include",
-      //     }
-      //   );
-      //   if (!res.ok) {
-      //     throw new Error("Couldn't upload the comment");
-      //   }
-      //   const data = await res.json();
-      //   onCommentAdd(data.comment);
-      //   reset();
-      //   editorHandler && editorHandler();
-      // }
     } catch (error: any) {
       Swal.fire({
         icon: "error",
