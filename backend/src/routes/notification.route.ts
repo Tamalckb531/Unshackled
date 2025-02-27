@@ -4,6 +4,7 @@ import { createNotification, getNotifications, getUnCheckedCount, setCheckNotifi
 
 const router = express.Router();
 
+//? check up
 router.get('/bulk', verifyToken, getNotifications);
 router.get('/getUnCheck', verifyToken, getUnCheckedCount);
 router.put('/setCheck', verifyToken, setCheckNotifications);
