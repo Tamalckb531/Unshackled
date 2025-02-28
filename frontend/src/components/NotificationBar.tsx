@@ -77,6 +77,7 @@ const NotificationBar: React.FC<notificationProps> = ({
                   newsId={not.newsId}
                   topic={not.topic}
                   createdAt={not.createdAt}
+                  setShowNotification={setShowNotification}
                 />
               ))
             : !loading && (
