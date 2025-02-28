@@ -57,7 +57,7 @@ const NotificationBar: React.FC<notificationProps> = ({
       onClick={() => setShowNotification(false)}
     >
       <div
-        className=" bg-white text-xl font-bold p-5 rounded-lg w-[650px] border shadow-lg text-black"
+        className=" bg-white text-xl font-bold p-5 rounded-lg w-[700px] border shadow-lg text-black"
         onClick={(e) => e.stopPropagation()}
       >
         <p className=" text-center text-2xl">Notifications</p>
@@ -68,7 +68,17 @@ const NotificationBar: React.FC<notificationProps> = ({
         )}
         <div className="flex flex-col max-h-[50vh] overflow-y-auto justify-start mt-5 pb-4 border-b scrollbar-none">
           {notifications.length > 0
-            ? notifications.map((not) => <NotificationCard key={not.id} />)
+            ? notifications.map((not) => (
+                <NotificationCard
+                  key={not.id}
+                  sender={not.sender}
+                  senderImg={not.senderImg}
+                  isChecked={not.isChecked}
+                  newsId={not.newsId}
+                  topic={not.topic}
+                  createdAt={not.createdAt}
+                />
+              ))
             : !loading && (
                 <p className=" text-center text-2xl text-slate-400">
                   No notifications to show
