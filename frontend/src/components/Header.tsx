@@ -89,6 +89,31 @@ const Header = () => {
     };
   }, [user]);
 
+  useEffect(() => {
+    const getUnChecked = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/notification/getUnCheck`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.msg || "Failed to send notification");
+        }
+        const result: number = await res.json();
+        setNotificationCount(result);
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    };
+
+    if (user) getUnChecked();
+  }, [user]);
+
   const handleStatus = (data: StatusData) => {
     Swal.fire({
       position: "bottom-end",
