@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import NotificationCard from "./NotificationCard";
 import Swal from "sweetalert2";
+import { useSetRecoilState } from "recoil";
+import { notificationState } from "@/store/atom";
 
 interface notificationProps {
   setShowNotification: (value: boolean) => void;
@@ -22,6 +24,7 @@ const NotificationBar: React.FC<notificationProps> = ({
 }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const setNotificationCount = useSetRecoilState(notificationState);
 
   useEffect(() => {
     const getUnChecked = async () => {
@@ -50,6 +53,34 @@ const NotificationBar: React.FC<notificationProps> = ({
     };
 
     getUnChecked();
+
+    return () => {
+      const setChecked = async () => {
+        try {
+          const res = await fetch(
+            `http://localhost:3000/api/notification/setCheck`,
+            {
+              method: "PUT",
+              credentials: "include",
+            }
+          );
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.msg || "Failed to send notification");
+          }
+          setNotificationCount(0);
+        } catch (error: any) {
+          Swal.fire({
+            icon: "error",
+            title: "Somethings went wrong",
+            text: error.message,
+          });
+        }
+      };
+
+      setChecked();
+    };
   }, []);
   return (
     <div
